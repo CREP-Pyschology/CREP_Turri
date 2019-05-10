@@ -115,7 +115,7 @@ summary(PCModel)
 ## WARNING: These commands may take a long time to run, 
 ## depending on your computer's RAM
 
-cores <- 2 ## set how many of your CPU's cores to use. If you use all
+cores <- 1 ## set how many of your CPU's cores to use. If you use all
 ## of your computer's cores, you may not be able to do anything else. 
 ## Fair warning. 
 
