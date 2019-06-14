@@ -21,6 +21,12 @@ table(master$squirrel_prairie, master$para_condition)
 #ignorance 19/24
 #knowledge 23/24  
 
+master$knows_believes = factor(master$knows_believes, #column
+                               levels = c("Believes", "Knows"))
+master$reason_unreason = factor(master$reason_unreason, 
+                                levels = c("Reasonable",
+                                           "Unreasonable"))
+
 table(master$knows_believes, master$para_condition)
 #gettier 11/19
 #ignorance 3/11
@@ -31,11 +37,6 @@ table(master$reason_unreason, master$para_condition)
 #ignorance 10/11
 #knowledge 9/9
 
-master$knows_believes = factor(master$knows_believes, #column
-                               levels = c("Believes", "Knows"))
-master$reason_unreason = factor(master$reason_unreason, 
-                                levels = c("Reasonable",
-                                           "Unreasonable"))
 chisq.test(master$knows_believes, 
            master$para_condition)
 sqrt(3.7232/sum(table(master$knows_believes)))
