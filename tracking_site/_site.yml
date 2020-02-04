@@ -1,5 +1,5 @@
 name: "PSA004"
-output_dir: "docs"
+output_dir: "../docs"
 navbar:
   title: "PSA004 Progress Tracking"
   left:
