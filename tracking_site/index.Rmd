@@ -57,7 +57,7 @@ samplesize <- pivot_wider(samplesize,
 #View(df[ , cols])
 ```
 
-```{r echo = F}
+```{r echo = F, eval = F}
 for (lab in unique(df$lab_ID)){
   write.csv(subset(df, lab_ID == lab), 
             file = paste0("../docs/data/", lab, ".csv"), 
@@ -74,11 +74,7 @@ ft <- fontsize(ft, size = 15, part = "all")
 ft
 ```
 
-## Download Data
-
-Use the links below to download your data to complete the CREP project. 
-
-```{r}
+```{r eval = F}
 print_lab_links <- "<ul> "
 
 for (lab in unique(sort(df$lab_ID))){
@@ -89,5 +85,3 @@ for (lab in unique(sort(df$lab_ID))){
 
 print_lab_links <- paste0(print_lab_links, "</ul>")
 ```
-
-`r print_lab_links`
