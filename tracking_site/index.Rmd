@@ -71,6 +71,7 @@ The number of usable subjects for each lab is presented below. Usable participan
 colnames(samplesize) <- c("Lab ID", "Unusable", "Usable")
 ft <- flextable(samplesize)
 ft <- fontsize(ft, size = 15, part = "all")
+ft <- autofit(ft)
 ft
 ```
 
