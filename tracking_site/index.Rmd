@@ -19,6 +19,7 @@ library(tidyr)
 
 df <- read_sosci("https://www.soscisurvey.de/AccCREP_RRR_rev_f/?act=nC3iqEvRkDO5HJyTJhPJCm41")
 df <- purrr::modify(df, labelled::user_na_to_na)
+all_rows <- as.data.frame(table(toupper(df$lab_ID)))
 df <- subset(df, !is.na(Name_order))
 #purrr::modify_if(data, ~ attr(., "var.type") %in% c("nominal", "dichotomous"), labelled::to_factor)
 ```
@@ -47,12 +48,18 @@ for (i in 1:nrow(df)){
 
 df$lab_ID <- toupper(df$lab_ID)
 
-samplesize <- as.data.frame(table(df$isCorrect, df$lab_ID))
+samplesize <- as.data.frame(table(df$isCorrect, df$lab_ID, useNA = "ifany"))
 samplesize <- pivot_wider(samplesize,
             id_cols = Var2,
             names_from = Var1,
             values_from = Freq)
-
+colnames(samplesize) <- c("Lab_ID", "Unusable", "Usable", "Missing")
+colnames(all_rows) <- c("Lab_ID", "All_Rows")
+samplesize <- merge(samplesize, 
+                    all_rows,
+                    by = "Lab_ID")
+samplesize$No_Name <- samplesize$All_Rows - samplesize$Unusable - samplesize$Usable - samplesize$Missing
+samplesize <- samplesize[ , c(1, 5, 6, 4, 2, 3)]
 #cols <- c("Name_order", "Condition_order", "VD03", "VE03", "VG03", "isCorrect")
 #View(df[ , cols])
 ```
@@ -65,10 +72,15 @@ for (lab in unique(df$lab_ID)){
 }
 ```
 
-The number of usable subjects for each lab is presented below. Usable participants answered at all three of the comprehension questions on the vignettes correctly. 
+The number of usable subjects for each lab is presented below.
+
+- All Rows is the number of rows of data that are present in the dataset, which breaks into:
+  - No Name indicates the number of test or otherwise unusable rows because a vignette did not get assigned to the participant
+  - Missing indicates rows that participants did not complete all the vignette questions, and therefore, are excluded for missing data on those questions
+  - Unusable indicates participants that did not answer the comprehension questions correctly
+  - Usable participants answered at all three of the comprehension questions on the vignettes correctly
 
 ```{r echo = F, results = 'asis'}
-colnames(samplesize) <- c("Lab ID", "Unusable", "Usable")
 ft <- flextable(samplesize)
 ft <- fontsize(ft, size = 15, part = "all")
 ft <- autofit(ft)
