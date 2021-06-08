@@ -1,0 +1,13 @@
+---
+title: "ACREP Analysis"
+date: "Last Updated: `r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+valid is who answered comp questions correctly 
+
+
