@@ -10,4 +10,162 @@ knitr::opts_chunk$set(echo = TRUE)
 
 valid is who answered comp questions correctly 
 
+[Codebook](https://docs.google.com/spreadsheets/d/1KjXqgfVgguHeDXVtlHHhJ9zsRGVDfPVPH4tbh75P46U/edit#gid=903093128)
+
+[Preprint](https://psyarxiv.com/zeux9/)
+
+## Libraries
+
+```{r}
+library(lme4)
+library(lmerTest)
+library(MuMIn)
+```
+
+## Import the Data
+
+The `full_long` dataset includes all participants in long format - wherein each trial of their study is on one row of the dataset. Our uploaded data also includes `full.Rds` which is the same data in wide format - one column for each variable in the dataset and one row per participant.
+
+```{r}
+readRDS("full_long.Rds")
+#str(full_long)
+```
+
+## Compute Variables
+
+```{r}
+full_long$vignette <- NA
+full_long$vignette[full_long$name_order != "" & !is.na(full_long$name_order)] <- unlist(strsplit(paste0(full_long$name_order[!duplicated(full_long$id) & full_long$name_order != "" & !is.na(full_long$name_order)], collapse = ""), ""))
+```
+
+
+
+## Data Exclusions
+
+Participants in any laboratory must be excluded for any one of the following reasons: 
+
+(1) if the participant is not the majority age of their country or older (unless parent/guardian waiver provided)
+
+In this section, we will exclude all participants who are under 18 or are not the majority age of their country or older. ***CLARIFY*** anyone less than 18 or just generally not the majority age? What do we mean by majority age? 
+
+Country use lab ID or by the country variable? 
+
+```{r}
+summary(full_long$age)
+tapply(full_long$age, full_long$lab_id, min, na.rm = T)
+
+# number of rows
+nrow(full_long)
+# number of participants
+length(unique(full_long$id))
+
+valid_data <- subset(full_long, age >= 18)
+
+# number of rows
+nrow(valid_data)
+# number of participants
+length(unique(valid_data$id))
+```
+
+(2) if the participant has taken part in a previous version of this study or in another contributors' replication of the same study
+
+***CLARIFY*** this will need to be hand coded 
+
+```{r}
+# pull in dictionary 
+# subset using dictionary 
+
+# number of rows
+nrow(valid_data)
+# number of participants
+length(unique(valid_data$id))
+```
+
+(3) if the participant fails to answer comprehension questions correctly
+
+```{r}
+valid_data$urn1 <- factor(valid_data$urn1, levels = c("", "1"), labels = c("Not included", "Included"))
+summary(valid_data$urn1)
+
+valid_data <- subset(valid_data, urn1 == "Included")
+
+# number of rows
+nrow(valid_data)
+# number of participants
+length(unique(valid_data$id))
+```
+
+(4) if the participant correctly and explicitly articulate knowledge of the specific hypotheses or specific conditions of this study when answering the funneled debriefing questions. 
+
+```{r}
+
+
+# number of rows
+nrow(valid_data)
+# number of participants
+length(unique(valid_data$id))
+```
+
+We will also exclude participants who self-report their understanding of the tested language as “not well” or “not well at all”. We based this exclusion criteria on a recent study that found that non-native English speakers who self-report as “very well” and “well” tend to score in the “intermediate” and “basic” categories on an English proficiency test respectively, while those who self-report as “not well” and “not at all” tend to score in the “below basic” category (Vickstrom, Shin, Collazo, & Bauman, 2015). All excluded data will be included in the data files on the overall OSF page, along with the particular reason for why they were excluded. 
+
+```{r}
+summary(valid_data$language)
+
+valid_data <- subset(valid_data, language != "not very well" | language != "not well at all" | language != "Not answered")
+
+summary(valid_data$language)
+
+# number of rows
+nrow(valid_data)
+# number of participants
+length(unique(valid_data$id))
+```
+
+## Descriptive Statistics
+
+In total, [X] labs applied to participate in this multilab replication. [X] labs were unable to participate, [X] did not collect enough data; [X] dropped out prior to data collection, resulting in a final lab count of [X]. Contributing labs represent [X] continents ([X from Africa, X from South America, X from North America, X from Asia, X from Europe, and X from Oceania) with participants residing in [X] countries [X from Brazil, X from Switzerland, X from Singapore, and so on]. [X labs committed to collecting the minimum participant sample size (N = 40), and X labs committed to collecting a larger, more representative sample (N = 100) for the purposes of exploratory analyses. 
+
+```{r}
+
+# number of labs - final
+length(unique(valid_data$lab_id))
+
+# number of participants for each lab
+table(valid_data$lab_id[duplicated(valid_data$id)])
+```
+
+
+## Analysis
+
+### Knowledge
+
+```{r}
+knowledge_model <- glmer(var_know_bin ~ cond + (1 | vignette) + 
+                           (1 | lab_id) + (1 | lab_id / id), 
+                         data = valid_data,
+                         family = binomial, 
+                         control = glmerControl(optimizer = "bobyqa"),
+                         nAGQ = 1)
+
+summary(knowledge_model)
+
+table(valid_data$cond, valid_data$var_know_bin)
+
+r.squaredGLMM(knowledge_model)
+```
+
+### Reasonableness Attribution
+
+```{r}
+reason_model <- lmer(var_know_vas ~ cond + (1 | vignette) + 
+                           (1 | lab_id) + (1 | lab_id / id), 
+                    data = valid_data,
+                    na.action = "na.omit")
+
+summary(reason_model)
+
+emmeans(reason_model, "cond")
+
+r.squaredGLMM(reason_model)
+```
 
