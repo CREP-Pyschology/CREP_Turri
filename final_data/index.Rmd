@@ -33,12 +33,12 @@ readRDS("full_long.Rds")
 
 ## Compute Variables
 
+In this section, we break apart the vignette variable so we know which vignette is tied to each line of data to use in our multilevel analysis. 
+
 ```{r}
 full_long$vignette <- NA
 full_long$vignette[full_long$name_order != "" & !is.na(full_long$name_order)] <- unlist(strsplit(paste0(full_long$name_order[!duplicated(full_long$id) & full_long$name_order != "" & !is.na(full_long$name_order)], collapse = ""), ""))
 ```
-
-
 
 ## Data Exclusions
 
@@ -97,6 +97,8 @@ length(unique(valid_data$id))
 
 (4) if the participant correctly and explicitly articulate knowledge of the specific hypotheses or specific conditions of this study when answering the funneled debriefing questions. 
 
+***CLARIFY*** this will need to be hand coded 
+
 ```{r}
 
 
@@ -106,7 +108,7 @@ nrow(valid_data)
 length(unique(valid_data$id))
 ```
 
-We will also exclude participants who self-report their understanding of the tested language as “not well” or “not well at all”. We based this exclusion criteria on a recent study that found that non-native English speakers who self-report as “very well” and “well” tend to score in the “intermediate” and “basic” categories on an English proficiency test respectively, while those who self-report as “not well” and “not at all” tend to score in the “below basic” category (Vickstrom, Shin, Collazo, & Bauman, 2015). All excluded data will be included in the data files on the overall OSF page, along with the particular reason for why they were excluded. 
+We will also exclude participants who self-report their understanding of the tested language as "not well" or "not well at all". We based this exclusion criteria on a recent study that found that non-native English speakers who self-report as "very well" and "well" tend to score in the "intermediate" and "basic" categories on an English proficiency test respectively, while those who self-report as "not well" and "not at all" tend to score in the "below basic" category (Vickstrom, Shin, Collazo, & Bauman, 2015). All excluded data will be included in the data files on the overall OSF page, along with the particular reason for why they were excluded. 
 
 ```{r}
 summary(valid_data$language)
@@ -133,7 +135,6 @@ length(unique(valid_data$lab_id))
 # number of participants for each lab
 table(valid_data$lab_id[duplicated(valid_data$id)])
 ```
-
 
 ## Analysis
 
