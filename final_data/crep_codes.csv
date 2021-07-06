@@ -1,0 +1,147 @@
+Guessed Purpose,,,Prev_studies,,,,
+1,Did not guess purpose,,1,No,,,
+2,Guessed purpose,,2,Yes,,,
+3,Borderline (needs review),,3,Borderline (needs review),,,
+4,Blank,,4,Blank,,,
+5,Gibberish,,5,Gibberish,,,
+,,,,,,,
+"Handcode_DD02_gender
+1 = female
+2 = male
+3 = another
+3.1 = agender
+3.2 = genderfluid
+3.3 = nonbinary
+3.4 = transgender
+3.5 = queer/genderqueer
+3.6 = two gender
+-99 = unclear
+-9 = Not answered",,,,,,,
+,,,,,,,
+"Handcode_DD03_01
+-9 = Missing
+-99 = Gibberish, 
+-1 = Unclear
+All else ISO alpha-3",,,"Handcode_DD04_01
+-9 = Missing
+-99 = Gibberish, 
+-1 = Unclear
+All else ISO alpha-3",,,Project Country (no missing),
+Used ISO codes,,,,,,,
+ARE,United Arab Emirates,,-99,,,ARE,United Arab Emirates
+ARM,Armenia,,-9,,,AUS,Australia
+AUS,Australia,,-1,,,AUT,Austria
+AUT,Austria,,,,,CAN,Canada
+BEL,Belgium,,AFG,Afghanistan,,CHE,Switzerland
+BGD,Bangladesh,,ALB,Albania,,DEU,Germany
+BGR,Bulgaria,,ARE,United Arab Emirates,,GBR,Great Britain
+BHR,Bahrain,,ARG,Argentina,,GRC,Greece
+BLR,Belarus,,AUS,Australia,,HUN,Hungary
+BMU,Bermuda,,AUT,Austria,,NOR,Norway
+CAN,Canada,,BDI,Burundi,,POL,Poland
+CHE,Switzerland,,BEL,Belarus,,ROU,Romania
+CHN,China,,BFA,Burkina Faso,,RUS,Russia
+CRI,Costa Rica,,BGD,Bangladesh,,SGP,Singapore
+CZE,Czech Republic,,BGR,Bulgaria,,SVK,Slovakia
+DEU,Germany,,BHR,Bahrain,,TUR,Turkey
+DNK,Denmark,,BHS,Bahamas,,TWN,Taiwan
+EGY,Egypt,,BLR,Belarus,,USA,United States
+ESP,Spain,,BMU,Bermuda,,,
+EST,Estonia,,BRA,Brazil,,,
+FRA,France,,CAN,Canada,,,
+GBR,Great Britain,,CHE,Switzerland,,,
+GRC,Greece,,CHL,Chile,,,
+HKG,Hong Kong,,CHN,China,,,
+HRV,Croatia,,COL,Colombia,,,
+HUN,Hungary,,CRI,Costa Rica,,,
+IDN,Indonesia,,CUB,Cuba,,,
+IND,India,,CYP,Cyprus,,,
+KAZ,Kazakhstan,,CZE,Czech Republic,,,
+KOR,South Korea,,DEU,Germany,,,
+MDA,Moldova,,DMA,Dominica,,,
+MEX,Mexico,,DNK,Denmark,,,
+MUS,Mauritius,,ECU,Ecuador,,,
+NGA,Nigeria,,EGY,Egypt,,,
+NLD,The Netherlands,,ERI,Eritrea,,,
+NOR,Norway,,ESP,Spain,,,
+NZL,New Zealand,,EST,Estonia,,,
+PER,Peru,,ETH,Ethiopia,,,
+POL,Poland,,FJI,Fiji,,,
+PRT,Puerto Rice,,FRA,France,,,
+ROU,Romania,,GBR,Great Britain,,,
+RUS,Russia,,GRC,Greece,,,
+SAU,Saudi Arabia,,GTM,Guatemala,,,
+SGP,Singapore,,GUY,Guyana,,,
+SRB,Serbia,,HKG,Hong Kong,,,
+SVK,Slovakia,,HND,Honduras,,,
+TUR,Turkey,,HRV,Croatia,,,
+TWN,Taiwan,,HTI,Haiti,,,
+UKR,Ukraine,,HUN,Hungary,,,
+URY,Uruguay,,IDN,Indonesia,,,
+USA,United States,,IND,India,,,
+VNM,Vietnam,,IRL,Ireland,,,
+,,,IRN,Iran,,,
+,,,ISL,Iceland,,,
+,,,ISR,Israel,,,
+,,,ITA,Italy,,,
+,,,JAM,Jamaica,,,
+,,,JOR,Jordan,,,
+,,,JPN,Japan,,,
+,,,KAZ,Kazakhstan,,,
+,,,KEN,Kenya,,,
+,,,KHM,Cambodia,,,
+,,,KOR,South Korea,,,
+,,,KOS,Kosovo,,,
+,,,KWT,Kuwait,,,
+,,,LAO,Laos,,,
+,,,LBN,Lebanon,,,
+,,,LBR,Liberia,,,
+,,,LKA,Sri Lanka,,,
+,,,LTU,Lithuania,,,
+,,,LUX,Luxembourg,,,
+,,,MAR,Morocco,,,
+,,,MDA,Moldova,,,
+,,,MEX,Mexico,,,
+,,,MKD,Macedonia,,,
+,,,MMR,Myanmar,,,
+,,,MUS,Mauritius,,,
+,,,MWI,Malawi,,,
+,,,MYS,Malaysia,,,
+,,,NGA,Nigeria,,,
+,,,NIC,Nicaragua,,,
+,,,NLD,The Netherlands,,,
+,,,NOR,Norway,,,
+,,,NZL,New Zealand,,,
+,,,OMN,Oman,,,
+,,,PAK,Pakistan,,,
+,,,PER,Peru,,,
+,,,PHL,Phillipines,,,
+,,,POL,Poland,,,
+,,,PRI,Puerto Rico,,,
+,,,PRT,Portugal,,,
+,,,PSE,Palestine,,,
+,,,ROU,Romania,,,
+,,,RUS,Russia,,,
+,,,SAU,Saudi Arabia,,,
+,,,SDN,Sudan,,,
+,,,SGP,Singapore,,,
+,,,SOM,Somalia,,,
+,,,SRB,Serbia,,,
+,,,SVK,Slovakia,,,
+,,,SWE,Sweden,,,
+,,,SYR,Syria,,,
+,,,THA,Thailand,,,
+,,,TJK,Tajikistan,,,
+,,,TKM,Turkmenistan,,,
+,,,TUR,Turkey,,,
+,,,TWN,Taiwan,,,
+,,,UKR,Ukraine,,,
+,,,URY,Uruguay,,,
+,,,USA,United States,,,
+,,,UZB,Uzbekistan,,,
+,,,VEN,Venezuela,,,
+,,,VIR,Virgin Islands,,,
+,,,VNM,Vietnam,,,
+,,,ZAF,South Africa,,,
+,,,ZMB,Zambia,,,
+,,,ZWE,Zimbabwe,,,
