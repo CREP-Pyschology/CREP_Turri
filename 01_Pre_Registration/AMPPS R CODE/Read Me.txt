@@ -1,0 +1,5 @@
+Read me file for “Registered Replication Report: Turri, Buckwalter, & Blouw (2015)
+The file “pretest script.R” is the script we used alongside the cleaned data file “pretest.csv” to estimate the study parameters we use in our data simulation and power analysis. We also checked whether our data would meet the assumptions for the analyses. 
+“Emma and Gerald pretest clean data.omv” is the raw data file from our pretest – from which the “pretest.csv” was created. 
+The “primary analysis script.R” is the analysis script that houses both our data simulation/power analysis (top portion) as well as the scripts we plan to use for our actual analyses (bottom portion).  
+

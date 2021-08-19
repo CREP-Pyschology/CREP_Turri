@@ -1,0 +1,100 @@
+---
+title: "CREP - PSA004 Log"
+date: "Last Updated: `r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r echo = F, message = F}
+#devtools::install_github("joon-e/soscisurvey")
+#https://github.com/joon-e/soscisurvey
+
+library(soscisurvey)
+library(purrr)
+library(flextable)
+library(tidyr)
+
+df <- read_sosci("https://www.soscisurvey.de/AccCREP_RRR_rev_f/?act=nC3iqEvRkDO5HJyTJhPJCm41")
+df <- purrr::modify(df, labelled::user_na_to_na)
+all_rows <- as.data.frame(table(toupper(df$lab_ID)))
+df <- subset(df, !is.na(Name_order))
+#purrr::modify_if(data, ~ attr(., "var.type") %in% c("nominal", "dichotomous"), labelled::to_factor)
+```
+
+```{r echo = F}
+##For the 3 vignettes, if all 3 comprehension questions were correct, a 1 is saved into a string variable names UR01_01 (otherwise it remains empty)
+
+df$isCorrect = 0
+
+#if it's I then the correct response is 2
+#otherwise correct response is 1 
+for (i in 1:nrow(df)){
+    
+    whichI <- gregexpr("I", df$Condition_order[i])[[1]][1]
+    whichCond <- substr(df$Name_order[i], whichI, whichI)
+    
+    if (whichCond == "G"){
+        df$isCorrect[i] <- df$VG03[i] == 2 & df$VD03[i] == 1 & df$VE03[i] == 1
+    } else if (whichCond == "D") {
+        df$isCorrect[i] <- df$VG03[i] == 1 & df$VD03[i] == 2 & df$VE03[i] == 1
+    } else if (whichCond == "E"){
+        df$isCorrect[i] <- df$VG03[i] == 1 & df$VD03[i] == 1 & df$VE03[i] == 2
+    }
+    
+}
+
+df$lab_ID <- toupper(df$lab_ID)
+
+samplesize <- as.data.frame(table(df$isCorrect, df$lab_ID, useNA = "ifany"))
+samplesize <- pivot_wider(samplesize,
+            id_cols = Var2,
+            names_from = Var1,
+            values_from = Freq)
+colnames(samplesize) <- c("Lab_ID", "Unusable", "Usable", "Missing")
+colnames(all_rows) <- c("Lab_ID", "All_Rows")
+samplesize <- merge(samplesize, 
+                    all_rows,
+                    by = "Lab_ID")
+samplesize$No_Name <- samplesize$All_Rows - samplesize$Unusable - samplesize$Usable - samplesize$Missing
+samplesize <- samplesize[ , c(1, 5, 6, 4, 2, 3)]
+#cols <- c("Name_order", "Condition_order", "VD03", "VE03", "VG03", "isCorrect")
+#View(df[ , cols])
+```
+
+```{r echo = F, eval = F}
+for (lab in unique(df$lab_ID)){
+  write.csv(subset(df, lab_ID == lab), 
+            file = paste0("../docs/data/", lab, ".csv"), 
+            row.names = F)
+}
+```
+
+The number of usable subjects for each lab is presented below.
+
+- All Rows is the number of rows of data that are present in the dataset, which breaks into:
+  - No Name indicates the number of test or otherwise unusable rows because a vignette did not get assigned to the participant
+  - Missing indicates rows that participants did not complete all the vignette questions, and therefore, are excluded for missing data on those questions
+  - Unusable indicates participants that did not answer the comprehension questions correctly
+  - Usable participants answered at all three of the comprehension questions on the vignettes correctly
+
+```{r echo = F, results = 'asis'}
+ft <- flextable(samplesize)
+ft <- fontsize(ft, size = 15, part = "all")
+ft <- autofit(ft)
+ft
+```
+
+```{r eval = F}
+print_lab_links <- "<ul> "
+
+for (lab in unique(sort(df$lab_ID))){
+  print_lab_links <- paste0(print_lab_links, 
+                           "<li>", "<a href='data/", lab, ".csv'> ",
+                           lab, "</a>")
+}
+
+print_lab_links <- paste0(print_lab_links, "</ul>")
+```

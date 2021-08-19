@@ -1,0 +1,14 @@
+name: "PSA004"
+output_dir: "../docs"
+navbar:
+  title: "PSA004 Progress Tracking"
+  left:
+    - text: "Overview"
+      icon: fa-home
+      href: index.html
+    - text: "PSA"
+      icon: fa-chevron-circle-right
+      href: "https://psysciacc.org/004-true-belief/"
+    - text: "CREP"
+      icon: fa-flask
+      href: "https://osf.io/wfc6u/"

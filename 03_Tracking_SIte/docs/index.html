@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>CREP - PSA004 Log</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/tabwid-1.0.0/tabwid.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PSA004 Progress Tracking</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fas fa-home"></span>
+     
+    Overview
+  </a>
+</li>
+<li>
+  <a href="https://psysciacc.org/004-true-belief/">
+    <span class="fas fa-chevron-circle-right"></span>
+     
+    PSA
+  </a>
+</li>
+<li>
+  <a href="https://osf.io/wfc6u/">
+    <span class="fas fa-flask"></span>
+     
+    CREP
+  </a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">CREP - PSA004 Log</h1>
+<h4 class="date">Last Updated: 2021-05-11</h4>
+
+</div>
+
+
+<p>The number of usable subjects for each lab is presented below.</p>
+<ul>
+<li>All Rows is the number of rows of data that are present in the dataset, which breaks into:
+<ul>
+<li>No Name indicates the number of test or otherwise unusable rows because a vignette did not get assigned to the participant</li>
+<li>Missing indicates rows that participants did not complete all the vignette questions, and therefore, are excluded for missing data on those questions</li>
+<li>Unusable indicates participants that did not answer the comprehension questions correctly</li>
+<li>Usable participants answered at all three of the comprehension questions on the vignettes correctly</li>
+</ul></li>
+</ul>
+<template id="80d21ccd-0c61-4108-b678-67d3b2d60e5e"><style>
+.tabwid table{
+  border-collapse:collapse;
+  line-height:1;
+  margin-left:auto;
+  margin-right:auto;
+  border-width: 0;
+  display: table;
+  margin-top: 1.275em;
+  margin-bottom: 1.275em;
+  border-spacing: 0;
+  border-color: transparent;
+}
+.tabwid_left table{
+  margin-left:0;
+}
+.tabwid_right table{
+  margin-right:0;
+}
+.tabwid td {
+    padding: 0;
+}
+.tabwid a {
+  text-decoration: none;
+}
+.tabwid thead {
+    background-color: transparent;
+}
+.tabwid tfoot {
+    background-color: transparent;
+}
+.tabwid table tr {
+background-color: transparent;
+}
+</style><div class="tabwid"><style>.cl-59d2d4ee{border-collapse:collapse;}.cl-59c8e57e{font-family:'Helvetica';font-size:15pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-59c8fa78{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-59c8fa8c{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-59c9a3d8{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a3f6{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a400{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a40a{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a40b{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a414{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a41e{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a41f{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a428{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a432{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a433{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a446{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a447{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a450{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a45a{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a464{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a465{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a46e{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a478{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a482{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a48c{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a496{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4b4{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4be{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4bf{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4c8{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4d2{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4dc{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4dd{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4e6{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4f0{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4fa{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a4fb{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a504{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a50e{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a50f{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a518{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a522{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a52c{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a536{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a540{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a54a{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a554{width:71.4pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a555{width:67.2pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a55e{width:83.1pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a568{width:83.9pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a572{width:88.1pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-59c9a573{width:112.3pt;background-color:transparent;vertical-align: middle;border-bottom: 2pt solid rgba(102, 102, 102, 1.00);border-top: 2pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table class='cl-59d2d4ee'><thead><tr style="overflow-wrap:break-word;"><td class="cl-59c9a573"><p class="cl-59c8fa78"><span class="cl-59c8e57e">Lab_ID</span></p></td><td class="cl-59c9a55e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">All_Rows</span></p></td><td class="cl-59c9a572"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">No_Name</span></p></td><td class="cl-59c9a554"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">Missing</span></p></td><td class="cl-59c9a568"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">Unusable</span></p></td><td class="cl-59c9a555"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">Usable</span></p></td></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-59c9a40b"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1804</span></p></td><td class="cl-59c9a3d8"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">136</span></p></td><td class="cl-59c9a3f6"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a414"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a40a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">42</span></p></td><td class="cl-59c9a400"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">88</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a40b"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1805</span></p></td><td class="cl-59c9a3d8"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">237</span></p></td><td class="cl-59c9a3f6"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a414"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a40a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">87</span></p></td><td class="cl-59c9a400"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">147</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1805_N</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">22</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">9</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">13</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1907</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">226</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">13</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">19</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">74</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">120</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1910</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">332</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">22</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">51</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">123</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">136</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1912</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1921</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">11</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1921_NS</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">82</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">13</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">20</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">48</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1921_S</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">161</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">13</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">44</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">19</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">85</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1929</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">78</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">26</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">52</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1930</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">58</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">13</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">43</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1931</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1932</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">187</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">6</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">18</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">84</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">79</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1934</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">91</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">29</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">53</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1939</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">58</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">26</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">29</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1940</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">14</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">12</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC1941</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">551</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">22</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">58</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">202</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">269</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2046</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">11</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a40b"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2048</span></p></td><td class="cl-59c9a3d8"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a3f6"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a414"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a40a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a400"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2050</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">103</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">11</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">16</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">38</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">38</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2052</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">217</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">27</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">15</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">68</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">107</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2053</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">232</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">7</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">41</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">85</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">99</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a40b"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2058</span></p></td><td class="cl-59c9a3d8"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">663</span></p></td><td class="cl-59c9a3f6"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">11</span></p></td><td class="cl-59c9a414"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">112</span></p></td><td class="cl-59c9a40a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">146</span></p></td><td class="cl-59c9a400"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">394</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2059</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">129</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">13</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">12</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">45</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">59</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC206</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">17</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">8</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2061</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">216</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">11</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">8</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">73</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">124</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2062</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">332</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">14</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">32</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">100</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">186</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2065</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">232</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">22</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">27</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">63</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">120</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2066</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">100</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">12</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">14</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">22</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">52</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a447"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC2070</span></p></td><td class="cl-59c9a464"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">162</span></p></td><td class="cl-59c9a450"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a46e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a45a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">58</span></p></td><td class="cl-59c9a465"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">97</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a428"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AC9999</span></p></td><td class="cl-59c9a446"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">27</span></p></td><td class="cl-59c9a433"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a41f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">12</span></p></td><td class="cl-59c9a432"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">11</span></p></td><td class="cl-59c9a41e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4dd"><p class="cl-59c8fa78"><span class="cl-59c8e57e">ACXXX1</span></p></td><td class="cl-59c9a4dc"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a4e6"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4c8"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4d2"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4bf"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4dd"><p class="cl-59c8fa78"><span class="cl-59c8e57e">ACXXXX</span></p></td><td class="cl-59c9a4dc"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">7</span></p></td><td class="cl-59c9a4e6"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4c8"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4d2"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a4bf"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">ARE_001</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AUS_012</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AUT_001</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">159</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">10</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">20</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">51</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">78</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">AUT_003</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">143</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">29</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">35</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">76</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">DEU_017</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">108</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">65</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">40</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">DEU_017_E1</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">209</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">9</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">29</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">60</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">111</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">DEU_017_E2</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">290</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">16</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">39</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">66</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">169</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">DEU_017_E3</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">27</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">12</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">8</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">DEU_017_E4</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">182</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">13</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">37</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">45</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">87</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">DEU_999</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">GBR_006</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">10</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">HUN_001</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">658</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">23</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">27</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">151</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">457</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">NOR_004</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">147</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">6</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">22</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">38</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">81</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">POL_001</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">179</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">20</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">41</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">42</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">76</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">TUR_007</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">304</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">34</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">56</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">111</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">103</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a504"><p class="cl-59c8fa78"><span class="cl-59c8e57e">TWN_001</span></p></td><td class="cl-59c9a4fb"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">452</span></p></td><td class="cl-59c9a50f"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">84</span></p></td><td class="cl-59c9a50e"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">99</span></p></td><td class="cl-59c9a4f0"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">146</span></p></td><td class="cl-59c9a4fa"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">123</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_004</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_011</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">389</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">7</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">32</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">128</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">222</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_014</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">135</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">8</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">15</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">45</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">67</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_025</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">176</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">77</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">90</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_032</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_033</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_065</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">64</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">12</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">44</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_067</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">2</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_079</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_088</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">124</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">7</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">9</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">48</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">60</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_099</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_153</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">112</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">5</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">11</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">36</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">60</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_154</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_159</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">164</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">3</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">7</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">57</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">97</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a4be"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_160</span></p></td><td class="cl-59c9a478"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">6</span></p></td><td class="cl-59c9a496"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">4</span></p></td><td class="cl-59c9a482"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a4b4"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">1</span></p></td><td class="cl-59c9a48c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-59c9a540"><p class="cl-59c8fa78"><span class="cl-59c8e57e">USA_174</span></p></td><td class="cl-59c9a522"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">95</span></p></td><td class="cl-59c9a536"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">6</span></p></td><td class="cl-59c9a54a"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">10</span></p></td><td class="cl-59c9a518"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">23</span></p></td><td class="cl-59c9a52c"><p class="cl-59c8fa8c"><span class="cl-59c8e57e">56</span></p></td></tr></tbody></table></div></template>
+<div class="flextable-shadow-host" id="d9b6714c-a53d-498f-9a12-944fdfc839e0"></div>
+<script>
+var dest = document.getElementById("d9b6714c-a53d-498f-9a12-944fdfc839e0");
+var template = document.getElementById("80d21ccd-0c61-4108-b678-67d3b2d60e5e");
+var caption = template.content.querySelector("caption");
+if(caption) {
+  caption.style.cssText = "display:block;text-align:center;";
+  var newcapt = document.createElement("p");
+  newcapt.appendChild(caption)
+  dest.parentNode.insertBefore(newcapt, dest.previousSibling);
+}
+var fantome = dest.attachShadow({mode: 'open'});
+var templateContent = template.content;
+fantome.appendChild(templateContent);
+</script>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
