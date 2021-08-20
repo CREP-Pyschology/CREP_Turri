@@ -558,3 +558,15 @@ write_csv(d.dge_valid.long, "csv/d_dge_valid_long.csv")
 #rm(d.sss.raw, relevant_fields, add_cond_dvs)
 ```
 
+Write out data to process by hand:
+
+```{r}
+previous <- d.all[ , c("id", "survey_lang", "previous")]
+previous <- subset(previous, nchar(previous) > 1)
+write.csv(previous, "data/previous.csv", row.names = F)
+
+purpose <- d.all[ , c("id", "survey_lang", "purpose")]
+purpose <- subset(purpose, nchar(purpose) > 1)
+write.csv(purpose, "data/purpose.csv", row.names = F)
+```
+
