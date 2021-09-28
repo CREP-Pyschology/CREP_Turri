@@ -564,9 +564,20 @@ Write out data to process by hand:
 previous <- d.all[ , c("id", "survey_lang", "previous")]
 previous <- subset(previous, nchar(previous) > 1)
 write.csv(previous, "data/previous.csv", row.names = F)
+for (lang in unique(previous$survey_lang)) {
+  write.csv(subset(previous, survey_lang == lang), 
+            paste0("data/previous_", lang, ".csv"), 
+            row.names = F)
+}
+
 
 purpose <- d.all[ , c("id", "survey_lang", "purpose")]
 purpose <- subset(purpose, nchar(purpose) > 1)
 write.csv(purpose, "data/purpose.csv", row.names = F)
+for (lang in unique(purpose$survey_lang)) {
+  write.csv(subset(purpose, survey_lang == lang), 
+            paste0("data/purpose_", lang, ".csv"), 
+            row.names = F)
+}
 ```
 
