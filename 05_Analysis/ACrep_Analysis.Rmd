@@ -308,7 +308,6 @@ For this experimental mixed factorial design, we will analyze the primary and se
 - We will use multilevel modeling 
   - The condition will be a random intercept
   - The participants will be a random intercept 
-- Remove this cross classified language and be more clear here 
 
 The order of vignettes and their conditions will be randomized without replacement, such that participants will first be assigned to one of three vignettes ("Darrel", "Emma", or "Gerald") in one of the three belief conditions (knowledge control, Gettier case, or ignorance control). The remaining two vignettes will then be presented in random order, each also randomized and counter-balanced to one of the remaining two belief conditions until all participants have been exposed to all three vignettes and all three conditions once. Participants will be asked several questions after reading each vignette. We will use this model to test whether the effects of the independent variable (i.e., knowledge condition) on the continuous dependent variables (i.e., visual analogue scale responses for knowledge and reasonableness) are robust to covariates/interactions (i.e., sensitivity test).
 
@@ -345,7 +344,7 @@ In total, [X] labs applied to participate in this multilab replication. [X] labs
 #### Analysis Information ####
 
 - Drop the section on X did not collect enough data because we used all the data
-- Change that to X did not get included because they didnt have enough valid data 
+- Change that to X did not get included because they didn't have enough valid data 
 - Report full and final lab counts 
 
 ```{r}
