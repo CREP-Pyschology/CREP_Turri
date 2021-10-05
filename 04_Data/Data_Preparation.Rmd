@@ -458,6 +458,7 @@ d.sss$ethn_wh <- as.logical(d.sss$ethn_wh)
 
 d.all <- d.sss %>%
   bind_rows(d.turk, d.87d100) %>%
+  mutate(lab_id = tolower(lab_id)) %>% 
   # ...add in lab country and move it next to the lab_id column
   left_join(lab_countries, by="lab_id") %>%
   #relocate(lab_country, .after = lab_id) %>%

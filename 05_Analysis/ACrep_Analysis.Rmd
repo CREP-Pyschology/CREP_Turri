@@ -22,9 +22,9 @@ Multilab close replication of: Experiment 1 from Turri, J., Buckwalter, W., & Bl
 
 ```{r}
 library(rio)
-library(lme4)
-library(lmerTest)
+library(nlme)
 library(MuMIn)
+library(plyr)
 ```
 
 ## Import the Data
@@ -36,10 +36,26 @@ full_long <- readRDS("../04_Data/rds/d_all_long.Rds")
 #str(full_long)
 ```
 
+Import the open-ended response codes to use for data exclusions.
+
+```{r}
+file.names <- list.files(path = "../04_Data/open_responses/", 
+                         pattern = ".xlsx", full.names = T, 
+                         recursive = T)
+
+previous.files <- lapply(file.names, function(x){ import(x, sheet = 2)})
+#purpose.files <- lapply(file.names, function(x){ import(x, sheet = 3)})
+
+previousDF <- do.call(rbind.fill, previous.files)
+#purposeDF <- do.call(rbind.fill, purpose.files)
+```
+
 ## Fix Issues
 
 ```{r}
-full_long$vignette_order <- droplevels(full_long$vignette_order, exclude = "")
+full_long$vignette_order[full_long$vignette_order == ""] <- NA
+full_long$vignette_order <- droplevels(full_long$vignette_order) 
+levels(full_long$vignette_order)
 ```
 
 ## Abstract
@@ -62,7 +78,7 @@ In other words, to know something, people not only must believe a claim that is 
 
 In 1963, Gettier challenged the sufficiency of JTB to explain all knowledge by presenting two strong counterexamples that are inconsistent with its predictions. These counterexamples (i.e., later referred to as Gettier cases) are situations in which a person has a belief that is both true and well supported by evidence (i.e., meets all three conditions of JTB), yet that person is not judged as possessing knowledge. In many Gettier type scenarios, protagonists reasonably infer a true belief (p) from an entailed proposition (e); however, in a lucky turn of events, the validity of using e to infer p is called into question, despite p still turning out to be true. For example:
 
-    Two men, Smith and Jones, have applied to the same job at the same company. Much to Smith's disappointment, the president of the company has told Smith that Jones will ultimately get the job (entailed proposition, e1). Smith then notices that Jones has ten coins in his pocket (entailed proposition, e2), coins which Smith counted himself (oddly enough). Smith then infers from e1 and e2 the belief (p) that "the man who gets the job (who he assumes will be Jones) will have ten coins in his pocket (which he counted in Jones' pocket himself)": a belief that is well founded by the evidence and therefore justified. However, quite unexpectedly, Smith ends up getting the job! And, unbeknownst to himself, Smith coincidentally has ten coins in his pocket too. Although this was not the outcome that Smith was expecting, his inferred belief (p) "that the man who has ten coins in his pocket will get the job" still turned out to be true, just not for the reason he thought (Gettier, 1963). Smith reasonably inferred a true belief (p) from e1 and e2, but neither e1 nor e2 were the actual reason that p was correct.
+Two men, Smith and Jones, have applied to the same job at the same company. Much to Smith's disappointment, the president of the company has told Smith that Jones will ultimately get the job (entailed proposition, e1). Smith then notices that Jones has ten coins in his pocket (entailed proposition, e2), coins which Smith counted himself (oddly enough). Smith then infers from e1 and e2 the belief (p) that "the man who gets the job (who he assumes will be Jones) will have ten coins in his pocket (which he counted in Jones' pocket himself)": a belief that is well founded by the evidence and therefore justified. However, quite unexpectedly, Smith ends up getting the job! And, unbeknownst to himself, Smith coincidentally has ten coins in his pocket too. Although this was not the outcome that Smith was expecting, his inferred belief (p) "that the man who has ten coins in his pocket will get the job" still turned out to be true, just not for the reason he thought (Gettier, 1963). Smith reasonably inferred a true belief (p) from e1 and e2, but neither e1 nor e2 were the actual reason that p was correct.
     
 Even though Smith's belief was both true and justified, Gettier argued that Smith does not have knowledge in this case - Smith just got lucky. Many similar scenarios (i.e., Gettier type cases) have since been used in the epistemological literature to demonstrate the insufficiency of JTB to account for the kind of luck that made Smith's justified belief true.
 
@@ -80,13 +96,9 @@ Although the overall literature on epistemic intuitions has demonstrated varying
 
 ### The Current Study
 
-##### this is a hypothesis section
-
 We are planning a large Registered Replication Report (RRR) following the design of Experiment 1 in Turri et al. (2015). As in Turri et al. (2015), the current study explores the effect of a protagonist making a correct inference from a false belief on attributions of knowledge. We intend to test whether participants will judge a person's belief as knowledge when the belief is justified and true ("No Threat"; or JTB case) similarly as when the belief is justified and only luckily true ("Threat"; or Gettier case), but less frequently than the other two conditions when the justified belief is false ("No Detection"; or Ignorance case; see Figure 1 for original results).
 
 Second, we will compare participant ratings of the belief's reasonableness by condition. Following Turri et al. (2015), we will examine whether condition differences in knowledge attribution rates are due to differences in participant perceptions of what is reasonable for the protagonist to believe (i.e., is the given protagonist justified in their belief?; see Figure 1 for original results). We will also attempt to replicate Turri and colleagues' (2015) tests of whether the number of participants who attribute knowledge to the given protagonist in each of these cases differs from the number expected to do so based on chance alone. 
-
-##### end hypothesis section
 
 **Figure 	1**. Bar graphs depicting the original results from Turri, Buckwalter, and Blouw's (2015) findings in Experiment 1. Participants in each condition were asked whether Darrel "knew or only believed" that he had seen a red-speckled ground squirrel (left bar graph) and whether it was reasonable or unreasonable for Darrel to say he saw a red-speckled ground squirrel (right bar graph).
 
@@ -106,11 +118,7 @@ Another addition to our replication is the inclusion of an exploratory knowledge
 
 Past findings are difficult to compare to one another due to the use of different control conditions that varied in how closely matched they were to the experimental Gettier case condition. While more recent studies have utilized knowledge and ignorance control conditions (in which participants are exposed to paradigmatic cases of knowledge and ignorance, respectively), most cross-cultural studies have not used closely matched control stimuli (e.g., Kim & Yaun, 2015; Machery et al., 2015; 2017; Seyedsayamdost, 2015). For example, Machery and colleagues (2015) compared responses to control conditions but used entirely different vignettes with different protagonists for each condition. By contrast, Turri et al. (2015) used slight variations of the same vignette for each condition: "No Threat" (i.e., knowledge control), "Threat" (i.e., Gettier case), and "No Detection" (i.e., ignorance control). Because the vignettes used in Turri et al. (2015; see Appendix B) differ only in the words necessary to alter the condition of the protagonist's belief (unlike some work, e.g., Buckwalter & Stich, 2010; Machery et al., 2015; Weinberg et al., 2001), this design is better suited than others for making inferences about why participants attribute knowledge to protagonists. Therefore, we also ensure that the two added vignettes (the "Fake Barn/Gerald" vignette and the "Diamond/Emma" vignette) are also tested alongside minimally matched pairs similar to those used in Turri et al.'s (2015) Experiment 1 (see Appendix B for full details).
 
-##### this section denotes what we were going to do
-
 In light of the above design, measurement, and cultural considerations, we will test the Gettier intuition effect in a variety of countries (49 labs from 22 countries  across 5 continents) while attempting to address methodological concerns (i.e., measurement sensitivity, lack of matched controls, stimulus variation). Such a multisite, cross-country replication could also provide a well-powered exploration of cross-cultural similarities and differences in how people attribute knowledge while utilizing control conditions and closely matched stimuli for several vignettes. We will therefore include a plan for a phased release of the data (2/3 upon acceptance of the paper, 1/3 six months after acceptance) to allow other researchers to do cross-cultural comparisons.
-
-##### end what we were doing 
 
 ## Disclosures
 
@@ -164,14 +172,26 @@ Participants will first be given an Informed Consent form, which includes the fo
 
 After participants have read each assigned vignette, they will then be asked to respond to several questions before moving on to the next vignette. As in Turri et al. (2015), participants will first respond to a knowledge attribution question followed by comprehension question to control for understanding. Then, participants will answer a question about whether it was reasonable or unreasonable for the protagonist to believe what they believed (Turri et al., 2015). For measuring these two dependent variables and the comprehension control variable, we will use the same procedure used in the original study (Turri et al., 2015). That is, participants will not be allowed to go back to a previous page and change their answer, and questions will always be asked in the same order (knowledge/ comprehension/ reasonableness) for each vignette. 
 
-##### this section has covariate information
-
 After completing all confirmatory and exploratory questions for each vignette, participants will then be asked to answer a set of demographic, control, covariate, and study experience questions (see Appendix C). Control variables will include the language proficiency question described above and a set of funneled debriefing questions to check for explicit knowledge of our specific hypotheses. Covariates include all demographic and other variables that are measured at each site by each participant, including the test setting (tested online vs. face-to-face; tested individually vs. in group, compensated vs. uncompensated), participant age, gender (men, women, other), and years of education. All other demographic questions will be reported for solely descriptive purposes. We will also collect a large swathe of site level variables (i.e., regional SES related information, local climate, crime prevalence, etc.) for the use of exploratory analyses. Also, as part of a Study Swap project (Chartier & McCarthy, 2018), contributing sites may opt into asking participants a set of additional questions about their study experience (Satchell, 2018; see Appendix C). We will collect responses to these questions, but we have no plans to use the information in any of our analyses. 
 
 Participating labs are free to compensate participants using the standards of their lab/university. This could include extra credit, research credit, money, gift cards, or no compensation (we will measure compensation as a covariate). However, as previously mentioned, we will not permit the use of online survey services where participants are paid (e.g., MTurk), except for one large MTurk sample that will be collected by two of the authors (Chartier and Hall). 
 
-##### end covariate information
+#### Analysis Information ####
 
+- Control variables include:
+  - Language proficiency
+  - Debriefing knowledge questions
+  - While these are labeled as "control", these variables are used as ways to exclude participants. This section should be relabeled as exclusionary variables. 
+  
+- Covariates:
+  - All demographic and other variables measured at each site included in all data - this sentence should be removed it is completely unclear 
+  - Test setting: online versus face to face - this section should be modified since no labs were in person 
+  - Test setting: individually versus group - this section should be modified since all was online
+  - Test setting: compensated versus uncompensated
+  - Age
+  - Gender (men/women/other)
+  - Years of education 
+  
 **Data collection stopping rules and exclusions**. Each site will pre-register a minimum target sample size of 50 as a part of their OSF pre-registration, which must be approved by the CREP executive team prior to data collection. To be approved, contributing labs must demonstrate a sufficient random assignment method and the ability to reach a minimum required sample size (after exclusions are accounted for). Contributors can stop collecting data when they meet their pre-registered target sample size, or when the overall data collection deadline passes. Overall data collection will be stopped when the April 1st, 2020 deadline passes, or once all contributors have reached their pre-registered target sample size. Depending on the progress of the primary analyses, we cannot guarantee inclusion of projects submitted for review after this date.
 
 Participants in any laboratory must be excluded for any one of the following reasons: 
@@ -200,9 +220,9 @@ length(unique(full_long$id))
 # exclude based on age
 full_long$age_exclusion <- NA
 
-age18 <- c("at", "au", "ca", "ch", "de", "gb", "gr", "hu", "no", "nz", "pl", "ro", "ru", "sg", "tr", "tw", "us")
-age19 <- c("sk")
-age21 <- c("ae")
+age18 <- c("AUT", "AUS", "CAN", "CHE", "DEU", "GBR", "GRC", "HUN", "NOR", "NZL", "POL", "PRT", "ROU", "RUS", "SGP", "TUR", "TWN", "USA")
+age19 <- c("SVK")
+age21 <- c("ARE")
 
 full_long$age_exclusion[full_long$lab_country %in% age18] <- full_long$age[full_long$lab_country %in% age18] < 18
 
@@ -213,32 +233,32 @@ full_long$age_exclusion[full_long$lab_country %in% age21] <- full_long$age[full_
 full_long$age_exclusion[is.na(full_long$age_exclusion)] <- TRUE
 
 full_long$age_exclusion[full_long$age > 100] <- TRUE
-
-# number of rows
-table(full_long$age_exclusion, useNA = "ifany")
-# number of participants
-table(full_long$age_exclusion, useNA = "ifany") / 3
 ```
 
 (2) if the participant has taken part in a previous version of this study or in another contributors' replication of the same study
 
 ```{r}
 # pull in dictionary 
-# subset using dictionary 
-full_long$previous_exclusion <- NA
+previousDF$code <- as.character(tolower(previousDF$code))
+previousDF$code[previousDF$code == "n/a"] <- "na"
+table(previousDF$code)
+
+# coding scheme
+previousDF$total <- 0
+# previousDF$total[previousDF$code == "yes"] <- previousDF$total[previousDF$code == "yes"] + 2
+# previousDF$total[previousDF$code == "na"] <- previousDF$total[previousDF$code == "na"] + 4
+# previousDF$total[previousDF$code == "test"] <- previousDF$total[previousDF$code == "test"] + 4
+
+## maybe gets 1 point 
+## cut off is four points 
+## na gets zero points 
+## mark nonsense responses if they are all NA 
 ```
 
 (3) if the participant fails to answer comprehension questions correctly
 
 ```{r}
-full_long$urn1 <- factor(full_long$urn1, levels = c("", "1"), labels = c("Not included", "Included"))
-
-full_long$studyans_exclusion <- full_long$urn1 == "Not included"
-
-# number of rows
-table(full_long$studyans_exclusion, useNA = "ifany")
-# number of participants
-table(full_long$studyans_exclusion, useNA = "ifany") / 3
+full_long$studyans_exclusion <- full_long$dge_valid == FALSE
 ```
 
 (4) if the participant correctly and explicitly articulate knowledge of the specific hypotheses or specific conditions of this study when answering the funneled debriefing questions. 
@@ -254,29 +274,47 @@ We will also exclude participants who self-report their understanding of the tes
 ```{r}
 summary(full_long$language)
 
-full_long$lang_exclusion <- full_long$language == "not very well" | full_long$language == "not well at all" | full_long$language == "Not answered"
+full_long$lang_exclusion <- full_long$language == "not very well" | full_long$language == "not well at all" 
 
 full_long$lang_exclusion[is.na(full_long$lang_exclusion)] <- TRUE
-
-# number of rows
-table(full_long$lang_exclusion, useNA = "ifany")
-# number of participants
-table(full_long$lang_exclusion, useNA = "ifany") / 3
 ```
 
 ```{r}
 full_long$total_exclusion <- full_long$age_exclusion + full_long$studyans_exclusion + full_long$lang_exclusion #### ADD OTHER TWO
 
+table(full_long$age_exclusion)
+table(full_long$lang_exclusion)
+table(full_long$studyans_exclusion)
 table(full_long$total_exclusion)
+
+final_long <- subset(full_long, total_exclusion < 1)
+
+nrow(full_long)
+nrow(final_long)
+
+length(unique(full_long$id))
+length(unique(final_long$id))
 ```
 
 ## Analysis Plan
 
 ### Proposed Analytic Strategy and Sample Size Justification 
 
-For this experimental mixed factorial design, we will analyze the primary and secondary hypothesized outcomes (i.e., knowledge and reasonableness attribution visual analogue scales, respectively) with multilevel modeling (for a visualization of this data structure, see Figure 3). In these analyses, participants in the contributing labs will be presented with a set of three stimuli (i.e., "Darrel", "Gerald", and "Emma" vignettes). As belief condition will also be random for each stimulus and each participant, this design feature will further give rise to a cross-classified data structure, where participants are nested within higher-level units formed by crossing two or more higher-level classifications with one another to fully account for the nesting of participants (i.e., participants are not only nested within their own labs, but also with regards to the conditions they have been exposed to). 
+For this experimental mixed factorial design, we will analyze the primary and secondary hypothesized outcomes (i.e., knowledge and reasonableness attribution visual analogue scales, respectively) with multilevel modeling (for a visualization of this data structure, see Figure 3). In these analyses, participants in the contributing labs will be presented with a set of three stimuli (i.e., "Darrel", "Gerald", and "Emma" vignettes). As belief condition will also be random for each stimulus and each participant, this design feature will further give rise to a cross-classified data structure, where participants are nested within higher-level units formed by crossing two or more higher-level classifications with one another to fully account for the nesting of participants (i.e., participants are not only nested within their own labs, but also with regards to the conditions they have been exposed to).
+
+#### Analysis Information ####
+
+- We will do both logistic regression (binary outcome) and regression (visual analogue outcome)
+- We will use multilevel modeling 
+  - The condition will be a random intercept
+  - The participants will be a random intercept 
+- Remove this cross classified language and be more clear here 
 
 The order of vignettes and their conditions will be randomized without replacement, such that participants will first be assigned to one of three vignettes ("Darrel", "Emma", or "Gerald") in one of the three belief conditions (knowledge control, Gettier case, or ignorance control). The remaining two vignettes will then be presented in random order, each also randomized and counter-balanced to one of the remaining two belief conditions until all participants have been exposed to all three vignettes and all three conditions once. Participants will be asked several questions after reading each vignette. We will use this model to test whether the effects of the independent variable (i.e., knowledge condition) on the continuous dependent variables (i.e., visual analogue scale responses for knowledge and reasonableness) are robust to covariates/interactions (i.e., sensitivity test).
+
+#### Analysis Information ####
+
+- The independent variable will be the knowledge condition 
  
 Figure 3: Data Structure. Total sample size includes a sample of labs (target lab sample size is 50) each nested with a sample of participants (minimum participant sample size is 50) which are cross classified with a sample of three vignettes (stimuli). Each assigned vignette is randomized to one of three conditions (ignorance control, Gettier case, or knowledge control). 
 
@@ -297,15 +335,117 @@ Rather than requiring a considerably larger participant sample size for each sit
 **Laboratory sample size**. In terms of participating labs, we currently have 45 sites signed up. The PSA currently has over 450 labs within its global network, and the CREP currently works with 29 labs. Other multilab projects, such as ManyLabs, have similarly collected data from 20 to 30 contributing sites. In addition to this network of labs, AMMPS will make an additional call for contributing labs through APS. Because of the CREP's educational aims, we will continue to accept contributing labs until February 1, 2020, even after adequate power has been reached. Given these numbers, past experiences of our team, and the low resource requirements of this study, we are confident in our ability to collect from at least 50 labs. This will give us more than adequate power to detect our primary effect of interest, as well as provide a rich and broad data set that other researchers can analyze to make secondary contributions.
 
 Given that individual site samples may experience some data loss (we estimate at least 10% from comprehension exclusion based on pretest data, Hall et al., 2018), we will require a pre-registered minimum sample size of 50 participants (after exclusions) at each site to ensure that each data collection is reasonably powered. To incentivize sites to collect well powered samples and provide students with quality lab experiences, the CREP awards sites with a completion certification award for meeting the required sample size. To qualify for the CREP completion award for this study, a site must sample at least 50 participants. The CREP completion award is a certificate presented to participating lab members for their high-quality work upon completion of the CREP study.
-Stimulus sample size. To determine which vignettes (i.e., stimuli) to sample from the experimental philosophy literature, we first searched the literature thoroughly for all articles relating to Gettier intuitions. We then evaluated the vignettes found in these articles based on several criteria: similarity, quality, and influence. Because our goal is to replicate findings from Turri and colleagues' Experiment 1 (which used a counterfeit object Gettier case), we decided to only sample other counterfeit object vignettes to test the generality of this class of Gettier type cases, in lieu of testing Gettier type cases more broadly. Thus, we first determined if a given vignette was a counterfeit object Gettier case or if it was a different type of Gettier case (e.g., evidence replacement), and then kept only counterfeit cases. Then, we noted whether a given vignette had matched controls similar to those found in Turri et al. (2015) and kept only those that did. We then evaluated the influence of the remaining vignettes based on how many times an iteration of the vignette has been tested in the literature. Through this process, the "Gerald" vignette (i.e., fake barn case) and the "Emma" vignette (i.e., the counterfeit diamond case) were selected.
+
+**Stimulus sample size**. To determine which vignettes (i.e., stimuli) to sample from the experimental philosophy literature, we first searched the literature thoroughly for all articles relating to Gettier intuitions. We then evaluated the vignettes found in these articles based on several criteria: similarity, quality, and influence. Because our goal is to replicate findings from Turri and colleagues' Experiment 1 (which used a counterfeit object Gettier case), we decided to only sample other counterfeit object vignettes to test the generality of this class of Gettier type cases, in lieu of testing Gettier type cases more broadly. Thus, we first determined if a given vignette was a counterfeit object Gettier case or if it was a different type of Gettier case (e.g., evidence replacement), and then kept only counterfeit cases. Then, we noted whether a given vignette had matched controls similar to those found in Turri et al. (2015) and kept only those that did. We then evaluated the influence of the remaining vignettes based on how many times an iteration of the vignette has been tested in the literature. Through this process, the "Gerald" vignette (i.e., fake barn case) and the "Emma" vignette (i.e., the counterfeit diamond case) were selected.
 
 ## Planned Analyses
 
 In total, [X] labs applied to participate in this multilab replication. [X] labs were unable to participate, [X] did not collect enough data; [X] dropped out prior to data collection, resulting in a final lab count of [X]. Contributing labs represent [X] continents ([X from Africa, X from South America, X from North America, X from Asia, X from Europe, and X from Oceania) with participants residing in [X] countries [X from Brazil, X from Switzerland, X from Singapore, and so on]. [X labs committed to collecting the minimum participant sample size (N = 40), and X labs committed to collecting a larger, more representative sample (N = 100) for the purposes of exploratory analyses. All participating labs submitted their dataset and analysis report for review to the CREP team. All datasets were required to be submitted using a template dataset that must pass a quality check (raw data files checked for errors; post analysis scripts, codebook, and cleaned data files checked for errors; and narrative summary of project findings compared to data and analysis for errors). For strictly educational purposes, contributors chose which analyses to perform on the effects of condition on the continuous knowledge attribution variable (Y1) and the continuous reasonableness attribution variable (Y2) on their site sample. We did not provide any specific plans for sites to analyze their data, and instead allowed sites to choose which analyses to perform (Silberzahn et al., 2018). Full details of these analyses are available via this study's pre-registration on the OSF project page (https://osf.io/n5b3w/).
+
+#### Analysis Information ####
+
+- Drop the section on X did not collect enough data because we used all the data
+- Change that to X did not get included because they didnt have enough valid data 
+- Report full and final lab counts 
+
+```{r}
+# total lab count
+length(unique(full_long$lab_id))
+
+# usable data lab count
+length(unique(final_long$lab_id))
+
+# total countries
+table(full_long$lab_country)
+length(table(full_long$lab_country))
+
+# usable countries
+table(final_long$lab_country)
+length(table(final_long$lab_country))
+```
+
 Although, we did not direct instructors and students to use specific analyses, we did provide support as they determined which analyses to pre-register and provided feedback on the subsequent analysis reports at each site , [X sites chose to perform a mixed effect ANOVA; X sites chose to perform a two-level linear regression analysis; X sites dichotomized the visual analogue scale responses and performed a two-level logistic regression analysis, and so on]. We also provided a data template with variable naming conventions on our OSF page which contributor sites were required to use when submitting their sample data (available on our OSF). The results of site level analyses will be included on each site's pre-registered OSF page. The datasets from each lab were included, regardless of their results, providing a more unbiased study of the effect. 
+
 The typical goal of an RRR is to provide a more precise effect size estimate by combining the results of a number of independently conducted direct replications - typically using a meta-analytic approach. Our goal for this RRR continues this trend; however, we instead aggregated individual participant data from each site in order to conduct a pair of multilevel linear regression analyses that account for the nesting of data and treats the tested vignettes as a random factor. The purpose of these analyses is to determine a more accurate effect size estimate for Gettier intuitions (Brandt et al., 2014), rather than to "fail" or "succeed" at replicating the original results. Therefore, we combined all site data that passed the CREP quality check (see above) into one data file containing all individual participant data [X were excluded due to DESCRIBE QUALITY ISSUES; X labs remain in the primary analyses], which we analyzed with two multilevel models: one on the continuous knowledge attribution measure and one on the continuous reasonableness attribution measure. We performed these analyses to test whether the effects of the primary between-subjects factor (belief condition and laboratory) and the exploratory within-subjects factor (vignette condition) on the given outcome variable (knowledge or reasonableness) are robust to covariates/interactions (i.e., sensitivity test). 
+
+#### Analysis Information ####
+
+- See number above for total number of labs
+- Remember we did not include several labs for qualtrics issues
+- Just delete this MLM section for being repetative and slightly incorrect 
+
 Authors, Jordan Wagge and Braeden Hall, wrote the R scripts, simulated data, and analyzed power for the overall and site analyses before any data were collected. The two multilevel linear regression analysis R scripts include assumption tests and analyses of the overall effect of belief condition (Knowledge, Gettier, Ignorance) on the primary outcome (knowledge attribution) and the secondary outcome (reasonableness attribution). Within these models, vignette was tested as a random (within-subjects) factor, condition was tested as a fixed (between-subjects) factor, and labs were tested as a random (between-subjects) factor. We also fitted these models with several exploratory covariates, including participant gender, years of education, age, and three test setting lab variables (online vs. in person; in group vs. individually; compensated or not compensated). This will allow us to look at the extent to which the use of Gettier intuitions are prevalent within this sample of the general public. Exploratory analyses will also allow us to test the extent to which there are individual, lab, and stimulus differences; although, we will be cautious when interpreting these results. Other exploratory analyses will include the other covariates described below that are collected at every site.
+
+#### Analysis Information ####
+
+- I think this section can go, it should be listed in credit who did what here
+- Call things random and fixed factors
+- No real need to label within and between as it appears to be confusing with the random / fixed terminology 
+- Here you really say the analyses are: 
+  - Gender
+  - Education
+  - Age
+  - The test settings, which two are dropped, we are left with compensation only 
+- Definitely remove that sentence earlier so these match 
+- Exploratory variables:
+  - Individual, lab, and stimulus differences 
+
 Before we performed these analyses, we tested assumptions on our data. We first checked the data for linearity. [If a non-random trend emerges, we will then attempt to include a higher order (country level-4 units) to see if that resolves the issue. This will suspend all power considerations reported earlier in the manuscript] For these two multilevel linear regression analyses, level-1 units (vignettes) were tested as a random factor crossed with the level-2 units (participants) that are nested in the level-3 units (lab sites). [If we have enough participating countries (>20 countries) to provide adequate power and if our model ends up requiring adding another higher order to correct for data dependence, we will then test whether adding country of residence as a level-4 cluster unit, grouped into UN regions (i.e., Africa, Asia, North America, Oceania, etc.) improves the model or not.] 
+
+#### Analysis Information ####
+
+- Assumptions:
+  - Linearity for VAS - clarify this here
+  - know reason and luck 
+
+
+```{r}
+# drop levels
+final_long$lab_id <- droplevels(final_long$lab_id)
+final_long$id <- factor(final_long$id)
+final_long$vignette <- factor(final_long$vignette)
+
+
+
+
+ds.model <- lme(know_vas ~ 1,
+                random = list(~1|vignette),
+                data = final_long,
+                na.action = "na.omit")
+summary(ds.model)
+r.squaredGLMM(ds.model)
+
+
+ds.model <- lme(know_vas ~ 1,
+                random = list(~1|id),
+                data = final_long,
+                na.action = "na.omit")
+summary(ds.model)
+r.squaredGLMM(ds.model)
+
+ds.model <- lme(know_vas ~ 1,
+                random = list(~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+summary(ds.model)
+r.squaredGLMM(ds.model)
+
+ds.model <- lme(know_vas ~ 1,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+summary(ds.model)
+r.squaredGLMM(ds.model)
+
+ds.model <- lme(know_bin ~ 1,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+summary(ds.model)
+r.squaredGLMM(ds.model)
+```
+
+
 Knowledge attribution. Given that we are primarily interested in the relationship between the hypothesized level-2 between-subjects predictor (X1) and the two hypothesized outcome variables (knowledge, Y1; and reasonableness, Y2), we first performed the analysis using solely the primary hypothesized independent variable (belief condition) without any other covariates for the purpose of trying to estimate the overall individual level effect (fixed slope) on the primary hypothesized outcome (i.e., null model). In other terms, we determined the effect on knowledge attribution across all samples, not accounting for covariates, vignette differences, or lab differences. We found that the overall effect of belief condition was [insignificant/small/medium/large, β = .XX, 95% CIs [X.XX, X.XX]]. We then tested the model fit for each analysis using likelihood ratio (LR) chi-square difference tests to determine whether each unit level should be tested as a random or fixed factor and whether covariates improved the model (Gelman & Hill, 2007, Chapter 17; see Table 1). 
 To assess the model fit of our data, we used the commonly used nested model test using maximum likelihood estimation (Snijders & Bosker, 2012). Next, we wanted to determine if the effects of the primary independent variable (belief condition) on knowledge attribution differed by vignette, participant, or lab. To accomplish this, we built an unconditional base model for the knowledge attribution predictor to calculate the intra-class correlation coefficients (ICC) for vignette, participant, and lab variation. The ICCs for vignettes, participants, and labs in the dataset measures the percentage of variation explained by each level, such that vignettes accounted for [X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset, participants accounted for [X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset, and labs accounted for [X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset. 
 Given that this base model did not include any other predictor variables, the total effect on knowledge attribution for a typical vignette within a typical participant corresponds directly with the fixed slope [X]; such that participants in the Gettier condition attributed knowledge across a visual analogue scale X more/less than participants in the knowledge control condition, and X more/less than participants in the ignorance control condition (see Figure 4). To calculate the overall effect on knowledge attribution, we first calculated the given effect of each vignette - which we then used to calculate the random intercept variance [X]. [Because the CIs for knowledge attribution in the [knowledge control/Gettier case/ignorance control condition] [do/do not] cross 50, we [can/cannot] conclude that participants' judgments differed from chance.]
