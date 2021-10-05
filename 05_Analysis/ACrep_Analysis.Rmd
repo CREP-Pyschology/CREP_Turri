@@ -393,19 +393,16 @@ Before we performed these analyses, we tested assumptions on our data. We first 
 
 #### Analysis Information ####
 
+- Country is a tricky word - remember to change it to something like country or geographic region 
 - Assumptions:
   - Linearity for VAS - clarify this here
   - know reason and luck 
-
 
 ```{r}
 # drop levels
 final_long$lab_id <- droplevels(final_long$lab_id)
 final_long$id <- factor(final_long$id)
 final_long$vignette <- factor(final_long$vignette)
-
-
-
 
 ds.model <- lme(know_vas ~ 1,
                 random = list(~1|vignette),
