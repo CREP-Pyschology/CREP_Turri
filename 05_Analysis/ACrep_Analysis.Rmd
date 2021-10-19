@@ -192,6 +192,24 @@ Participating labs are free to compensate participants using the standards of th
   - Gender (men/women/other)
   - Years of education 
   
+```{r}
+#compensation type
+full_long$comp_type <- factor(full_long$comp_type, 
+                              levels = 1:4,
+                              labels = c("Credit", "Gift Card", "Money", "Other"))
+
+table(full_long$comp_type) / 3 #three rows for each person 
+
+#age dealt with below as a screener 
+
+#gender
+table(full_long$gender) / 3
+
+#education years
+full_long$education <- as.numeric(full_long$education)
+psych::describe(full_long$education[!duplicated(full_long$id)])
+```
+  
 **Data collection stopping rules and exclusions**. Each site will pre-register a minimum target sample size of 50 as a part of their OSF pre-registration, which must be approved by the CREP executive team prior to data collection. To be approved, contributing labs must demonstrate a sufficient random assignment method and the ability to reach a minimum required sample size (after exclusions are accounted for). Contributors can stop collecting data when they meet their pre-registered target sample size, or when the overall data collection deadline passes. Overall data collection will be stopped when the April 1st, 2020 deadline passes, or once all contributors have reached their pre-registered target sample size. Depending on the progress of the primary analyses, we cannot guarantee inclusion of projects submitted for review after this date.
 
 Participants in any laboratory must be excluded for any one of the following reasons: 
@@ -387,7 +405,7 @@ Authors, Jordan Wagge and Braeden Hall, wrote the R scripts, simulated data, and
   - The test settings, which two are dropped, we are left with compensation only 
 - Definitely remove that sentence earlier so these match 
 - Exploratory variables:
-  - Individual, lab, and stimulus differences 
+  - Individual, lab, and stimulus differences (i.e., look at their R2 values, make some cool pictures? can use random intercepts for this)
 
 Before we performed these analyses, we tested assumptions on our data. We first checked the data for linearity. [If a non-random trend emerges, we will then attempt to include a higher order (country level-4 units) to see if that resolves the issue. This will suspend all power considerations reported earlier in the manuscript] For these two multilevel linear regression analyses, level-1 units (vignettes) were tested as a random factor crossed with the level-2 units (participants) that are nested in the level-3 units (lab sites). [If we have enough participating countries (>20 countries) to provide adequate power and if our model ends up requiring adding another higher order to correct for data dependence, we will then test whether adding country of residence as a level-4 cluster unit, grouped into UN regions (i.e., Africa, Asia, North America, Oceania, etc.) improves the model or not.] 
 
@@ -398,119 +416,148 @@ Before we performed these analyses, we tested assumptions on our data. We first 
   - Linearity for VAS - clarify this here
   - know reason and luck 
 
+--- need to do the UN country coding to add to this 
+--- man this data screening is bad 
+
 ```{r}
 # drop levels
 final_long$lab_id <- droplevels(final_long$lab_id)
 final_long$id <- factor(final_long$id)
 final_long$vignette <- factor(final_long$vignette)
 
-ds.model <- lme(know_vas ~ 1,
-                random = list(~1|vignette),
-                data = final_long,
-                na.action = "na.omit")
-summary(ds.model)
-r.squaredGLMM(ds.model)
-
-
-ds.model <- lme(know_vas ~ 1,
-                random = list(~1|id),
-                data = final_long,
-                na.action = "na.omit")
-summary(ds.model)
-r.squaredGLMM(ds.model)
-
-ds.model <- lme(know_vas ~ 1,
-                random = list(~1|lab_id),
-                data = final_long,
-                na.action = "na.omit")
-summary(ds.model)
-r.squaredGLMM(ds.model)
-
-ds.model <- lme(know_vas ~ 1,
-                random = list(~1|vignette, ~1|id, ~1|lab_id),
-                data = final_long,
-                na.action = "na.omit")
-summary(ds.model)
-r.squaredGLMM(ds.model)
-
-ds.model <- lme(know_bin ~ 1,
-                random = list(~1|vignette, ~1|id, ~1|lab_id),
-                data = final_long,
-                na.action = "na.omit")
-summary(ds.model)
-r.squaredGLMM(ds.model)
+# we do data screening on the final model 
+# dv is know, reason, luck by vas/bin
+# really just need to check vas because binary doesn't have the same assumptions
+# iv is condition 
+# cv is test setting, age, gender, years education
 ```
 
+```{r}
+## knowledge 
+ds.model <- lme(know_vas ~ cond + comp_type + age + gender + education ,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+
+# additivity
+round(summary(ds.model)$corFixed,2)
+
+# normality
+standardized <- residuals(ds.model, type = "normalized")
+hist(standardized) # just further evidence these distributions are bimodal 
+# linearity
+{qqnorm(standardized)
+  abline(0,1)}
+
+# homosc
+fitted <- scale(fitted.values(ds.model))
+{plot(fitted, standardized)
+  abline(v = 0)
+  abline(h = 0)}
+```
+
+```{r}
+## reasonable 
+ds.model <- lme(reason_vas ~ cond + comp_type + age + 
+                  gender + education ,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+
+# additivity
+round(summary(ds.model)$corFixed,2)
+
+# normality
+standardized <- residuals(ds.model, type = "normalized")
+hist(standardized) 
+
+# linearity
+{qqnorm(standardized)
+  abline(0,1)}
+
+# homosc
+fitted <- scale(fitted.values(ds.model))
+{plot(fitted, standardized)
+  abline(v = 0)
+  abline(h = 0)}
+```
+
+```{r}
+## luck 
+ds.model <- lme(luck_vas ~ cond + comp_type + age + 
+                  gender + education ,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+
+# additivity
+round(summary(ds.model)$corFixed,2)
+
+# normality
+standardized <- residuals(ds.model, type = "normalized")
+hist(standardized) 
+
+# linearity
+{qqnorm(standardized)
+  abline(0,1)}
+
+# homosc
+fitted <- scale(fitted.values(ds.model))
+{plot(fitted, standardized)
+  abline(v = 0)
+  abline(h = 0)}
+```
 
 Knowledge attribution. Given that we are primarily interested in the relationship between the hypothesized level-2 between-subjects predictor (X1) and the two hypothesized outcome variables (knowledge, Y1; and reasonableness, Y2), we first performed the analysis using solely the primary hypothesized independent variable (belief condition) without any other covariates for the purpose of trying to estimate the overall individual level effect (fixed slope) on the primary hypothesized outcome (i.e., null model). In other terms, we determined the effect on knowledge attribution across all samples, not accounting for covariates, vignette differences, or lab differences. We found that the overall effect of belief condition was [insignificant/small/medium/large, β = .XX, 95% CIs [X.XX, X.XX]]. We then tested the model fit for each analysis using likelihood ratio (LR) chi-square difference tests to determine whether each unit level should be tested as a random or fixed factor and whether covariates improved the model (Gelman & Hill, 2007, Chapter 17; see Table 1). 
+
+#### Analysis Information ####
+
+- Here let's regroup by testing the random effects first because I don't know that I  think the fixed effects mean anything without controlling for correlated error first
+- Definitely don't use null model this way, that's not what that means (usually null model regressions are NO predictors at all)
+- Also here, belief condition can't just be one B value - it will be two since it's a categorical variable with three levels (a versus b, b versus c)
+
 To assess the model fit of our data, we used the commonly used nested model test using maximum likelihood estimation (Snijders & Bosker, 2012). Next, we wanted to determine if the effects of the primary independent variable (belief condition) on knowledge attribution differed by vignette, participant, or lab. To accomplish this, we built an unconditional base model for the knowledge attribution predictor to calculate the intra-class correlation coefficients (ICC) for vignette, participant, and lab variation. The ICCs for vignettes, participants, and labs in the dataset measures the percentage of variation explained by each level, such that vignettes accounted for [X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset, participants accounted for [X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset, and labs accounted for [X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset. 
+
+#### Analysis Information ####
+
+- Ditch ICC here, instead let's use MuMIn's R2 for random effects
+- Another reason to start with a blank model and add these first
+- Otherwise condition is in the way here and you don't know this answer
+- I kind of get what you are going for here but I don't think by including condition then adding the random factors you answer this question of "does belief change by person/vignette/lab". That's basically asking for the interaction. You could reword this as "is knowledge attribution variable by person/vignette/lab" and after you account for that, does condition predict the dv? 
+- I'd rewrite this section to be: 
+  - We start with level 1 
+  - Then we add level 2 
+  - Then we add level 3
+  - Then covariates 
+  - Then we add main variable
+  - Then random lab slope
+
+- Get rid of these several paragraph below 
+- Not sure I would talk about reliability with ICCs, but we can do correlations between vignettes 
+
+```{r}
+# level 1
+# level 2
+# level 3
+# covariates
+# condition 
+
+# correlation vignettes 
+```
+
 Given that this base model did not include any other predictor variables, the total effect on knowledge attribution for a typical vignette within a typical participant corresponds directly with the fixed slope [X]; such that participants in the Gettier condition attributed knowledge across a visual analogue scale X more/less than participants in the knowledge control condition, and X more/less than participants in the ignorance control condition (see Figure 4). To calculate the overall effect on knowledge attribution, we first calculated the given effect of each vignette - which we then used to calculate the random intercept variance [X]. [Because the CIs for knowledge attribution in the [knowledge control/Gettier case/ignorance control condition] [do/do not] cross 50, we [can/cannot] conclude that participants' judgments differed from chance.]
  
 Figure 4. Example plot using simulation data to visualize the predicted difference between each condition, where Condition V1 is the estimated predicted difference between the Gettier case and the knowledge control (b = X.XX, t(XXX) = X.XX, p = .XX, 95% CI [X.XX, X.XX]) and Condition V2 is the estimated predicted difference between the Gettier case and the ignorance control (b = X.XX, t(XXX) = X.XX, p = .XX, 95% CI [X.XX, X.XX]). 
 
-Next, the level-1 residual [X] corresponds to the deviation of the specific effects of attributing knowledge within a given vignette from the overall effect of attributing knowledge across all vignettes - demonstrating that the intercept [varies/does not vary]. Given that the subsequent random intercept variance [X], was [small-large], this indicates that individual participants have [more/the same] opportunities of attributing knowledge in some vignettes than in others. [indicate which vignettes were likely to result in more/less knowledge attribution in which condition]. [None/Two/Three] of the sampled vignettes were significantly correlated to each other: a set of Pearson correlation coefficient tests indicated that there was a [non-/small/medium/large] significant positive/negative association between the knowledge attribution response rates in the Darrel vignette and the knowledge attribution response rates in the Emma vignette, (r(XXX) = .XX, p = .XXX), a [non-/small/medium/large] significant positive/negative association between the Darrel vignette and the Gerald vignette, (r(XXX) = .XX, p = .XXX), and a [non-/small/medium/large] significant positive/negative association between the Emma vignette and the Gerald vignette, (r(XXX) = .XX, p = .XXX). These [small/medium/large] [non-/significant] correlations coupled with the [low/moderate/high] Intraclass Correlation Coefficient that suggests that the vignette factor accounted for X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset provides [weak/moderate/mixed/strong] evidence that [none/at least two/all three] of our repeated measures (vignettes) demonstrated [poor/fair/excellent] reliability with each other. [When interpreting these ICCs, we will use Rosner's (2006) suggested criteria, where an ICC of less than 0.4 indicates poor reliability, an ICC greater than or equal to 0.4 but less than 0.75 indicates fair to good reliability, and an ICC great than or equal to 0.75 indicates excellent reliability.] 
+Next, the level-1 residual [X] corresponds to the deviation of the specific effects of attributing knowledge within a given vignette from the overall effect of attributing knowledge across all vignettes - demonstrating that the intercept [varies/does not vary]. Given that the subsequent random intercept variance [X], was [small-large], this indicates that individual participants have [more/the same] opportunities of attributing knowledge in some vignettes than in others. [indicate which vignettes were likely to result in more/less knowledge attribution in which condition]. [None/Two/Three] of the sampled vignettes were significantly correlated to each other: a set of Pearson correlation coefficient tests indicated that there was a [non-/small/medium/large] significant positive/negative association between the knowledge attribution response rates in the Darrel vignette and the knowledge attribution response rates in the Emma vignette, (r(XXX) = .XX, p = .XXX), a [non-/small/medium/large] significant positive/negative association between the Darrel vignette and the Gerald vignette, (r(XXX) = .XX, p = .XXX), and a [non-/small/medium/large] significant positive/negative association between the Emma vignette and the Gerald vignette, (r(XXX) = .XX, p = .XXX). These [small/medium/large] [non-/significant] correlations coupled with the [low/moderate/high] Intraclass Correlation Coefficient that suggests that the vignette factor accounted for X.XX%, 95% CI [X.XX, X.XX] of the raw variation in the dataset provides [weak/moderate/mixed/strong] evidence that [none/at least two/all three] of our repeated measures (vignettes) demonstrated [poor/fair/excellent] reliability with each other. [When interpreting these ICCs, we will use Rosner's (2006) suggested criteria, where an ICC of less than 0.4 indicates poor reliability, an ICC greater than or equal to 0.4 but less than 0.75 indicates fair to good reliability, and an ICC great than or equal to 0.75 indicates excellent reliability.]
 
-Table 1: Multilevel models of knowledge attribution;
-(Dependent variable: Knowledge attribution; 
-Fixed: intercept, belief condition (base = Gettier))
-	Constant		Knowledge		Ignorance	
-Model	Est.	s.e.	Est.	s.e.	Est.	s.e.
-I = Null (includes condition)	X.X	X.X	X.X	X.X	X.X	X.X
-II = I + vignette 	X.X	X.X	X.X	X.X	X.X	X.X
-III = II + lab	X.X	X.X	X.X	X.X	X.X	X.X
-IV = III + test setting 	X.X	X.X	X.X	X.X	X.X	X.X
-V = IV + education	X.X	X.X	X.X	X.X	X.X	X.X
-VI = V + gender	X.X	X.X	X.X	X.X	X.X	X.X
+## Tables 
 
-Fixed (Continued): Vignette (base = Darrel vignette)
-	Gerald		Emma	
-Model	Est.	s.e.	Est.	s.e.
-I	X.X	X.X	X.X	X.X
-II 	X.X	X.X	X.X	X.X
-III 	X.X	X.X	X.X	X.X
-IV 	X.X	X.X	X.X	X.X
-V 	X.X	X.X	X.X	X.X
-VI 	X.X	X.X	X.X	X.X
+#### Analysis Information ####
 
-Fixed (Continued): Test setting (base = in person; base = individually; base = not translated)
-	Online		In group		Translated 	
-Model	Est.	s.e.	Est.	s.e.	Est.	s.e.
-I	X.X	X.X	X.X	X.X	X.X	X.X
-II 	X.X	X.X	X.X	X.X	X.X	X.X
-III 	X.X	X.X	X.X	X.X	X.X	X.X
-IV 	X.X	X.X	X.X	X.X	X.X	X.X
-V 	X.X	X.X	X.X	X.X	X.X	X.X
-VI 	X.X	X.X	X.X	X.X	X.X	X.X
-
-Fixed (Continued): Country (base = U.S.A.) 
-	Turkey		Brazil		China		And, so on...
-Model	Est.	s.e.	Est.	s.e.	Est.	s.e.	...
-I	X.X	X.X	X.X	X.X	X.X	X.X	...
-II 	X.X	X.X	X.X	X.X	X.X	X.X	...
-III 	X.X	X.X	X.X	X.X	X.X	X.X	...
-IV 	X.X	X.X	X.X	X.X	X.X	X.X	...
-V 	X.X	X.X	X.X	X.X	X.X	X.X	...
-VI 	X.X	X.X	X.X	X.X	X.X	X.X	...
-
-Fixed (Continued): Gender (base = female)
-	Male	
-Model	Est.	s.e.
-I	X.X	X.X
-II 	X.X	X.X
-III 	X.X	X.X
-IV 	X.X	X.X
-V 	X.X	X.X
-VI 	X.X	X.X
-
-Random 
-	Vignette 			Participant 			Lab			Log-Lik
-Model	Var.	s.e.	s.d.	Var.	s.e.	s.d.	Var.	s.e.	s.d.	
-I	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-II 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-III 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-IV 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-V 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-VI 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
+- I'm really not sure what you are saying below 
+- What is the cross level interaction? What variables are interacting? 
+- Is it both condition and lab as random slopes?
 
 With the fixed-effects and random-effects specified, we then added in explanatory variables. In this phase, we wanted to test how knowledge attribution rates differ across vignettes and labs when also accounting for all predictors. That is, we wanted to know whether vignette and lab factors account for the random slope. For this purpose, we built a constrained and augmented intermediate model by adding level-2 predictors (belief condition, gender, age, and education), level-3 predictors (in group vs. individually and online vs. in person), and their cross-level interactions, and then performed a likelihood ratio test for the given outcome variable to determine whether considering the cluster-based (vignettes, participants, and labs) variation of the effect of the lower level variables improves the model fit (X(1) = X.XX, p = .XX). The results were [non-significant/significant], suggesting that addition of the random slopes [did/did not] improve the fit of the model. Therefore, the [fixed/random-intercept/slope model] appears to be the best fit. 
 In the last phase of this analysis, we created a final model based on our prior models by either including the random terms or not for each factor, and then we added the cross-level interactions for knowledge attribution. By doing this, we can infer whether the effects of the independent variables on the dependent variable are robust to covariates/interactions (i.e., sensitivity test). In terms of the level-2 effect, the first three models provide us with two terms of interest, the fixed slope [X] and the random slope variance [X] for each level. The fixed slope represents the general effect of the primary independent variable (belief condition) on knowledge attribution. Condition [did/did not] significantly predict knowledge attribution rates (B = XX.XX, β = .XX, p =.XXX) and [significantly accounted for X.XX% of the variance/did not significantly account for any of the variance], (R2 = .XX, F(X,XX) = X.XX, p = .XX). 
@@ -518,467 +565,24 @@ The residual term associated with the primary independent variable [X] provides 
  
 Figure 5. Example plot using simulation data to visualize the knowledge attribution multilevel model that allows for a random intercept and random slope for labs, where 0 = Gettier cases, 1 = knowledge controls, and 2 = ignorance controls. Actual data will be plotted based on the model of best fit. 
 
-	False discovery rate. To correct for family-wise error rates that arise from testing related dependent variables, we will use a corrected alpha cut-off criterion. In our MTurk pretest of US participants, the knowledge variable and the exploratory ability/luck variable were significantly correlated in each vignette ("Gerald", r = .476, p < .001; "Emma", r = .434, p < .001; "Darrel", r = .592, p < .001). Whereas the knowledge dependent variable and reasonableness dependent variable were weakly significantly correlated in two of the vignettes ("Emma", r = .202, p = .009; and "Darrel", r = .323, p < .001), and non-significant in the third ("Gerald", r = .128, p = .099). These preliminary data demonstrate a need to lower our false discovery rate to correct for the family-wise error rate of three related tests which we will do by using the Benjamini–Hochberg procedure as well as performing bootstrapping to obtain confidence intervals for each correlation using Fisher's transformation. 
-Covariate analysis plan. We then fit a covariance structure to this final model that specified the form of the variance-covariance matrix. We attempted fitting data with three common structures (variance components, diagonal, and unstructured) and tested differences between these fits with a goodness of fit test (BIC) to determine which covariance structure fits the data best (see Table 2); [results suggest that an unstructured covariance structure fits the data best, X(1) = X.XX, BIC = XX.XX, p = .XXX. If the model has convergence problems, we will try to increase the number of iterations, change tolerance levels, change optimization methods (e.g., BOBYQA optimizer instead of the Nelder-Mead optimization routine), and simplify the model by removing the random effect of vignette and the random effect of lab, in that order.
+#### Analysis Information ####
 
-Table 2: Covariance Structure
-Covariance Structure 	(X)(1)	BIC	p
-variance components 	X.XX	X	.XX
-diagonal 	X.XX	X	.XX
-unstructured	X.XX	X	.XX
+- Also not sure what you are saying here below 
+- How are you correcting this? Like what are we correcting? The model coefficient values? Or just some correlations? 
+
+	False discovery rate. To correct for family-wise error rates that arise from testing related dependent variables, we will use a corrected alpha cut-off criterion. In our MTurk pretest of US participants, the knowledge variable and the exploratory ability/luck variable were significantly correlated in each vignette ("Gerald", r = .476, p < .001; "Emma", r = .434, p < .001; "Darrel", r = .592, p < .001). Whereas the knowledge dependent variable and reasonableness dependent variable were weakly significantly correlated in two of the vignettes ("Emma", r = .202, p = .009; and "Darrel", r = .323, p < .001), and non-significant in the third ("Gerald", r = .128, p = .099). These preliminary data demonstrate a need to lower our false discovery rate to correct for the family-wise error rate of three related tests which we will do by using the Benjamini–Hochberg procedure as well as performing bootstrapping to obtain confidence intervals for each correlation using Fisher's transformation. 
+
+#### Analysis Information #### 
+
+- Let's not mix covariate terminology with covariance structure terminology here. 
+- Is there a good reason to use these different matrices? (I haven't seen it this way much but doesn't mean it's wrong) 
+
+Covariate analysis plan. We then fit a covariance structure to this final model that specified the form of the variance-covariance matrix. We attempted fitting data with three common structures (variance components, diagonal, and unstructured) and tested differences between these fits with a goodness of fit test (BIC) to determine which covariance structure fits the data best (see Table 2); [results suggest that an unstructured covariance structure fits the data best, X(1) = X.XX, BIC = XX.XX, p = .XXX. If the model has convergence problems, we will try to increase the number of iterations, change tolerance levels, change optimization methods (e.g., BOBYQA optimizer instead of the Nelder-Mead optimization routine), and simplify the model by removing the random effect of vignette and the random effect of lab, in that order.
 
 In a covariate analysis, we then added each covariate to the model and compare the models to determine whether each covariate improved the model or not (see Table 3 for model comparisons; see Table 4 for beta coefficient estimates for each predictor). However, because most of our site samples likely lacked adequate power to detect the effects of covariates and were not very representative or balanced regarding participant-level covariates, results from Table 3 and 4 should be interpreted carefully. 
 
-Table 3: Covariates – Model Comparisons 
-Covariates 	(X)(1)	BIC	p
-Participant Covariates 			
-    Years of education 	X.XX	X	.XX
-    Age	X.XX	X	.XX
-    Gender 	X.XX	X	.XX
-Lab Covariates 			
-    Online vs. In person	X.XX	X	.XX
-    Individual vs. In group	X.XX	X	.XX
-Compensated vs. Not	X.XX	X	.XX
-
-Table 4: Covariates – Unstandardized (B) and Standardized (β) Beta Coefficients
-Covariate	B	SE B	β	t	p
-Participant Covariates 					
-    Years of education 	XX.XX	X.XX	.XX	X.XX	.XX
-    Age	XX.XX	X.XX	.XX	X.XX	.XX
-    Gender 	XX.XX	X.XX	.XX	X.XX	.XX
-Lab Covariates 					
-    Online vs. In person	XX.XX	X.XX	.XX	X.XX	.XX
-    Individual vs. In group	XX.XX	X.XX	.XX	X.XX	.XX
-    Compensated vs. Not	XX.XX	X.XX	.XX	X.XX	.XX
-
 Reasonableness attribution. We then analyzed an identical multilevel model for the reasonableness attribution dependent variable. We found [no/ a small/medium/large] effect of condition on reasonableness attribution (see Table 5), indicating that differences in knowledge attribution rates [are/are not] due to perceived differences of what is reasonable for a given protagonist to believe. Condition [did not] significantly predicted reasonableness attribution rates (B = XX.XX, β = .XX, p =.XXX) and [did not] significantly account[ed] for [any/X.XX%] of the variance, (R2 = .XX, F(X,XX) = X.XX, p = .XX). The residual term associated with the primary independent variable [X] provides a yardstick for determining the size of the effect variation and corresponds to the deviation of the specific effects of the primary independent variable across all vignettes and laboratories (Sommet & Morselli, 2017). The random slope variance for vignettes was [X, p = .XX], indicating that the variation of the effect of the primary independent variable (belief condition) from one vignette to another was [small/moderate/large/non-significant]. The random slope variance for labs was [X, p = .XX], indicating that the variation of the effect of the primary independent variable (belief condition) from one lab to another was [small/moderate/large/nonsignificant] (see Figure 4 for visualization of lab variation).
 
-Table 5: Multilevel models reasonableness attribution;
-(Dependent variable: Reasonableness attribution; 
-Fixed: intercept, belief condition (base = knowledge case))
-	Constant		Gettier		Ignorance	
-Model	Est.	s.e.	Est.	s.e.	Est.	s.e.
-I = Null
-(includes condition)	X.X	X.X	X.X	X.X	X.X	X.X
-II = I + vignette 	X.X	X.X	X.X	X.X	X.X	X.X
-III = II + lab	X.X	X.X	X.X	X.X	X.X	X.X
-IV = III + test setting 	X.X	X.X	X.X	X.X	X.X	X.X
-V = IV + education 	X.X	X.X	X.X	X.X	X.X	X.X
-VI = V + gender	X.X	X.X	X.X	X.X	X.X	X.X
-
-Fixed (Continued): Vignette (base = "Darrel" vignette)
-	Gerald		Emma	
-Model	Est.	s.e.	Est.	s.e.
-I	X.X	X.X	X.X	X.X
-II 	X.X	X.X	X.X	X.X
-III 	X.X	X.X	X.X	X.X
-IV 	X.X	X.X	X.X	X.X
-V 	X.X	X.X	X.X	X.X
-VI 	X.X	X.X	X.X	X.X
-
-Fixed (Continued): Test setting (base = in person; base = individually; base = compensated)
-	Online		In group		Not Compensated	
-Model	Est.	s.e.	Est.	s.e.	Est.	s.e.
-I	X.X	X.X	X.X	X.X	X.X	X.X
-II 	X.X	X.X	X.X	X.X	X.X	X.X
-III 	X.X	X.X	X.X	X.X	X.X	X.X
-IV 	X.X	X.X	X.X	X.X	X.X	X.X
-V 	X.X	X.X	X.X	X.X	X.X	X.X
-VI 	X.X	X.X	X.X	X.X	X.X	X.X
-
-Fixed (Continued): Country (base = U.S.A.) 
-	Turkey		Brazil		China		And, so on...
-Model	Est.	s.e.	Est.	s.e.	Est.	s.e.	...
-I	X.X	X.X	X.X	X.X	X.X	X.X	...
-II 	X.X	X.X	X.X	X.X	X.X	X.X	...
-III 	X.X	X.X	X.X	X.X	X.X	X.X	...
-IV 	X.X	X.X	X.X	X.X	X.X	X.X	...
-V 	X.X	X.X	X.X	X.X	X.X	X.X	...
-VI 	X.X	X.X	X.X	X.X	X.X	X.X	...
-
-Fixed (Continued): Gender (base = female)
-	Male	
-Model	Est.	s.e.
-I	X.X	X.X
-II 	X.X	X.X
-III 	X.X	X.X
-IV 	X.X	X.X
-V 	X.X	X.X
-VI 	X.X	X.X
-
-Random 
-	Vignette 			Participant 			Laboratory 			Log-Lik
-Model	Var.	s.e.	s.d.	Var.	s.e.	s.d.	Var.	s.e.	s.d.	
-I	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-II 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-III 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-IV 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-V 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-VI 	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X	X.X
-
-Exploratory analysis plan. One unique facet of CREP studies is that student contributors are encouraged to add extensions to their replication (referred to as Direct+Plus replications), which could involve testing conditions or measures in their local sample after testing the direct portion of the replication protocol (retaining all direct aspects put forward in this protocol). Attempting to replicate prior research provides students with experience in methodology and research design and encouraging students to design and test their own extensions provides them experience in planning, pre-registering, and testing their own hypotheses. Each contributing site that elects to participate in a Direct+Plus replication will be required to pre-register an independent power analysis and required sample size (for adequate power) that includes all planned Direct+Plus analyses. We will provide assistance with these power analyses by helping simulate data in R. All teams participating in the same Direct+Plus extension may pool samples to meet the required sample size. 
-Although we will require a relatively small sample size for the purpose of the confirmatory analyses described above (the primary stream of data collection), we will also facilitate a secondary stream of data collection by rewarding contributors who commit to collecting a larger, more representative sample (N = 100) with recognition through author order as well as a CREP quality award. Data from this exploratory stream of data collection will be released as part of the data release plan to allow other researchers to perform exploratory analyses on this larger set of data. We will report these analyses in an exploratory section in the post-data Phase 2 manuscript as well as on our OSF page. 
-Discussion
-X
-Author Contributions: J.E.G. and C.R.C. conceived of the present study collaboration. B.F.H. drafted the manuscript and coordinated feedback and edits, M.J.B. and J.R.W. provided guidance with choosing the appropriate statistical approach, M.J.B., J.R.W., G.P., S.S., E.V., M.S., H.IJ., M.V., U.S.T., and A.F., provided guidance with refining the statistical and analytical models, H.IJ. conceived of and wrote the proposed data release plan, B.F.H. and J.R.W. wrote the R scripts for the planned analyses, B.F.H. and G.P. simulated data and performed power analyses to estimate the required sample sizes to detect the main effects, J.R.W., C.R.C., G.P., S.S., E.V., E.D.M., L.D.C.A., S.A.S., M.S., A.F., E.K.H., H.IJ., M.F., A.A.O., M.R.A., S.C., W.M.S., A.T., A.T.N., T.R.E., M.V., U.S.T., S.T.H.E., D.R., S.O., N.M., F.P., A.H., M.J.M. F.C., J.D.A., K.M.W., M.J.B., V.D., G.K., C.S., Y.W., M.L., P.S., N.L., C.L., A.J.K., D.J., K.B., E.W., C.B., G.F., S.W., G.H., R.T.W., C.L., K.S., D.D., and G.H. provided feedback throughout manuscript construction on methodological decisions, study design, cultural differences between labs, improving clarity and undergraduate accessibility, addressing reviewer concerns, and copy editing. All additional Accelerated CREP consortium authors have committed to collect samples for this study, except H.IJ., M.J.B., C.S., and Y.W. All primary authors read and approved of the final manuscript. 
-Conflicts of Interest: The authors declare that there were no conflicts of interest with respect to the authorship or the publication of this article. 
-Acknowledgments: The authors would like to thank all of the scientists on Twitter who provided suggestions and resources during the construction of this manuscript, particularly as it relates to our data simulations and analysis scripts. The authors would also like to thank Oscar Olvera for taking time out of their busy schedule to review our R script. Lastly, the first author would like to thank Jordan R. Wagge for her guidance and support during the writing and planning of this study.
-Funding: K.B. is supported by National Science Centre, Poland (2015/19/D/HS6/00641), E.V. is supported by the Swiss National Science Foundation (PZ00P1_154911 and PCEFP1_181141), M.J.B. is supported by the European Research Council (No 759320), and H. IJ. is supported by a French National Research Agency "Investissements d'avenir" program grant (ANR-15-IDEX-02). G.P. is supported by the Norwegian research council (FRIPRO 262338)
-Prior versions: Previous version of this manuscript are available at psyarxiv.com/zeux9/. Past versions contain most of the same content, with some corrections made to the design and analysis plan.  
-References
-Behling, O., & Law, K. S. (2000). Translating questionnaires and other research instruments: Problems and solutions. Thousand Oaks, Calif: Sage Publications.
-Bishop, P. A., & Herron, R. L. (2015). Use and Misuse of the Likert Item Responses and Other Ordinal Measures. International journal of exercise science, 8(3), 297-302.
-Brandt, M. J., IJzerman, H., Dijksterhuis, A., Farach, F., Geller, J., Giner-Sorolla, R., … Veer, A. V. (2014). The replication recipe: What makes for a convincing replication? Journal of Experimental Social Psychology, 50, 217–224. doi:10.1016/j.jesp.2013.10.005
-Chartier, C. R., & McCarthy, R. J. (2018, March 28). StudySwap Tutorial. doi:10.31234/osf.io/wqhbj
-Clark, H. (1973). The language as fixed-effect fallacy: A critique of language statistics in psychological research. Journal of Verbal Learning and Verbal Behavior, 12, 335–359. doi:10.1016/S0022-5371(73) 80014-3
-Colaço, D., Buckwalter, W., Stich, S., & Machery, E. (2014). Epistemic intuitions in fake-barn thought experiments. Episteme, 11, 199–212. doi:10.1017/epi.2014.7
-Dutant, J. (2015). The legend of the justified true belief analysis. Philosophical Perspectives, 29, 95-145. doi: 10.1111/phpe.12061
-Gettier, E. L. (1963). Is justified true belief knowledge? Analysis, 23, 121–123. doi:10.1093/analys/23.6.121
-Gelman, A., & Hill, J. (2007). Data Analysis using regression and multilevel/hierarchical models. Cambridge, NY: Cambridge University Press.
-Green, P., & MacLeod, C. J. (2016). SIMR: An R package for power analysis of generalized linear mixed models by simulation. Methods in Ecology and Evolution, 7, 493–498. doi:10.1111/2041-210X.12504
-Greenwald, A. G. (1975). Consequences of prejudice against the null hypothesis. Psychological Bulletin, 82, 1–20. doi:10.1037/h0076157
-Hall, B. F., Grahe, J. E., Brandt, M. J., Chartier, C. R., Christopherson, C. D., Legate, N., … Wagge, J. R. (2018, April 8). Accelerated CREP -- Turri, Buckwalter, Blouw (2015). Retrieved from osf.io/n5b3w
-Ichikawa, J. J., & Steup, M. (2018). The analysis of knowledge. In E. N. Zalta (Ed.), The Stanford Encyclopedia of Philosophy. Stanford, CA: Stanford University. 
-Jacquette, D. (1996). Is non-defectively justified true belief knowledge? Ratio, 9, 115–127. doi:10.1111/j.1467-9329.1996.tb00100.x
-Kenny, D. A. (1985). Quantitative methods for social psychology. In G. Lindzey & E. Aronson (Eds.), Handbook of social psychology (Vol. 1, 3rd ed., pp. 487–508). New York, NY: Random House. 
-Kenny, D.A., & Judd, C.M. (2019). The unappreciated heterogeneity of effect sizes: Implications for power, precision, planning of research, and replication. Unpublished manuscript.
-Leighton, D. C., Legate, N., LePine, S., Anderson, S. F., & Grahe, J. E. (2018). Self-esteem, self-disclosure, self-expression, and connection on Facebook: A collaborative replication meta-analysis. Psi Chi Journal of Psychological Research, 23(2), 98-109. doi:10.24839/2325-7642.JN23.2.98 
-Nicols, S., Stich, S., & Weinberg, J. M. (2003). Meta-skepticism: Meditations on ethno-epistemology. In S. Luper (Ed.), The skeptics (pp. 227–248). Aldershot, England: Ashgate. 
-Nagel, J., Mar, R., & San Juan, V. (2013). Authentic Gettier cases: A reply to Starmans and Friedman. Cognition, 129, 666–669. doi:10.1016/j.cognition.2013.08.016
-Nagel, J., San Juan, V., & Mar, R. A. (2013). Lay denial of knowledge for justified true beliefs. Cognition, 129, 652–661. doi:10.1016/j.cognition.2013.02.008
-Machery, E., Stich, S., Rose, D., Chatterjee, A., Karasawa K., Struchiner, N., ... Hashimoto, T. (2015). Gettier across cultures. NOÛS, 51, 1–20. doi:10.1111/nous.12110
-Machery, E., Stich, S. P., Rose, D., Alai, M., Angelucci, A., Berniunas, R., ... Zhu, J. (2017). The Gettier intuition from South America to Asia. Journal of the Indian Council of Philosophical Research, 34, 517–541. doi:10.1007/s40961-017-0113-y
-Moser, P. K. (2002). The Oxford handbook of epistemology. Chicago, IL: Oxford University Press.
-Moshontz, H., Campbell, L., Ebersole, C. R., IJzerman, H., Urry, H. L., Forscher, P. S., … Chartier, C. R. (2018). The Psychological Science Accelerator: Advancing psychology through a distributed collaborative network. Advances in Methods and Practices in Psychological Science, 1, 501-515. doi: 10.1177/2515245918797607
-Open Science Collaboration (2015). Estimating the reproducibility of psychological science. Science, 349 (6251), ac4716-aac4716. doi:10.1126/science.aac4716
-Powell, D., Horne, Z., & Pinillos, N. Á. (2014). Semantic integration as a method for investigating concepts. In J. Beebe (Ed.), Advances in experimental epistemology (pp. 119–144). London, UK: Bloomsbury. 
-Powell, D., Horne, Z., Pinillos, N. Á., & Holyoak, K. J. (2015). A Bayesian framework for knowledge attribution: Evidence from semantic integration. Cognition, 139, 92–104. doi:10.1016/j.cognition.2015.03.002
-Satchell, L. (2018, August 7). [In progress] Collaborators for simple add-on "psych of psych" study. Retrieved from osf.io/ywekt
-Seyedsayamdost, H. (2015). On normativity and epistemic intuitions: Failure of replication. Episteme, 12, 95–116. doi:10.1017/epi.2014.27
-Silberzahn, R., Uhlmann, E. L., Martin, D. P., Anselmi, P., Aust, F., & Awtrey, E. (2018). Many analysts, one data set: Making transparent how variations in analytic choices affect results. Advances in Methods and Practices in Psychological Science, 1, 337–356. doi: 10.1177/2515245917747646
-Simmons, J.P., Nelson, L.D., and Simonsohn, U. (2011). False-positive psychology undisclosed flexibility in data collection and analysis allows presenting anything as significant. Psychological Science, 22, 1359–1366. doi:10.1177/0956797611417632
-Simonsohn, U. (2013). Just post it: The lesson from two cases of fabricated data detected by statistics alone. Psychological Science, 24, 1875–1888. doi:10.1177/0956797613480366
-Snijders, T. A. B., & Bosker, R. J. (2012). Multilevel analysis: An introduction to basic and advanced multilevel modeling (2nd ed.). London, UK: Sage.
-Sommet, N., & Morselli, D. (2017). Keep calm and learn multilevel logistic modeling: A simplified three-step procedure using stata, R, Mplus, and SPSS. International Review of Social Psychology, 30, 203–218. doi:10.5334/irsp.90
-Sosa, E. (2007). Experimental philosophy and philosophical intuition. Philosophical Studies, 132, 99–107. doi:10.1007/s11098-006-9050-3
-Starmans, C., & Friedman, O. (2012). The folk conception of knowledge. Cognition, 124, 272–283. doi:10.1016/j.cognition.2012.05.017
-Starmans, C., & Friedman, O. (2013). Taking "know" for an answer: A reply to Nagel, San Juan, and Mar. Cognition, 129, 662–665. doi:10.1016/j.cognition.2013.05.009
-Turri, J. (2013). A conspicuous art: Putting Gettier to the test. Philosophers' Imprint, 13, 1–16.
-Turri, J. (2016a). Experimental epistemology and "gettier" cases. In S. Hetherington (Ed.), Knowledge and the Gettier Problem (pp. i-ii). Sydney, Australia: Cambridge University Press.  
-Turri, J. (2016b). Knowledge, certainty and assertion. Philosophical Psychology, 29, 293–299. doi:10.1080/09515089.2015.1065314
-Turri. J. (2016c). Vision, knowledge, and assertion. Consciousness and Cognition 41, 41–49. doi:10.1016/j.concog.2016.01.004 
-Turri, J., Buckwalter, W., & Blouw, P. (2015). Knowledge and luck. Psychonomic Bulletin and Review, 22, 378–390. doi:10.3758/s13423-014-0683-5
-Vickstrom, E. R., Shin, H. B., Collazo, S. G., and Bauman, K.J. (2015). How well — still good?
-Assessing the validity of the American community survey English-ability question. Retrieved from the U.S. Census Bureau website:  https://www.2020census.gov/content/dam/Census/library/working-papers/2015/demo/SEHSD-WP2015-18.pdf
-Weatherson, B. (2013). Margins and errors. Inquiry, 56, 63-76. doi: 10.1080/0020174X.2013.775015
-Weinberg, J. M., Nichols, S., & Stich, S. (2001). Normativity and epistemic intuitions. Philosophical Topics, 29, 429–460. doi:10.5840/philtopics2001291/217
-Wells, G. L., & Windschitl, P. D. (1999). Stimulus sampling and social psychological experimentation. Personality and Social Psychological Bulletin, 25, 1115–1125. doi:10.1177/01461672992512005 
- 
-Appendix A
-Dummy Coding of Variables
-Independent variable (IV1): 
-●	Vignette type, tested once for each participant, recorded in data output, dummy coded as:
-○	ConditionV1
-■	"Darrel" vignette = 0
-■	"Gerald" vignette = 1
-○	ConditionV2
-■	"Darrel vignette = 0
-■	"Emma" vignette = 1
-Independent variable (IV2): 
-●	Reading condition, randomly assigned to participant, recorded in data output, dummy coded as:
-○	ConditionV1
-■	Gettier case = 0
-■	Knowledge control = 1
-○	ConditionV2
-■	Gettier case = 0
-■	Ignorance control = 1
-
-Dependent variable (DV1):
-●	Used as dependent variable in first multilevel linear regression analysis.
-●	Knowledge attribution measured continuously from "only believes" to "knows".
-Dependent variable (DV2):
-●	Used as dependent variable in second multilevel linear regression analysis.
-●	Reasonableness attribution measured continuously from "unreasonable" to "reasonable".
-
-The following level-2 and level-3 variables will be included as predictors when constructing the random intercept model for each dependent variable (means and standard deviations will be calculated and reported for each).
-Level-1 variables:
-●	Gender, measured as an open-ended string response, will be grouped into three nominal categories (female, male, other). If we end up with enough participants who identify in the "other" category for a sufficiently powered comparison, then gender will be dummy coded as:
-○	Gender1
-■	Female = 0
-■	Male = 1
-○	Gender2
-■	Female = 0
-■	Other = 1
-●	Race/ethnicity, measured as an open-ended string response, then grouped into similar nominal categories, dummy coded as:
-
- 	Race1	Race2	Race3	Race4	Race5	Race6	Race7
-Black/African descent	1	0	0	0	0	0	0
-White/European descent	0	0	0	0	0	0	0
-Latin/Hispanic descent	0	1	0	0	0	0	0
-Native American descent	0	0	1	0	0	0	0
-Asian descent	0	0	0	1	0	0	0
-Southeast Asian descent	0	0	0	0	1	0	0
-Hawaiian/Pacific Islander descent	0	0	0	0	0	1	0
-Native Australian descent	0	0	0	0	0	0	1
-
-●	Age, measured as an open-ended continuous response which can range from 0 to 120.
-
-●	Country of residence, measured as an open ended string response, and then grouped by country and dummy coded.
-○	Countries will be coded accordingly:
-
- 	Region 1	Region 2	Region 3	Region 4	Region 5
-Africa	1	0	0	0	0
-Europe	0	1	0	0	0
-Oceania	0	0	1	0	0
-Asia 	0	0	0	1	0
-North America 	0	0	0	0	0
-Latin America/Caribbean	0	0	0	0	1
-
-Level-2 variables:
-●	Test setting variables:
-○	Setting
-■	Measured dichotomously as whether they took the test in person or remotely, dummy coded as: 
-●	Took test in person = 0
-●	Took test remotely = 1
-○	Group size
-■	For those tested in person, measured dichotomously as whether they were tested in a group or individually, dummy coded as:
-●	Took test in a group = 0
-●	Took test individually = 1
-○	Compensated
-■	For those compensated, measured dichotomously as whether they were compensated or not compensated, dummy coded as:
-●	Compensated = 0
-●	Not compensated = 1 
-Appendix B
-Vignette 1: Original "Darrel" Squirrel Vignette (Turri et al., 2015)
-
-D1: "Darrel" Knowledge Control Condition
-
-Darrel is an ecologist collecting data on red speckled ground squirrels in Canyon Falls national park. The park is divided into ten zones and today Darrel is working in Zone 3. While scanning the river valley with his binoculars, Darrel sees a small, bushy-tailed creature with distinctive red markings on its chest and belly. The red speckled ground squirrel is the only native species with such markings. Darrel records in his journal, "At least one red speckled ground squirrel in Zone 3 today."
-
-Ecologists are unaware that a complex network of aquifers recently began drying up in the park. These aquifers carry vital nutrients to the trees and other forms of plant life that support the squirrels. And the aquifers in the river valley running through Zone 3 are no exception. The animal Darrel is looking at is indeed a thirsty red speckled ground squirrel.
-
-D2: "Darrel" Gettier Case Condition
-
-Darrel is an ecologist collecting data on red speckled ground squirrels in Canyon Falls national park. The park is divided into ten zones and today Darrel is working in Zone 3. While scanning the river valley with his binoculars, Darrel sees a small, bushy-tailed creature with distinctive red markings on its chest and belly. The red speckled ground squirrel is the only native species with such markings. Darrel records in his journal, "At least one red speckled ground squirrel in Zone 3 today."
-
-Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. Still, the animal Darrel is looking at is indeed a red speckled ground squirrel.
-
-D3: "Darrel" Ignorance Control Condition
-
-Darrel is an ecologist collecting data on red speckled ground squirrels in Canyon Falls national park. The park is divided into ten zones and today Darrel is working in Zone 3. While scanning the river valley with his binoculars, Darrel sees a small, bushy-tailed creature with distinctive red markings on its chest and belly. The red speckled ground squirrel is the only native species with such markings. Darrel records in his journal, "At least one red speckled ground squirrel in Zone 3 today."
-
-Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. And, the animal Darrel is looking at is indeed one of the prairie dogs.
-
-Questions (with bar charts demonstrating pretest response rates)
-○	Primary knowledge probe (from Turri et al., 2015):
-■	"Darrel ______ that there is at least one red speckled ground squirrel in Zone 3 today."
-●	Visual analogue scale, 0-100: 
-○	[only believes <-------------------------> knows]
- 
-○	Darrel Gettier (M = 65.57, SD = 37.99)
-○	Darrel ignorance (M = 13.49, SD = 25.49)
-○	Darrel knowledge (M = 86.19, SD = 24.24) 
-○	Comprehension question (from Turri et al., 2015): 
-■	"Darrel is looking at a _____."
-●	Binary: [ground squirrel/prairie dog]
-○	Reasonableness probe (from Turri et al., 2015):
-■	"It is _____ for Darrel to think that he is looking at a red speckled ground squirrel." 
-●	Visual analogue scale, 0-100:
-○	[unreasonable <-------------------------> reasonable]
- 
-○	Luck/Ability probe (from Turri, 2016b)
-■	"Darrel got the ______ answer because of his _____."
-●	Requires two responses: 
-○	Binary: [right/wrong]
-○	Visual analogue scale, 0-100:
-■	[(in)ability<-------------------------> (good/bad) luck]
- 
-○	Alternative knowledge probe (from Nagel et al., 2013)
-■	"In your view, which of the following sentences better describes Darrel's situation?"
-●	Binary: ["Darrel knows that the animal he saw is a red speckled ground squirrel." OR "Darrel feels like he knows that the animal he saw is a red speckled ground squirrel, but he doesn't actually know that it is."]
-
- 
-Vignette 2: Modified  "Gerald" Fake Barn Vignette (Colaço et al., 2014):
-
-G1: "Gerald" Knowledge Control Condition
-
-Gerald is driving through the countryside with his young son Andrew. Along the way he sees numerous objects and points them out to his son. ‘That's a cow, Andrew,' Gerald says, ‘and that over there is a house where farmers live.' Gerald has no doubt about what the objects are. 
-
-What Gerald and Andrew do not realize is the area they are driving through was recently hit by a very serious tornado. This tornado did not harm any of the animals, but did destroy most buildings. In an effort to maintain the rural area's tourist industry, local townspeople rebuilt new houses in the place of the destroyed houses. These new houses were rebuilt with all the materials necessary for them to look exactly like the original houses from the road, and they are also fully furnished and can now be used as actual housing.
-
-Having just entered the tornado-ravaged area, Gerald notices the many houses lining the roads. When he tells Andrew ‘That's a house,' the object he sees and points at is a real house that has survived the tornado and not one of the new houses.
-
-G2: "Gerald" Gettier Case Condition
-
-Gerald is driving through the countryside with his young son Andrew. Along the way he sees numerous objects and points them out to his son. ‘That's a cow, Andrew,' Gerald says, ‘and that over there is a house where farmers live.' Gerald has no doubt about what the objects are. 
-
-What Gerald and Andrew do not realize is the area they are driving through was recently hit by a very serious tornado. This tornado did not harm any of the animals, but did destroy most buildings. In an effort to maintain the rural area's tourist industry, local townspeople built fake houses in the place of the destroyed houses. These fake houses were built with only the walls necessary for them to look exactly like real houses from the road, but they are empty and only for looks and cannot be used as actual housing.
-
-Having just entered the tornado-ravaged area, Gerald has not yet encountered any fake houses. When he tells Andrew ‘That's a house,' the object he sees and points at is a real house that has survived the tornado and not one of the fake houses.
-
-G3: "Gerald" Ignorance Control Condition
-
-Gerald is driving through the countryside with his young son Andrew. Along the way he sees numerous objects and points them out to his son. ‘That's a cow, Andrew,' Gerald says, ‘and that over there is a house where farmers live.' Gerald has no doubt about what the objects are. 
-
-What Gerald and Andrew do not realize is the area they are driving through was recently hit by a very serious tornado. This tornado did not harm any of the animals, but did destroy most buildings. In an effort to maintain the rural area's tourist industry, local townspeople built fake houses in the place of the destroyed houses. These fake houses were built with only the walls necessary for them to look exactly like real houses from the road, but they are empty and only for looks and cannot be used as actual housing.
-
-Having driven through the tornado-ravaged area, Gerald has encountered many of these fake houses. When he tells Andrew ‘That's a house,' the object he sees and points at is a fake house that was built after the tornado and is not actually a house.
-
-Questions (with bar charts demonstrating pretest response rates)
-○	Primary knowledge probe (from Turri et al., 2015):
-■	"Gerald ______ that he is pointing at a real house."
-●	Visual analogue scale, 0-100: 
-○	[only believes <-------------------------> knows]
- 
-○	Gerald Gettier (M = 58.28, SD = 38.68)
-○	Gerald ignorance (M = 8.35, SD = 19.35)
-○	Gerald knowledge (M = 76.96, SD = 32.29) 
-○	Comprehension question (from Turri et al., 2015): 
-■	"Gerald is pointing at a _____ house. "
-●	Binary: [real/fake]
-○	Reasonableness probe (from Turri et al., 2015):
-■	"It is _____ for Gerald to think that he is pointing at a real house." 
-●	Visual analogue scale, 0-100:
-○	[unreasonable <-------------------------> reasonable]
- 
-○	Luck/Ability probe (from Turri, 2016b)
-■	"Gerald got the ______ answer because of his _____."
-●	Requires two responses: 
-○	Binary: [right/wrong]
-○	Visual analogue scale, 0-100:
-■	[(in)ability<-------------------------> (good/bad) luck]
- 
-○	Alternative knowledge probe (from Nagel et al., 2013)
-■	"In your view, which of the following sentences better describes Gerald's situation?"
-●	Binary: ["Gerald knows that the house he is pointing at is a real house." OR "Gerald feels like he knows that the house he is pointing at is a real house, but he doesn't actually know that it is."]
-
-
-Vignette 3: Modified  "Emma" Diamond Vignette (adapted from Nagel et al., 2013)
-
-E1: "Emma" Knowledge Control Condition
- 
-Emma is shopping for jewelry. She goes into a nice-looking store and selects a necklace from a tray marked ‘‘Diamond Earrings and Pendants''. ‘‘What a lovely diamond!'' she says as she tries it on. Emma could not tell the difference between a real diamond and a cubic zirconium fake just by looking or touching. However, this particular store has very honest employees who have a really positive reputation for their guaranteed real diamonds; in the tray Emma chose, all of the pendants had real diamonds rather than fake cubic zirconium stones (and the one she chose was really nice).
- 
-E2: "Emma" Gettier Case Condition
- 
-Emma is shopping for jewelry. She goes into a nice-looking store and selects a necklace from a tray marked ‘‘Diamond Earrings and Pendants''. ‘‘What a lovely diamond!'' she says as she tries it on. Emma could not tell the difference between a real diamond and a cubic zirconium fake just by looking or touching. Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose, almost all of the pendants had cubic zirconium stones rather than diamonds (but the one she chose happened to be real).
- 
-E3: "Emma" Ignorance Control Condition
- 
-Emma is shopping for jewelry. She goes into a nice-looking store and selects a necklace from a tray marked ‘‘Diamond Earrings and Pendants''. ‘‘What a lovely diamond!'' she says as she tries it on. Emma could not tell the difference between a real diamond and a cubic zirconium fake just by looking or touching. Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose from, all of the pendants had cubic zirconium stones rather than diamonds (and the one she chose was in fact fake). 
-
-
-
-
-
-Questions (with bar charts demonstrating pretest response rates)
-○	Primary knowledge probe (from Turri et al., 2015):
-■	 "Emma ______ that she chose a necklace made of diamonds."
-●	Visual analogue scale, 0-100: 
-○	[only believes <-------------------------> knows]
- 
-○	Emma Gettier (M = 26.23, SD = 33.55)
-○	Emma ignorance (M = 8.44, SD = 19.26)
-○	Emma knowledge (M = 67.59, SD = 31.58) 
-○	Comprehension question (from Turri et al., 2015): 
-■	"Emma chose a necklace made of _____ ." 
-●	Binary: [cubic zirconium stones/diamonds]
-○	Reasonableness probe (from Turri et al., 2015):
-■	"It is _____ for Emma to think that she chose a necklace made of diamonds."
-●	Visual analogue scale, 0-100: 
-○	[unreasonable <-------------------------> reasonable]
- 
-○	Luck/Ability probe (from Turri, 2016b)
-■	"Emma got the ______ answer because of her _____."
-●	Requires two responses: 
-○	Binary: [right/wrong]
-○	Visual analogue scale, 0-100:
-■	[(in)ability <-------------------------> (good/bad) luck]
- 
-○	Alternative knowledge probe (from Nagel et al., 2013)
-■	"In your view, which of the following sentences better describes Emma's situation?"
-●	Binary: ["Emma knows that she chose a necklace made of diamonds." OR "Emma feels like she knows that she chose a necklace made of diamonds, but he doesn't actually know that it is."]
-
-Funneled Debrief Questions
-●	What do you think is the purpose of this study?
-●	What was your impression of the materials in this study?
-●	Have you ever participated in a similar study? If yes, please describe the study.
- 
-Appendix C
-
-The Study Experience Questionnaire
-The following questionnaire is your chance to give feedback on the study you have just participated in. 
-
-Please use the following anchors to describe your experience of this study. 
-Please circle the number that best represents your experience of the study relative to the two ends of the scale. Note that a ‘5' is the middle of a scale and can be used if you are not sure of an answer.   
-
-How much did you enjoy the study?
-I enjoyed the study a lot	Not sure	I did not enjoy the study at all
-1                2                3                4                5                6                7                8                9
-
-How nervous were you during the study?
-I was very nervous during the study	Not sure	I was not nervous during the study at all
-1                2                3                4                5                6                7                8                9
-
-How difficult did you find the study?
-I found the study tasks very difficult to complete	Not sure	I did not find the study tasks difficult to complete at all
-1                2                3                4                5                6                7                8                9
-
-How boring did you find the study?
-I found the study task very boring	Not sure	I did not find the study activity boring at all
-1                2                3                4                5                6                7                8                9
-
-How tiring did you find the study?
-I found the study task very tiring	Not sure	I did not find the study task tiring at all
-1                2                3                4                5                6                7                8                9
-
-How quickly did you adjust to the study task?
-I was able to adjust to the study task very quickly	Not sure	I was not able to adjust to the study task quickly
-1                2                3                4                5                6                7                8                9
-
-How regularly do you take part in research studies?
-I have taken part in many research studies	Not sure	I have never taken part in a research study before
-1                2                3                4                5                6                7                8                9
-
-How self-conscious of your responses were you during the study?
-I was very self-conscious of the responses I gave in this study	Not sure	I was not at all self-conscious of the responses I gave in this study
-1                2                3                4                5                6                7                8                9
-
-How motivated were you to help the researchers during the study?
-I was strongly motivated to help make the study a success for the researchers	Not sure	I was not at all motivated to help make the study a success for the researchers 
-1                2                3                4                5                6                7                8                9
-
-To what extent did you believe you were contributing to important research?
-I believe that my participation was contributing to very important research	Not sure	I do not believe that my participation was contributing to important research 
-1                2                3                4                5                6                7                8                9
-
-To what extent were you trying to work out the aim of the study during your participation?
-I was trying to work out the aim of the study during my participation	Not sure	I was not trying to work out the aim of the study during my participation
-1                2                3                4                5                6                7                8                9
-
-
-Do you have any further comments about your experience of this study that we have not addressed above? Please give any further comments about this study below:
-
-## Visual VAS 
-
-Make this a violin plot 
-
-```{r}
-library(ggplot2)
-ggplot(full_long, aes(var_know_vas, fill = vignette)) +
-  theme_classic() + 
-  geom_histogram() + 
-  facet_wrap(~cond)
-```
-
-		
-## Order Effects
-
-```{r}
-order_test <- chisq.test(full_long$vignette_order, full_long$var_know_bin)
-order_test$stdres
-table(full_long$vignette_order, full_long$var_know_bin)
-```
 
 
 
