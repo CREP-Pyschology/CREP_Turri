@@ -1,0 +1,709 @@
+---
+title: "ACREP Updated Analyses"
+author: "erin buchanan"
+date: "Last Updated `r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Information
+
+Multilab close replication of: Experiment 1 from Turri, J., Buckwalter, W., & Blouw, P. (2015). Knowledge and luck. *Psychonomic Bulletin and Review*, 22, 378-390.
+
+[Data and registered protocols:](https://osf.io/n5b3w/)
+
+[Codebook](https://docs.google.com/spreadsheets/d/1KjXqgfVgguHeDXVtlHHhJ9zsRGVDfPVPH4tbh75P46U/edit#gid=903093128)
+
+[Preprint](https://psyarxiv.com/zeux9/)
+
+## Libraries
+
+```{r}
+library(rio)
+library(lme4)
+library(lmerTest)
+library(nlme)
+library(MuMIn)
+library(plyr)
+library(psych)
+library(tidyr)
+library(ggplot2)
+```
+
+## Import the Data
+
+The `full_long` dataset includes all participants in long format - wherein each trial of their study is on one row of the dataset. Our uploaded data also includes `full.Rds` which is the same data in wide format - one column for each variable in the dataset and one row per participant.
+
+```{r}
+full_long <- readRDS("../04_Data/rds/d_all_long.Rds")
+#str(full_long)
+```
+
+Import the open-ended responses and prepare them for merging with the final dataset. This section:
+
+  - Imports all the files
+  - Includes a coder id
+  - Corrects all the issues with typed codings
+  - Converts each item to coder counts so you can convert from wide to long
+  - Converts from wide to long
+  - Converts into scoring:
+    - No or NA gets 0 points 
+    - Maybe gets 1 point
+    - Yes/test gets 2 points
+    - Participants are marked as "excluded" if they get 4 total points across three coders 
+  - Participants are also marked as "nonsense" if they did not write a legible answer or simply typed gibberish. These data points are not excluded but marked if you would like to repeat the analysis and exclude them. 
+
+```{r}
+file.names <- list.files(path = "../04_Data/open_responses/", 
+                         pattern = ".xlsx", full.names = T, 
+                         recursive = T)
+
+previous.files <- lapply(file.names, function(x){ import(x, sheet = 2)})
+purpose.files <- lapply(file.names, function(x){ import(x, sheet = 3)})
+
+# add coder ids 
+coder.id <- unlist(lapply(strsplit(file.names, "psa004"), function(x) x[[2]]))
+
+names(previous.files) <- coder.id
+names(purpose.files) <- coder.id
+
+previousDF <- do.call(rbind.fill, previous.files)
+purposeDF <- do.call(rbind.fill, purpose.files)
+
+previousDF$coder <- rep(names(previous.files), unlist(lapply(previous.files, nrow)))
+purposeDF$coder <- rep(names(purpose.files), unlist(lapply(purpose.files, nrow)))
+
+# ensure the text is normalized 
+previousDF$previous <- gsub("\\s+", " ", previousDF$previous)
+purposeDF$purpose <- gsub("\\s+", " ", purposeDF$purpose)
+
+# fix the yes/no/maybe/NA
+previousDF$code <- tolower(previousDF$code)
+table(previousDF$code)
+previousDF$code <- gsub("np", "no", previousDF$code)
+previousDF$code <- gsub("n/a", "na", previousDF$code)
+table(previousDF$code)
+previousDF <- subset(previousDF, !is.na(id))
+
+purposeDF$code <- tolower(purposeDF$code)
+table(purposeDF$code)
+purposeDF$code <- gsub("mayb$|meybe", "maybe", purposeDF$code)
+purposeDF$code <- gsub("mo", "no", purposeDF$code)
+purposeDF$code <- gsub("n/a", "na", purposeDF$code)
+table(purposeDF$code)
+purposeDF <- subset(purposeDF, !is.na(id))
+
+# add coder count
+previous_count <- as.data.frame(table(previousDF$id))
+previous_count <- previous_count[order(previous_count$Var1), ]
+previousDF <- previousDF[order(previousDF$id), ]
+previousDF$coder_num <- NA
+
+for (i in 1:length(previous_count$Freq)){
+  previousDF$coder_num[previousDF$id == previous_count$Var1[i]] <- 1:previous_count$Freq[i]
+}
+
+purpose_count <- as.data.frame(table(purposeDF$id))
+purpose_count <- purpose_count[order(purpose_count$Var1), ]
+purposeDF <- purposeDF[order(purposeDF$id), ]
+purposeDF$coder_num <- NA
+
+for (i in 1:length(purpose_count$Freq)){
+  purposeDF$coder_num[purposeDF$id == purpose_count$Var1[i]] <- 1:purpose_count$Freq[i]
+}
+
+# long to wide for scoring
+previousDF_wide <- pivot_wider(data = previousDF,
+                              id_cols = c("id", "survey_lang", "previous"), 
+                              names_from = "coder_num",
+                              values_from = "code")
+
+purposeDF_wide <- pivot_wider(data = purposeDF,
+                              id_cols = c("id", "survey_lang", "purpose"), 
+                              names_from = "coder_num",
+                              values_from = "code")
+
+# score the yes/no/maybe/NA
+previousDF_wide$score_1 <- previousDF_wide$`1`
+previousDF_wide$score_2 <- previousDF_wide$`2`
+previousDF_wide$score_3 <- previousDF_wide$`3`
+previousDF_wide$score_4 <- previousDF_wide$`4`
+
+previousDF_wide$score_1 <- gsub("maybe", "1", previousDF_wide$score_1)
+previousDF_wide$score_1 <- gsub("no|na", "0", previousDF_wide$score_1)
+previousDF_wide$score_1 <- gsub("yes|test", "2", previousDF_wide$score_1)
+previousDF_wide$score_2 <- gsub("maybe", "1", previousDF_wide$score_2)
+previousDF_wide$score_2 <- gsub("no|na", "0", previousDF_wide$score_2)
+previousDF_wide$score_2 <- gsub("yes|test", "2", previousDF_wide$score_2)
+previousDF_wide$score_3 <- gsub("maybe", "1", previousDF_wide$score_3)
+previousDF_wide$score_3 <- gsub("no|na", "0", previousDF_wide$score_3)
+previousDF_wide$score_3 <- gsub("yes|test", "2", previousDF_wide$score_3)
+previousDF_wide$score_4 <- gsub("maybe", "1", previousDF_wide$score_4)
+previousDF_wide$score_4 <- gsub("no|na", "0", previousDF_wide$score_4)
+previousDF_wide$score_4 <- gsub("yes|test", "2", previousDF_wide$score_4)
+
+previousDF_wide$count <- apply(
+  previousDF_wide[ , grep("score", colnames(previousDF_wide))], 1, 
+  function(x) { sum(!is.na(x)) } )
+previousDF_wide$sum <- apply(
+  previousDF_wide[ , grep("score", colnames(previousDF_wide))], 1, 
+  function (x) { sum(as.numeric(x), na.rm = T)} )
+
+previousDF_wide$exclude <- previousDF_wide$sum >= 4
+previousDF_wide$nonsense <- apply(
+  previousDF_wide[ , grep("1|2|3|4", colnames(previousDF_wide))], 1, 
+  function (x) {sum(as.numeric(x == "na"), na.rm = T)}
+) == 3
+
+purposeDF_wide$score_1 <- purposeDF_wide$`1`
+purposeDF_wide$score_2 <- purposeDF_wide$`2`
+purposeDF_wide$score_3 <- purposeDF_wide$`3`
+
+purposeDF_wide$score_1 <- gsub("maybe", "1", purposeDF_wide$score_1)
+purposeDF_wide$score_1 <- gsub("no|na", "0", purposeDF_wide$score_1)
+purposeDF_wide$score_1 <- gsub("yes|test", "2", purposeDF_wide$score_1)
+purposeDF_wide$score_2 <- gsub("maybe", "1", purposeDF_wide$score_2)
+purposeDF_wide$score_2 <- gsub("no|na", "0", purposeDF_wide$score_2)
+purposeDF_wide$score_2 <- gsub("yes|test", "2", purposeDF_wide$score_2)
+purposeDF_wide$score_3 <- gsub("maybe", "1", purposeDF_wide$score_3)
+purposeDF_wide$score_3 <- gsub("no|na", "0", purposeDF_wide$score_3)
+purposeDF_wide$score_3 <- gsub("yes|test", "2", purposeDF_wide$score_3)
+
+purposeDF_wide$count <- apply(
+  purposeDF_wide[ , grep("score", colnames(purposeDF_wide))], 1, 
+  function(x) { sum(!is.na(x)) } )
+purposeDF_wide$sum <- apply(
+  purposeDF_wide[ , grep("score", colnames(purposeDF_wide))], 1, 
+  function (x) { sum(as.numeric(x), na.rm = T)} )
+
+purposeDF_wide$exclude <- purposeDF_wide$sum >= 4
+purposeDF_wide$nonsense <- apply(
+  purposeDF_wide[ , grep("1|2|3", colnames(purposeDF_wide))], 1, 
+  function (x) {sum(as.numeric(x == "na"), na.rm = T)}
+) == 3
+
+sum(duplicated(purposeDF_wide$id))
+sum(duplicated(previousDF_wide$id))
+```
+
+## Fix Data Coding / Examine Covariates  
+
+In this section, we clean up the following data issues:
+  
+  - Recode compensation to text data and fix missing mturk information 
+  - Examine gender labels
+  - Recode education to number and examine 
+
+```{r}
+# better labels for graphs
+full_long$vignette <- factor(full_long$vignette,
+                             levels = c("D", "E", "G"),
+                             labels = c("Daryl", "Emma", "Gerald"))
+
+full_long$cond <- factor(full_long$cond,
+                             levels = c("G", "I", "K"),
+                             labels = c("Gettier", "Ignorance", "Knowledge"))
+
+# give compensation type labels
+table(full_long$comp, useNA = "ifany")
+full_long$comp <- factor(full_long$comp,
+                         levels = 1:3,
+                         labels = c("No", "Yes", "Not Sure"))
+
+# examine compensation type by lab
+table(full_long$comp, full_long$lab_id, useNA = "ifany")
+# big NA missing c("20a1ff", "c7b55a", "aba0ac", "b6c8ec", "87d100")
+
+# this is mturk compensation is yes 
+full_long$comp[full_long$lab_id == "b6c8ec"] <- "Yes"
+full_long$turk <- full_long$lab_id == "b6c8ec"
+
+table(full_long$comp, useNA = "ifany")
+
+# gender
+table(full_long$gender, useNA = "ifany")
+
+# describe education years
+full_long$education <- as.numeric(full_long$education)
+describe(full_long$education[!duplicated(full_long$id)])
+
+# describe age
+describe(full_long$age[!duplicated(full_long$id)])
+
+# number of rows
+nrow(full_long)
+# number of participants
+length(unique(full_long$id))
+```
+
+## Study Exclusions
+
+In this section, we will mark each exclusion criteria to be able to denote how many exclusions each participant may have had.
+
+### Majority Age
+
+(1) if the participant is not the majority age of their country or older (unless parent/guardian waiver provided)
+
+In this section, we will exclude all participants who are under 18 or are not the majority age of their country or older.
+
+https://en.wikipedia.org/wiki/Age_of_majority
+
+```{r}
+# table of lab countries
+table(full_long$lab_country, useNA = "ifany")
+
+# age information
+summary(full_long$age)
+
+# minimum age by country
+tapply(full_long$age, full_long$lab_country, min, na.rm = T)
+
+# exclude based on age
+full_long$age_exclusion <- NA
+
+age18 <- c("AUT", "AUS", "CAN", "CHE", "DEU", "GBR", "GRC", "HUN", "NOR", "NZL", "POL", "PRT", "ROU", "RUS", "SGP", "TUR", "TWN", "USA")
+age19 <- c("SVK")
+age21 <- c("ARE")
+
+full_long$age_exclusion[full_long$lab_country %in% age18] <- full_long$age[full_long$lab_country %in% age18] < 18
+
+full_long$age_exclusion[full_long$lab_country %in% age19] <- full_long$age[full_long$lab_country %in% age19] < 19
+
+full_long$age_exclusion[full_long$lab_country %in% age21] <- full_long$age[full_long$lab_country %in% age21] < 21
+
+full_long$age_exclusion[is.na(full_long$age_exclusion)] <- TRUE
+
+full_long$age_exclusion[full_long$age > 100] <- TRUE
+```
+
+### Previous Knowledge/Participation of Study 
+
+(2) if the participant has taken part in a previous version of this study or in another contributors' replication of the same study
+
+```{r}
+full_long <- merge(full_long,
+                   previousDF_wide[ , c("id", "exclude", "nonsense")], all.x = T) 
+
+# number of rows
+nrow(full_long)
+# number of participants
+length(unique(full_long$id))
+
+colnames(full_long)[(ncol(full_long)-1):ncol(full_long)] <- c("previous_exclusion", "previous_nonsense")
+```
+
+### Comprehension Questions 
+
+(3) if the participant fails to answer comprehension questions correctly
+
+```{r}
+table(full_long$dge_valid)
+
+full_long$studyans_exclusion <- !(full_long$dge_valid)
+```
+
+### Knowledge of Experiment/Hypothesis 
+
+(4) if the participant correctly and explicitly articulate knowledge of the specific hypotheses or specific conditions of this study when answering the funneled debriefing questions. 
+
+```{r}
+full_long <- merge(full_long,
+                   purposeDF_wide[ , c("id", "exclude", "nonsense")], all.x = T) 
+
+# number of rows
+nrow(full_long)
+# number of participants
+length(unique(full_long$id))
+
+colnames(full_long)[(ncol(full_long)-1):ncol(full_long)] <- c("purpose_exclusion", "purpose_nonsense")
+```
+
+### Language Proficiency 
+
+We will also exclude participants who self-report their understanding of the tested language as "not well" or "not well at all". We based this exclusion criteria on a recent study that found that non-native English speakers who self-report as "very well" and "well" tend to score in the "intermediate" and "basic" categories on an English proficiency test respectively, while those who self-report as "not well" and "not at all" tend to score in the "below basic" category (Vickstrom, Shin, Collazo, & Bauman, 2015). All excluded data will be included in the data files on the overall OSF page, along with the particular reason for why they were excluded. 
+
+```{r}
+summary(full_long$language)
+
+full_long$lang_exclusion <- full_long$language == "not very well" | full_long$language == "not well at all" 
+
+full_long$lang_exclusion[is.na(full_long$lang_exclusion)] <- TRUE
+```
+
+### Total Exclusions
+
+In this section, we provide the total (data point) exclusions for each particular screening item plus a table with all exclusions forever. 
+
+```{r}
+full_long$total_exclusion <- apply(full_long[ , grep("exclusion", colnames(full_long))], 1, sum)
+
+table(full_long$age_exclusion)
+table(full_long$lang_exclusion)
+table(full_long$studyans_exclusion)
+table(full_long$previous_exclusion)
+table(full_long$purpose_exclusion)
+table(full_long$total_exclusion)
+
+# multiway table of all exclusions 
+exclusions <- as.data.frame(table(full_long$age_exclusion, 
+                                  full_long$lang_exclusion, 
+                                  full_long$previous_exclusion,
+                                  full_long$purpose_exclusion, 
+                                  full_long$studyans_exclusion))
+colnames(exclusions) <- c("Age", "Language", "Previous", "Purpose", "Comprehension", "Frequency")
+exclusions$Num_Participants <- exclusions$Frequency / 3
+
+exclusions
+
+final_long <- subset(full_long, total_exclusion < 1)
+
+# total number data points originally
+nrow(full_long) 
+# total number data points now
+nrow(final_long) 
+
+# original number of participants 
+length(unique(full_long$id)) 
+# final number of participants 
+length(unique(final_long$id)) 
+```
+
+## Descriptives and Demograhics
+
+```{r}
+# total lab count
+length(unique(full_long$lab_id))
+
+# usable data lab count
+length(unique(final_long$lab_id))
+
+# total countries
+table(full_long$lab_country)
+length(table(full_long$lab_country))
+
+# usable countries
+table(final_long$lab_country)
+length(table(final_long$lab_country))
+
+# proportion usable data by country
+table(final_long$lab_country) / table(full_long$lab_country)
+```
+
+## Analysis Overview 
+
+- Analysis:
+  - Multilevel modeling using appropriate linking function 
+- Dependent variable(s):
+  - Knowledge
+  - Luck
+  - Reasonable
+- Independent variable:
+  - Condition 
+- Covariates: 
+  - Test setting: compensated versus uncompensated
+  - Age
+  - Gender (men/women/other)
+  - Years of education 
+- Random intercepts:
+  - vignette / participant / lab / maybe geographic region
+  
+## Data Screening
+
+In this section, we will screen the continuous VAS variable, as the BIN variable does not require the same screening because of the different assumptions. 
+
+### Knowledge 
+
+```{r}
+# drop levels
+final_long$lab_id <- droplevels(final_long$lab_id)
+final_long$id <- factor(final_long$id)
+final_long$vignette <- factor(final_long$vignette)
+
+# check numbers
+table(final_long$cond, useNA = "ifany")
+table(final_long$comp, useNA = "ifany")
+table(final_long$gender, useNA = "ifany")
+length(na.omit(final_long$know_vas))
+
+# check data
+hist(final_long$know_vas)
+
+# visualize the problem 
+ggplot(final_long, aes(know_vas)) + 
+  geom_histogram() + 
+  facet_grid(cond~vignette) +  
+  theme_classic() + 
+  ylab("Frequency") + 
+  xlab("Knowledge Attribution Visual Analogue Score")
+
+## knowledge 
+ds.model <- lme(know_vas ~ cond + comp + age + gender + education,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+
+# additivity
+round(summary(ds.model)$corFixed,2)
+
+# normality
+standardized <- residuals(ds.model, type = "normalized")
+hist(standardized) 
+# linearity
+{qqnorm(standardized)
+  abline(0,1)}
+
+# homosc
+fitted <- scale(fitted.values(ds.model))
+{plot(fitted, standardized)
+  abline(v = 0)
+  abline(h = 0)}
+```
+
+### Reasonableness 
+
+```{r}
+# check data
+hist(final_long$reason_vas)
+
+# visualize the problem 
+ggplot(final_long, aes(reason_vas)) + 
+  geom_histogram() + 
+  facet_grid(cond~vignette) +  
+  theme_classic() + 
+  ylab("Frequency") + 
+  xlab("Reasonableness Attribution Visual Analogue Score")
+
+## reasonable 
+ds.model <- lme(reason_vas ~ cond + comp_type + age + 
+                  gender + education ,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+
+# additivity
+round(summary(ds.model)$corFixed,2)
+
+# normality
+standardized <- residuals(ds.model, type = "normalized")
+hist(standardized) 
+
+# linearity
+{qqnorm(standardized)
+  abline(0,1)}
+
+# homosc
+fitted <- scale(fitted.values(ds.model))
+{plot(fitted, standardized)
+  abline(v = 0)
+  abline(h = 0)}
+```
+
+### Luck 
+
+```{r}
+# check data
+hist(final_long$luck_vas)
+
+# visualize the problem 
+ggplot(final_long, aes(luck_vas)) + 
+  geom_histogram() + 
+  facet_grid(cond~vignette) +  
+  theme_classic() + 
+  ylab("Frequency") + 
+  xlab("Luck Attribution Visual Analogue Score")
+
+ds.model <- lme(luck_vas ~ cond + comp_type + age + 
+                  gender + education ,
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                data = final_long,
+                na.action = "na.omit")
+
+# additivity
+round(summary(ds.model)$corFixed,2)
+
+# normality
+standardized <- residuals(ds.model, type = "normalized")
+hist(standardized) 
+
+# linearity
+{qqnorm(standardized)
+  abline(0,1)}
+
+# homosc
+fitted <- scale(fitted.values(ds.model))
+{plot(fitted, standardized)
+  abline(v = 0)
+  abline(h = 0)}
+```
+
+## Analysis 
+
+In this instance, we do not see any form of linearity or homoscedasticity - the data is clearly skewed or bimodal. Therefore, we decided to split the VAS scale into 40 and below and 60 and above, then combine with the truly binary data, and incude this variable to understand if there were differences when the VAS scale did not produce continuous data. 
+
+```{r}
+## knowledge
+table(final_long$know_bin)
+
+## split data 
+final_long$know_vas_binned <- final_long$know_vas
+final_long$know_vas_binned[final_long$know_vas_binned <= 40] <- 1
+final_long$know_vas_binned[final_long$know_vas_binned >= 40 & 
+                             final_long$know_vas_binned <= 60] <- NA
+final_long$know_vas_binned[final_long$know_vas_binned >= 60] <- 2
+table(final_long$know_vas_binned, useNA = "ifany")
+
+# no overlap
+table(final_long$know_bin, final_long$know_vas_binned, useNA = "ifany")
+
+final_long$know_vas_combined <- ifelse(is.na(final_long$know_vas_binned), 
+                                     final_long$know_bin, 
+                                     final_long$know_vas_binned)
+
+final_long$know_vas_combined_source <- ifelse(is.na(final_long$know_vas_binned), 
+                                     "Binary", 
+                                     "VAS")
+
+table(final_long$know_vas_combined)
+
+## reasonable
+table(final_long$reason_bin)
+
+## split data 
+final_long$reason_vas_binned <- final_long$reason_vas
+final_long$reason_vas_binned[final_long$reason_vas_binned <= 40] <- 1
+final_long$reason_vas_binned[final_long$reason_vas_binned >= 40 & 
+                             final_long$reason_vas_binned <= 60] <- NA
+final_long$reason_vas_binned[final_long$reason_vas_binned >= 60] <- 2
+table(final_long$reason_vas_binned, useNA = "ifany")
+
+# no overlap
+table(final_long$reason_bin, final_long$reason_vas_binned, useNA = "ifany")
+
+final_long$reason_vas_combined <- ifelse(is.na(final_long$reason_vas_binned), 
+                                     final_long$reason_bin, 
+                                     final_long$reason_vas_binned)
+
+final_long$reason_vas_combined_source <- ifelse(is.na(final_long$reason_vas_binned), 
+                                     "Binary", 
+                                     "VAS")
+
+table(final_long$reason_vas_combined)
+table(final_long$reason_vas_combined_source)
+
+## luck
+table(final_long$luck_bin)
+
+## split data 
+final_long$luck_vas_binned <- final_long$luck_vas
+final_long$luck_vas_binned[final_long$luck_vas_binned <= 40] <- 1
+final_long$luck_vas_binned[final_long$luck_vas_binned >= 40 & 
+                             final_long$luck_vas_binned <= 60] <- NA
+final_long$luck_vas_binned[final_long$luck_vas_binned >= 60] <- 2
+table(final_long$luck_vas_binned, useNA = "ifany")
+
+# no overlap
+table(final_long$luck_bin, final_long$luck_vas_binned, useNA = "ifany")
+
+final_long$luck_vas_combined <- ifelse(is.na(final_long$luck_vas_binned), 
+                                     final_long$luck_bin, 
+                                     final_long$luck_vas_binned)
+
+final_long$luck_vas_combined_source <- ifelse(is.na(final_long$luck_vas_binned), 
+                                     "Binary", 
+                                     "VAS")
+
+table(final_long$luck_vas_combined)
+```
+
+## Final Analysis 
+
+- Model 1 = intercept only model to help determine if the addition of random intercepts are useful 
+- Model 2 = vignette random intercept model 
+
+
+```{r}
+final_long$know_vas_combined <- final_long$know_vas_combined - 1
+
+model.1 <- glm(know_vas_combined ~ 1,
+               data = final_long,
+               family = binomial,
+               na.action = "na.omit")
+
+summary(model.1)
+
+model.2 <- glmer(know_vas_combined ~ (1|vignette),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.2)
+r.squaredGLMM(model.2)
+
+model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.3)
+r.squaredGLMM(model.3)
+
+model.4 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.4)
+r.squaredGLMM(model.4)
+
+model.5 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                   comp + age + gender + education,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.5)
+r.squaredGLMM(model.5)
+
+model.6 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                   comp + age + gender + education + 
+                   cond,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.6)
+r.squaredGLMM(model.6)
+
+model.7 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                   comp + age + gender + education + 
+                   cond + know_vas_combined_source,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.7)
+r.squaredGLMM(model.7)
+
+model.8 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                   comp + age + gender + education + 
+                   cond*know_vas_combined_source,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.8)
+r.squaredGLMM(model.8)
+
+model.9 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                   comp + age + gender + education + 
+                   cond*know_vas_combined_source + turk,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.9)
+r.squaredGLMM(model.9)
+```
