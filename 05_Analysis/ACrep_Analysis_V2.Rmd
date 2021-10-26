@@ -2,7 +2,10 @@
 title: "ACREP Updated Analyses"
 author: "erin buchanan"
 date: "Last Updated `r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -201,7 +204,7 @@ In this section, we clean up the following data issues:
 # better labels for graphs
 full_long$vignette <- factor(full_long$vignette,
                              levels = c("D", "E", "G"),
-                             labels = c("Daryl", "Emma", "Gerald"))
+                             labels = c("Darrel", "Emma", "Gerald"))
 
 full_long$cond <- factor(full_long$cond,
                              levels = c("G", "I", "K"),
@@ -409,6 +412,8 @@ table(final_long$lab_country) / table(full_long$lab_country)
   - Years of education 
 - Random intercepts:
   - vignette / participant / lab / maybe geographic region
+- Special population:
+  - Turk data on similar analysis 
   
 ## Data Screening
 
@@ -539,9 +544,11 @@ fitted <- scale(fitted.values(ds.model))
   abline(h = 0)}
 ```
 
-## Analysis 
+### Update DV  
 
-In this instance, we do not see any form of linearity or homoscedasticity - the data is clearly skewed or bimodal. Therefore, we decided to split the VAS scale into 40 and below and 60 and above, then combine with the truly binary data, and incude this variable to understand if there were differences when the VAS scale did not produce continuous data. 
+In this instance, we do not see any form of linearity or homoscedasticity - the data is clearly skewed or bimodal. Therefore, we decided to split the VAS scale into 40 and below and 60 and above, then combine with the truly binary data, and include this variable to understand if there were differences when the VAS scale did not produce continuous data. 
+
+Please note that the VAS is scored in the opposite direction of the BIN scales, therefore, you will see that the data split corrects this directionality difference. 
 
 ```{r}
 ## knowledge
@@ -549,10 +556,10 @@ table(final_long$know_bin)
 
 ## split data 
 final_long$know_vas_binned <- final_long$know_vas
-final_long$know_vas_binned[final_long$know_vas_binned <= 40] <- 1
+final_long$know_vas_binned[final_long$know_vas_binned <= 40] <- 2
 final_long$know_vas_binned[final_long$know_vas_binned >= 40 & 
                              final_long$know_vas_binned <= 60] <- NA
-final_long$know_vas_binned[final_long$know_vas_binned >= 60] <- 2
+final_long$know_vas_binned[final_long$know_vas_binned >= 60] <- 1
 table(final_long$know_vas_binned, useNA = "ifany")
 
 # no overlap
@@ -573,10 +580,10 @@ table(final_long$reason_bin)
 
 ## split data 
 final_long$reason_vas_binned <- final_long$reason_vas
-final_long$reason_vas_binned[final_long$reason_vas_binned <= 40] <- 1
+final_long$reason_vas_binned[final_long$reason_vas_binned <= 40] <- 2
 final_long$reason_vas_binned[final_long$reason_vas_binned >= 40 & 
                              final_long$reason_vas_binned <= 60] <- NA
-final_long$reason_vas_binned[final_long$reason_vas_binned >= 60] <- 2
+final_long$reason_vas_binned[final_long$reason_vas_binned >= 60] <- 1
 table(final_long$reason_vas_binned, useNA = "ifany")
 
 # no overlap
@@ -598,10 +605,10 @@ table(final_long$luck_bin)
 
 ## split data 
 final_long$luck_vas_binned <- final_long$luck_vas
-final_long$luck_vas_binned[final_long$luck_vas_binned <= 40] <- 1
+final_long$luck_vas_binned[final_long$luck_vas_binned <= 40] <- 2
 final_long$luck_vas_binned[final_long$luck_vas_binned >= 40 & 
                              final_long$luck_vas_binned <= 60] <- NA
-final_long$luck_vas_binned[final_long$luck_vas_binned >= 60] <- 2
+final_long$luck_vas_binned[final_long$luck_vas_binned >= 60] <- 1
 table(final_long$luck_vas_binned, useNA = "ifany")
 
 # no overlap
@@ -618,13 +625,24 @@ final_long$luck_vas_combined_source <- ifelse(is.na(final_long$luck_vas_binned),
 table(final_long$luck_vas_combined)
 ```
 
-## Final Analysis 
+### Gender Other
 
-- Model 1 = intercept only model to help determine if the addition of random intercepts are useful 
-- Model 2 = vignette random intercept model 
-
+Because of the small other category, we will simply compare male to female. 
 
 ```{r}
+final_long$gender2 <- factor(final_long$gender,
+                             levels = c("female", "male"))
+```
+
+
+## Final Analysis Knowledge
+
+### Model 1 
+
+Intercept only model to help determine if the addition of random intercepts are useful.
+
+```{r}
+#scores should be 0 and 1 for this analysis 
 final_long$know_vas_combined <- final_long$know_vas_combined - 1
 
 model.1 <- glm(know_vas_combined ~ 1,
@@ -633,6 +651,13 @@ model.1 <- glm(know_vas_combined ~ 1,
                na.action = "na.omit")
 
 summary(model.1)
+```
+
+### Model 2
+
+Vignette random intercept model:
+
+```{r}
 
 model.2 <- glmer(know_vas_combined ~ (1|vignette),
                       data = final_long,
@@ -640,8 +665,30 @@ model.2 <- glmer(know_vas_combined ~ (1|vignette),
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
 summary(model.2)
-r.squaredGLMM(model.2)
+coef(model.2) # log odds zero is the center 
+exp(coef(model.2)$vignette) # regular odds with 1 at the center 
 
+table(final_long$vignette, final_long$know_vas_combined)
+
+r.squaredGLMM(model.2)
+```
+
+  - Remember that 0 is knows and 1 is believes 
+  - Model 1 AIC: `r AIC(model.1)`
+  - Model 2 AIC: `r AIC(model.2)`
+  - Interpretation: the inclusion of the vignette random variable is useful
+  - Coefficients: interpretation overall of random intercept, which effectively tells us regardless of condition, which way the participants lean toward answering. See the table printed out to help understand these values. 
+    - Darrel: fairly even split for knows/believes with a slight favor to knows (because it's negative goes toward the 0 group)
+    - Emma: leans more heavily toward the believes category (almost 4 to 1 odds)
+    - Gerald: leans slightly toward the believes category
+    - The results here indicate what we were seeing with the "continuous" data as well - that there's a big difference in the way they respond to vignettes
+  - This vignette accounts for 8 to 10 percent of the random variance. 
+  
+### Model 3
+
+Vignette nested in participants random intercept:
+
+```{r}
 model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
                       data = final_long,
                       family = binomial,
@@ -649,7 +696,19 @@ model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
                       nAGQ = 0)
 summary(model.3)
 r.squaredGLMM(model.3)
+```
 
+
+  - Model 2 AIC: `r AIC(model.2)`
+  - Model 3 AIC: `r AIC(model.3)`
+  - Interpretation: the inclusion of participant ID isn't really useful, as the AIC is higher for this model. The variance between participants is very small after accounting for vignettes.
+  - This model accounts for approximately the same random variance. 
+  
+### Model 4
+
+Vignette nested in participants which is then nested in labs:
+
+```{r}
 model.4 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id),
                       data = final_long,
                       family = binomial,
@@ -657,53 +716,137 @@ model.4 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id),
                       nAGQ = 0)
 summary(model.4)
 r.squaredGLMM(model.4)
+```
 
-model.5 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
-                   comp + age + gender + education,
+  - Model 2 AIC: `r AIC(model.2)`
+  - Model 3 AIC: `r AIC(model.3)`
+  - Model 4 AIC: `r AIC(model.4)`
+  - Interpretation: the inclusion of lab ID isn't really useful, as the AIC is higher for this model. The variance parameter for lab is also very small. 
+  - This model accounts for approximately the same random variance.
+  - Therefore, we will continue with the random intercept for `vignette` as this parameter accounts for the variance in the DV. 
+  
+### Model 5
+
+Addition of the covariates added to the vignette random intercept model. 
+
+```{r}
+model.5 <- glmer(know_vas_combined ~ (1|vignette) + 
+                   comp + age + gender2 + education,
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
 summary(model.5)
-r.squaredGLMM(model.5)
 
-model.6 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
-                   comp + age + gender + education + 
+table(model.5@frame$gender2, model.5@frame$know_vas_combined) #look at the used data 
+
+r.squaredGLMM(model.5)
+```
+
+  - Model 2 AIC: `r AIC(model.2)`
+  - Model 5 AIC: `r AIC(model.5)`
+  - Interpretation: this model is better than the vignette random intercept only model. 
+  - Compensation: no effect
+  - Age: no effect
+  - Gender: Males and females did the task differently - men are slightly more likely to say someone believes something over knows 
+  - Education: no effect 
+  - These fixed effects account for very little variance in the model though. 
+  
+### Model 6
+
+The previous model of covariates plus the variable of focus: condition.
+
+```{r}
+model.6 <- glmer(know_vas_combined ~ (1|vignette) + 
+                   comp + age + gender2 + education + 
                    cond,
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
 summary(model.6)
+
+table(model.6@frame$cond, model.6@frame$know_vas_combined)
+
 r.squaredGLMM(model.6)
-
-model.7 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
-                   comp + age + gender + education + 
-                   cond + know_vas_combined_source,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.7)
-r.squaredGLMM(model.7)
-
-model.8 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
-                   comp + age + gender + education + 
-                   cond*know_vas_combined_source,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.8)
-r.squaredGLMM(model.8)
-
-model.9 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
-                   comp + age + gender + education + 
-                   cond*know_vas_combined_source + turk,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.9)
-r.squaredGLMM(model.9)
 ```
+
+  - Model 5 AIC: `r AIC(model.5)`
+  - Model 6 AIC: `r AIC(model.6)`
+  - Interpretation: this model is better than the model with the covariates. 
+  - Both knowledge and ignorance are different than the Gettier condition.
+  - In Gettier, participants are slightly more likely to say believes.
+  - In Ignorance, participants are *way* more likely to say believes (so that's why this condition is different from Gettier).
+  - In Knowledge, participants are more like to say knows (also why this is different from Gettier). 
+  - This effect accounts for 13-15% of the fixed effect variance. 
+
+### Model 6A
+
+Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
+
+NEED TO FIX THE EDUCATION VARIABLE. 
+
+```{r eval = F}
+model.6A <- glmer(know_vas_combined ~ (1|vignette) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.6A)
+
+r.squaredGLMM(model.6A)
+```
+
+  - Model 6 AIC: `r #AIC(model.6)`
+  - Model 6A AIC: `r #AIC(model.6A)`
+  - Interpretation: 
+
+### Model 6B
+
+Data was binned because of the distributions of the visual analogue scale - does the data source make a difference? 
+
+```{r eval = F}
+model.6B <- glmer(know_vas_combined ~ (1|vignette) + 
+                    comp + age + gender2 + education + 
+                    cond*know_vas_combined_source,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.6B)
+
+r.squaredGLMM(model.6B)
+```
+
+  - Model 6 AIC: `r #AIC(model.6)`
+  - Model 6B AIC: `r #AIC(model.6B)`
+  - Interpretation:
+
+## Data Checks
+
+```{r}
+table(final_long$lab_id, final_long$vignette, useNA = "ifany")
+
+table(final_long$lab_id, final_long$comp, useNA = "ifany")
+
+table(final_long$lab_id, final_long$gender2, useNA = "ifany")
+
+table(final_long$lab_id, final_long$cond, useNA = "ifany")
+
+table(final_long$lab_id, final_long$know_vas_combined, useNA = "ifany")
+
+table(final_long$lab_id, final_long$reason_vas_combined, useNA = "ifany")
+
+table(final_long$lab_id, final_long$luck_vas_combined, useNA = "ifany")
+
+table(final_long$lab_id, final_long$cond, useNA = "ifany")
+
+table(final_long$lab_id, final_long$cond, useNA = "ifany")
+
+tapply(final_long$education, final_long$lab_id, mean, na.rm = T)
+
+tapply(final_long$age, final_long$lab_id, mean, na.rm = T)
+```
+
