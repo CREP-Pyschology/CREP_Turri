@@ -33,7 +33,7 @@ Import qualtrics files to join with SSS files:
 ```{r}
 # Import b6c8ec's CSV in a manner that is compatible with the SoSciSurvey format
 # Note that the datasets generated here are not completely cleaned yet -- some
-# processing steps need to happen in data_preparation.R afterwards!
+# processing steps need to happen in data_preparation.R afterwards! (this is imported at the bottom) 
 
 library(qualtRics)
 
@@ -366,7 +366,7 @@ add_cond_dvs <- function(df) {
   
   # This generates a list of mutations to be executed of the form field = expr,
   # e.g. c(cond_k_compr = ..., cond_g_compr = ..., cond_i_compr = ..., ...)
-  # NB: set_names() also exists in magrittr. To avoid conflicts, we explicitely
+  # NB: set_names() also exists in magrittr. To avoid conflicts, we explicitly
   # specify that we want purrr’s set_names().
   mutations_cond <- fields %>%
     purrr::set_names() %>%

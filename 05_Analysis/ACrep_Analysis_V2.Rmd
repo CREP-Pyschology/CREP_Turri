@@ -34,6 +34,7 @@ library(plyr)
 library(psych)
 library(tidyr)
 library(ggplot2)
+library(dplyr)
 ```
 
 ## Import the Data
@@ -88,6 +89,7 @@ previousDF$code <- tolower(previousDF$code)
 table(previousDF$code)
 previousDF$code <- gsub("np", "no", previousDF$code)
 previousDF$code <- gsub("n/a", "na", previousDF$code)
+previousDF$code <- gsub("y$", "yes", previousDF$code)
 table(previousDF$code)
 previousDF <- subset(previousDF, !is.na(id))
 
@@ -192,13 +194,45 @@ sum(duplicated(purposeDF_wide$id))
 sum(duplicated(previousDF_wide$id))
 ```
 
+Finding missing coders:
+
+```{r}
+previous_missing <- subset(previousDF_wide, count < 3)
+purpose_missing <- subset(purposeDF_wide, count < 3)
+
+table(previous_missing$survey_lang)
+table(purpose_missing$survey_lang)
+
+#create reviewer names
+previous_completed <- previousDF %>% 
+  group_by(id) %>% 
+  summarize(coder = paste(coder, collapse = ", "))
+
+purpose_completed <- purposeDF %>% 
+  group_by(id) %>% 
+  summarize(coder = paste(coder, collapse = ", "))
+
+previous_missing <- merge(previous_missing, 
+                          previous_completed, 
+                          by = "id", 
+                          all.x = T)
+
+purpose_missing <- merge(purpose_missing, 
+                         purpose_completed,
+                         by = "id", 
+                         all.x = T)
+
+write.csv(previous_missing, "../04_Data/data/previous_needs.csv", row.names = F)
+write.csv(purpose_missing, "../04_Data/data/purpose_needs.csv", row.names = F)
+```
+
 ## Fix Data Coding / Examine Covariates  
 
 In this section, we clean up the following data issues:
   
-  - Recode compensation to text data and fix missing mturk information 
+  - Recode compensation to text data and fix missing mturk/other lab information ... note that if labs had a consistent compensation they were not shown that question
   - Examine gender labels
-  - Recode education to number and examine 
+  - Recode education to number and examine ... fix issues with two labs not using the same education values. 
 
 ```{r}
 # better labels for graphs
@@ -232,6 +266,24 @@ table(full_long$gender, useNA = "ifany")
 # describe education years
 full_long$education <- as.numeric(full_long$education)
 describe(full_long$education[!duplicated(full_long$id)])
+
+levels(full_long$education_level)
+
+# less high school = 10  
+# high school = 12
+# some college = 14
+# college = 16
+# masters = 18
+# graduate = 20
+
+levels(full_long$education) <- c(levels(full_long$education), 20)
+
+full_long$education[full_long$education_level == "Less than high school" & !is.na(full_long$education_level)] <- 10
+full_long$education[full_long$education_level == "High school diploma (or GED)" & !is.na(full_long$education_level)] <- 12
+full_long$education[full_long$education_level == "Some college or a 2-year college degree (A.A.)" & !is.na(full_long$education_level)] <- 14
+full_long$education[full_long$education_level == "4-year college degree (B.A., B.S.)" & !is.na(full_long$education_level)] <- 16
+full_long$education[full_long$education_level == "Master’s degree (M.A., M.S.)" & !is.na(full_long$education_level)] <- 18
+full_long$education[full_long$education_level == "Graduate or professional degree (J.D., Ph.D., M.D.)" & !is.na(full_long$education_level)] <- 20
 
 # describe age
 describe(full_long$age[!duplicated(full_long$id)])
@@ -411,7 +463,7 @@ table(final_long$lab_country) / table(full_long$lab_country)
   - Gender (men/women/other)
   - Years of education 
 - Random intercepts:
-  - vignette / participant / lab / maybe geographic region
+  - participant / vignette / lab / maybe geographic region
 - Special population:
   - Turk data on similar analysis 
   
@@ -446,7 +498,7 @@ ggplot(final_long, aes(know_vas)) +
 
 ## knowledge 
 ds.model <- lme(know_vas ~ cond + comp + age + gender + education,
-                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                random = list(~1|id, ~1|vignette, ~1|lab_id),
                 data = final_long,
                 na.action = "na.omit")
 
@@ -484,7 +536,7 @@ ggplot(final_long, aes(reason_vas)) +
 ## reasonable 
 ds.model <- lme(reason_vas ~ cond + comp_type + age + 
                   gender + education ,
-                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                random = list(~1|id, ~1|vignette, ~1|lab_id),
                 data = final_long,
                 na.action = "na.omit")
 
@@ -522,7 +574,7 @@ ggplot(final_long, aes(luck_vas)) +
 
 ds.model <- lme(luck_vas ~ cond + comp_type + age + 
                   gender + education ,
-                random = list(~1|vignette, ~1|id, ~1|lab_id),
+                random = list(~1|id, ~1|vignette, ~1|lab_id),
                 data = final_long,
                 na.action = "na.omit")
 
@@ -655,27 +707,49 @@ summary(model.1)
 
 ### Model 2
 
-Vignette random intercept model:
+Participant random intercept: 
 
 ```{r}
-
-model.2 <- glmer(know_vas_combined ~ (1|vignette),
+model.2 <- glmer(know_vas_combined ~ (1|id),
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
 summary(model.2)
-coef(model.2) # log odds zero is the center 
-exp(coef(model.2)$vignette) # regular odds with 1 at the center 
-
-table(final_long$vignette, final_long$know_vas_combined)
-
 r.squaredGLMM(model.2)
 ```
 
   - Remember that 0 is knows and 1 is believes 
   - Model 1 AIC: `r AIC(model.1)`
   - Model 2 AIC: `r AIC(model.2)`
+  - Interpretation: the inclusion of participant ID isn't really useful, as the AIC is higher for this model. The variance between participants is very small.
+  
+### Model 3 = WHAT TO DO HERE 
+
+Vignette random intercept model:
+
+```{r}
+
+model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.3)
+
+coefficients <- coef(model.3) 
+coef_DF <- as.data.frame(coefficients$`vignette:id`)
+coef_DF$vig <- substr(rownames(coef_DF), 0, 3)
+tapply(coef_DF$`(Intercept)`, coef_DF$vig, mean)
+
+# log odds zero is the center 
+exp(coef(model.3)$vignette) # regular odds with 1 at the center 
+
+table(final_long$vignette, final_long$know_vas_combined)
+
+r.squaredGLMM(model.3)
+```
+
   - Interpretation: the inclusion of the vignette random variable is useful
   - Coefficients: interpretation overall of random intercept, which effectively tells us regardless of condition, which way the participants lean toward answering. See the table printed out to help understand these values. 
     - Darrel: fairly even split for knows/believes with a slight favor to knows (because it's negative goes toward the 0 group)
@@ -683,26 +757,6 @@ r.squaredGLMM(model.2)
     - Gerald: leans slightly toward the believes category
     - The results here indicate what we were seeing with the "continuous" data as well - that there's a big difference in the way they respond to vignettes
   - This vignette accounts for 8 to 10 percent of the random variance. 
-  
-### Model 3
-
-Vignette nested in participants random intercept:
-
-```{r}
-model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.3)
-r.squaredGLMM(model.3)
-```
-
-
-  - Model 2 AIC: `r AIC(model.2)`
-  - Model 3 AIC: `r AIC(model.3)`
-  - Interpretation: the inclusion of participant ID isn't really useful, as the AIC is higher for this model. The variance between participants is very small after accounting for vignettes.
-  - This model accounts for approximately the same random variance. 
   
 ### Model 4
 
@@ -750,7 +804,7 @@ r.squaredGLMM(model.5)
   - Age: no effect
   - Gender: Males and females did the task differently - men are slightly more likely to say someone believes something over knows 
   - Education: no effect 
-  - These fixed effects account for very little variance in the model though. 
+  - These fixed effects account for very little variance in the model though.
   
 ### Model 6
 
