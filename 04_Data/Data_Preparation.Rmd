@@ -204,7 +204,7 @@ d.turk <- d.turk.raw %>%
 #### Import 87d100 ####
 
 
-d.87d100.raw <- read_survey("data/87d100_with_order.csv")
+d.87d100.raw <- read_survey("./04_data/data/87d100_with_order.csv")
 
 d.87d100 <- d.87d100.raw %>%
   # This lab is Portugal-based, however, the country of Portugal is coded as
@@ -253,7 +253,7 @@ d.87d100 <- d.87d100.raw %>%
            str_replace("FL_55", "D") %>% str_replace("FL_43", "G") %>%
            str_replace("FL_49", "E") %>% str_replace_all(fixed("|"), "")) %>%
   add_cond_order() %>%
-  mutate(lab_id = "87d100", id = paste0("q_87d100_", case),
+  mutate(lab_id = "87d100", id = paste0("q_87d100_", case), #setting values for all participants
          source = "Qualtrics",
          bin_order = "normal", scale="vas") %>%
   mutate_at(vars(starts_with("sx_"), -"sx_comments"), ~as.integer(sub("\\..*", "", .))) %>%
@@ -314,6 +314,7 @@ d.sss.raw[d.sss.raw$CASE %in% c(878, 1012, 1117), "DD01_01"] <- c("18", "22", "2
 
 # TODO: We should probably have a general CSV of lab-level information. This one
 # contains only lab countries.
+
 lab_countries <- import("data/lab_countries.csv") %>%
   select(lab_id, lab_country) %>%
   mutate(lab_country = as.factor(lab_country))
@@ -598,7 +599,11 @@ d.dge_valid.long <- d.dge_valid %>%
   select(-starts_with(c("d_", "g_", "e_"))) %>%
   mutate(cond = toupper(cond)) %>%
   mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)
+```
 
+# Save data
+
+```{r}
 saveRDS(d.all, "rds/d_all.Rds")
 saveRDS(d.all.long, "rds/d_all_long.Rds")
 saveRDS(d.dge_valid, "rds/d_dge_valid.Rds")
@@ -612,6 +617,8 @@ write_csv(d.dge_valid.long, "csv/d_dge_valid_long.csv")
 # Remove variables that should not be exported
 #rm(d.sss.raw, relevant_fields, add_cond_dvs)
 ```
+
+# Create spreadsheets for coding / translating open-ended responses
 
 Write out data to process by hand:
 
