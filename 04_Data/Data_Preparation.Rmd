@@ -9,6 +9,7 @@ output: html_document
 1. What is the difference between data marked "valid" and data not marked "valid"?
 2. Where is `data_preparation_qualtrics.R` and what is this?
 3. Where is `data_preparation.R` and what is this? Why not just clean the data in one step?
+4. What was changed from the raw qualtrics data for analyses? Looks like some deidentification was done.
 
 # Purpose
 
@@ -59,7 +60,8 @@ add_cond_order <- function(df) {
 }
 
 recode_ethnicity <- function(df) {
-  df %>%
+  df %>% #ethnicity is a string that lists all selection options
+    # this function creates individual variables from the data
     mutate(ethn_wh = str_detect(ethnicity, "(^|,)White/European(,|$)"),
            ethn_bl = str_detect(ethnicity, "(^|,)Black/African American(,|$)"),
            ethn_lat = str_detect(ethnicity, "(^|,)Hispanic Latino(,|$)"),
@@ -82,8 +84,9 @@ recode_ethnicity <- function(df) {
 # software like Excel from interpreting the value as a number instead of the
 # string "000"). Also filter out rows from the development phase
 d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
-  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>%
-  filter(MODE != "admin")
+  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>% #fix SSS use of '
+  filter(MODE != "admin") %>% #filter dev tests
+  glimpse()
 ```
 
 ## Import and merge Qualtrics data
@@ -91,7 +94,8 @@ d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
 Import qualtrics files to join with SSS files
 ```{r}
 #### Import b6c8ec ####
-d.turk.raw <- read_survey("./04_Data/data/b6c8ec_with_order.csv")
+d.turk.raw <- read_survey("./04_Data/data/b6c8ec_with_order.csv") %>% 
+  glimpse()
 ```
 
 
