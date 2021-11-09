@@ -390,8 +390,10 @@ d.sss.raw[d.sss.raw$CASE %in% c(878, 1012, 1117), "DD01_01"] <- c("18", "22", "2
 relevant_fields <- quos(lab_id=lab_ID, case=CASE,
                         dge_valid=UR01_01, j_valid=UR01_02,
                         # Conditions
-                        vignette_order=Name_order, cond_order=Condition_order,
-                        bin_order=Binary_label_balance, scale=Scale_type,
+                        vignette_order=Name_order, 
+                        cond_order=Condition_order,
+                        bin_order=Binary_label_balance, 
+                        scale=Scale_type,
                         # Darrel
                         d_cond=Darrel_cond,
                         d_know_vas=VD02_01, d_know_bin=VD08, d_compr=VD03,
@@ -489,7 +491,7 @@ d.sss <- d.sss.raw %>%
   #    knowledge, the VAS goes 0=believes->100=knows while the binary version is
   #    coded 1 for believes and 2 for knows)
   mutate(across(ends_with(c("_know_bin", "_know_alt")),
-                factor, c(1,2), labels=c("knows", "believes")),
+                factor, c(1,2), labels=c("knows", "believes")), #does this contradict what is stated immediately before?
          across(ends_with("_compr"),
                 factor, c(1,2), labels=c("real", "fake")),
          across(ends_with("_reason_bin"),
