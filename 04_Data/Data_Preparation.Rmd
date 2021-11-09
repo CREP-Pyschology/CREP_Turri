@@ -41,6 +41,7 @@ library(tidyverse)
 library(rio)
 library(qualtRics)
 library(tidylog)
+library(janitor)
 ```
 
 ```{r functions}
