@@ -2280,6 +2280,127 @@ ggplot(data_graph) +
 <li>In looking at the graph, we can see this is driven by the Emma vignette which shows a larger believes box for all conditions.</li>
 <li>This interaction adds a good portion of variance to the fixed effects 7-9%.</li>
 </ul>
+<p>To analyze this interaction, we will use chi-square analysis and proportion tests (making sure it’s on the same data as the analysis above).</p>
+<pre class="r"><code># overall darrel
+chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Darrel&quot;])</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;] and data_graph$cond[data_graph$vignette == &quot;Darrel&quot;]
+## X-squared = 485.93, df = 2, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>d_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Darrel&quot;])
+d_table</code></pre>
+<pre><code>##           
+##            Gettier Ignorance Knowledge
+##   Knows        598       218       674
+##   Believes     377       748       297</code></pre>
+<pre class="r"><code># prop tests
+prop.test(d_table[1:2, 1:2])</code></pre>
+<pre><code>## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  d_table[1:2, 1:2]
+## X-squared = 297.68, df = 1, p-value &lt; 2.2e-16
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  0.3556565 0.4398076
+## sample estimates:
+##    prop 1    prop 2 
+## 0.7328431 0.3351111</code></pre>
+<pre class="r"><code>prop.test(d_table[1:2, c(1,3)])</code></pre>
+<pre><code>## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  d_table[1:2, c(1, 3)]
+## X-squared = 13.674, df = 1, p-value = 0.0002175
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.1368010 -0.0416418
+## sample estimates:
+##    prop 1    prop 2 
+## 0.4701258 0.5593472</code></pre>
+<pre class="r"><code># overall emma
+chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Emma&quot;])</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;] and data_graph$cond[data_graph$vignette == &quot;Emma&quot;]
+## X-squared = 185.46, df = 2, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>e_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Emma&quot;])
+e_table</code></pre>
+<pre><code>##           
+##            Gettier Ignorance Knowledge
+##   Knows        165        95       331
+##   Believes     787       887       645</code></pre>
+<pre class="r"><code># prop tests
+prop.test(e_table[1:2, 1:2])</code></pre>
+<pre><code>## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  e_table[1:2, 1:2]
+## X-squared = 23.707, df = 1, p-value = 1.122e-06
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  0.09903548 0.22993245
+## sample estimates:
+##    prop 1    prop 2 
+## 0.6346154 0.4701314</code></pre>
+<pre class="r"><code>prop.test(e_table[1:2, c(1,3)])</code></pre>
+<pre><code>## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  e_table[1:2, c(1, 3)]
+## X-squared = 68.484, df = 1, p-value &lt; 2.2e-16
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.2670970 -0.1667424
+## sample estimates:
+##    prop 1    prop 2 
+## 0.3326613 0.5495810</code></pre>
+<pre class="r"><code># overall gerald
+chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Gerald&quot;])</code></pre>
+<pre><code>## 
+##  Pearson&#39;s Chi-squared test
+## 
+## data:  data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;] and data_graph$cond[data_graph$vignette == &quot;Gerald&quot;]
+## X-squared = 397.88, df = 2, p-value &lt; 2.2e-16</code></pre>
+<pre class="r"><code>g_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Gerald&quot;])
+g_table</code></pre>
+<pre><code>##           
+##            Gettier Ignorance Knowledge
+##   Knows        475       193       602
+##   Believes     492       795       345</code></pre>
+<pre class="r"><code># prop tests
+prop.test(e_table[1:2, 1:2])</code></pre>
+<pre><code>## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  e_table[1:2, 1:2]
+## X-squared = 23.707, df = 1, p-value = 1.122e-06
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  0.09903548 0.22993245
+## sample estimates:
+##    prop 1    prop 2 
+## 0.6346154 0.4701314</code></pre>
+<pre class="r"><code>prop.test(e_table[1:2, c(1,3)])</code></pre>
+<pre><code>## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  e_table[1:2, c(1, 3)]
+## X-squared = 68.484, df = 1, p-value &lt; 2.2e-16
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.2670970 -0.1667424
+## sample estimates:
+##    prop 1    prop 2 
+## 0.3326613 0.5495810</code></pre>
 </div>
 <div id="model-6b" class="section level3">
 <h3>Model 6B</h3>

@@ -976,6 +976,44 @@ ggplot(data_graph) +
   - In looking at the graph, we can see this is driven by the Emma vignette which shows a larger believes box for all conditions. 
   - This interaction adds a good portion of variance to the fixed effects 7-9%. 
 
+To analyze this interaction, we will use chi-square analysis and proportion tests (making sure it's on the same data as the analysis above).
+
+```{r}
+# overall darrel
+chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+           data_graph$cond[data_graph$vignette == "Darrel"])
+d_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+           data_graph$cond[data_graph$vignette == "Darrel"])
+d_table
+
+# prop tests
+prop.test(d_table[1:2, 1:2])
+prop.test(d_table[1:2, c(1,3)])
+
+# overall emma
+chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
+           data_graph$cond[data_graph$vignette == "Emma"])
+e_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
+           data_graph$cond[data_graph$vignette == "Emma"])
+e_table
+
+# prop tests
+prop.test(e_table[1:2, 1:2])
+prop.test(e_table[1:2, c(1,3)])
+
+# overall gerald
+chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+           data_graph$cond[data_graph$vignette == "Gerald"])
+g_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+           data_graph$cond[data_graph$vignette == "Gerald"])
+g_table
+
+# prop tests
+prop.test(e_table[1:2, 1:2])
+prop.test(e_table[1:2, c(1,3)])
+```
+
+
 ### Model 6B
 
 Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
