@@ -489,11 +489,9 @@ d.sss <- d.sss.raw %>%
   # ...make the binary variables factors (please note that most of these are
   #    coded in reverse direction compared to the VAS versions -- e.g. for
   #    knowledge, the VAS goes 0=believes->100=knows while the binary version is
-  #    coded 1 for believes and 2 for knows)
+  #    coded 2 for believes and 1 for knows)
   mutate(across(ends_with(c("_know_bin", "_know_alt")),
                 factor, c(1,2), labels=c("knows", "believes")), 
-         #this contradicts what is stated immediately before
-         #however, it is correct and the statement above seems to be incorrect
          across(ends_with("_compr"),
                 factor, c(1,2), labels=c("real", "fake")),
          across(ends_with("_reason_bin"),
