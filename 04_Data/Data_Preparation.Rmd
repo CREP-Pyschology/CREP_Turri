@@ -4,6 +4,28 @@ author: "Felix Kiunke ... with minor EMB adjustments"
 date: "Last Update `r Sys.Date()`"
 output: html_document
 ---
+# Questions
+
+1. What is the difference between data marked "valid" and data not marked "valid"?
+
+# Purpose
+
+The purpose of this script is to create the analysis dataset for PSA004 / CREP_Turri.
+
+Inputs: 
+- "data_sss_final.csv"
+- "b6c8ec_with_order.csv"
+- "87d100_with_order.csv"
+
+Outputs:
+- "csv/d_all_long.csv" all analysis data, long
+- "csv/d_all.csv" all analysis data, wide
+- "csv/d_dge_valid.csv" analysis data, valid cases only, wide
+- "csv/d_dge_valid_long.csv" analysis data, valid cases only, wide
+- "previous.csv" and other datasets for open-ended coding
+= "purpose.csv" and other datasets for open-ended coding
+
+# Set up 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
