@@ -10,6 +10,7 @@ output: html_document
 2. Where is `data_preparation_qualtrics.R` and what is this?
 3. Where is `data_preparation.R` and what is this? Why not just clean the data in one step?
 4. What was changed from the raw qualtrics data for analyses? Looks like some deidentification was done.
+5. Why use the position specifications for recoding ethnicity? (looks like results are the same without) (^|,)White/European(,|$)
 
 # Purpose
 
@@ -62,11 +63,11 @@ add_cond_order <- function(df) {
 recode_ethnicity <- function(df) {
   df %>% #ethnicity is a string that lists all selection options
     # this function creates individual variables from the data
-    mutate(ethn_wh = str_detect(ethnicity, "(^|,)White/European(,|$)"),
+    mutate(ethn_wh = str_detect(ethnicity, "(^|,)White/European(,|$)"), #pending question above, remove position info "(^|,) and (,|$)
            ethn_bl = str_detect(ethnicity, "(^|,)Black/African American(,|$)"),
            ethn_lat = str_detect(ethnicity, "(^|,)Hispanic Latino(,|$)"),
-           ethn_as_sea_pac = str_detect(ethnicity, "(^|,)East or Southeast Asian / Pacific Islander"),
-           ethn_sa = str_detect(ethnicity, "(^|,)South Asian"),
+           ethn_as_sea_pac = str_detect(ethnicity, "(^|,)East or Southeast Asian / Pacific Islander(,|$)"),
+           ethn_sa = str_detect(ethnicity, "(^|,)South Asian(,|$)"),
            ethn_none = str_detect(ethnicity, "(^|,)I prefer not to answer this question(,|$)"),
            ethn_other = str_detect(ethnicity, "(^|,)Other(,|$)")) %>%
     mutate(ethn_selected = rowSums(across(starts_with("ethn_"))),
