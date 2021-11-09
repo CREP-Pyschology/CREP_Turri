@@ -132,20 +132,7 @@ add_cond_dvs <- function(df) {
 
 ```
 
-
-## Import SocSciSurvey data
-
-```{r}
-# Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
-# software like Excel from interpreting the value as a number instead of the
-# string "000"). Also filter out rows from the development phase
-d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
-  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>% #fix SSS use of '
-  filter(MODE != "admin") %>% #filter dev tests
-  glimpse()
-```
-
-## Import, wrangle, and merge Qualtrics data
+## Import, wrangle Qualtrics data
 
 Import qualtrics files to join with SSS files
 ```{r}
@@ -260,7 +247,8 @@ d.turk <- d.turk.raw %>%
 #### Import 87d100 ####
 
 
-d.87d100.raw <- read_survey("./04_data/data/87d100_with_order.csv")
+d.87d100.raw <- read_survey("./04_data/data/87d100_with_order.csv") %>% 
+  glimpse()
 
 d.87d100 <- d.87d100.raw %>%
   # This lab is Portugal-based, however, the country of Portugal is coded as
@@ -299,7 +287,8 @@ d.87d100 <- d.87d100.raw %>%
          
          start=StartDate, # TODO: timezones
          end=EndDate, duration=`Duration (in seconds)`,
-         consent) %>%
+         consent,
+         SPI) %>% #this captures credit
   mutate(across(c(start, end),
                 as.POSIXct, format="%m/%d/%Y %H:%M", tz="America/Denver")) %>%
   mutate(d_cond = fct_recode(d_cond, K="FL_71", G="FL_72", I="FL_73"),
@@ -357,6 +346,19 @@ d.87d100 <- d.87d100.raw %>%
 
 # Cleanup
 rm(d.turk.raw, d.87d100.raw, add_cond_order, recode_ethnicity)
+```
+
+
+## Import, wrangle SocSciSurvey data
+
+```{r}
+# Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
+# software like Excel from interpreting the value as a number instead of the
+# string "000"). Also filter out rows from the development phase
+d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
+  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>% #fix SSS use of '
+  filter(MODE != "admin") %>% #filter dev tests
+  glimpse()
 ```
 
 Import lab countries
