@@ -35,6 +35,7 @@ library(psych)
 library(tidyr)
 library(ggplot2)
 library(dplyr)
+library(ggmosaic)
 ```
 
 ## Import the Data
@@ -83,6 +84,12 @@ purposeDF$coder <- rep(names(purpose.files), unlist(lapply(purpose.files, nrow))
 # ensure the text is normalized 
 previousDF$previous <- gsub("\\s+", " ", previousDF$previous)
 purposeDF$purpose <- gsub("\\s+", " ", purposeDF$purpose)
+previousDF$previous <- gsub("\\s$", "", previousDF$previous)
+purposeDF$purpose <- gsub("\\s$", "", purposeDF$purpose)
+
+# can't figure out why these two are different
+purposeDF$purpose[purposeDF$id == "s10313"] <- "I'm not sure."
+purposeDF$purpose[purposeDF$id == "s10513"] <- "Recall, recognizing"
 
 # fix the yes/no/maybe/NA
 previousDF$code <- tolower(previousDF$code)
@@ -191,7 +198,11 @@ purposeDF_wide$nonsense <- apply(
 ) == 3
 
 sum(duplicated(purposeDF_wide$id))
+#ids <- purposeDF_wide$id[duplicated(purposeDF_wide$id)]
+#View(purposeDF_wide[purposeDF_wide$id %in% ids, ])
 sum(duplicated(previousDF_wide$id))
+#ids <- previousDF_wide$id[duplicated(previousDF_wide$id)]
+#View(previousDF_wide[previousDF_wide$id %in% ids, ])
 ```
 
 Finding missing coders:
@@ -226,6 +237,23 @@ write.csv(previous_missing, "../04_Data/data/previous_needs.csv", row.names = F)
 write.csv(purpose_missing, "../04_Data/data/purpose_needs.csv", row.names = F)
 ```
 
+```{r}
+previousDF_long_missing <- subset(previousDF, id %in% previous_missing$id)
+previousDF_wide_missing <- pivot_wider(data = previousDF_long_missing, 
+                                       id_cols = c("id", "survey_lang"), 
+                                       values_from = "code", 
+                                       names_from = "coder")
+
+purposeDF_long_missing <- subset(purposeDF, id %in% purpose_missing$id)
+purposeDF_wide_missing <- pivot_wider(data = purposeDF_long_missing, 
+                                       id_cols = c("id", "survey_lang"), 
+                                       values_from = "code", 
+                                       names_from = "coder")
+
+write.csv(previousDF_wide_missing, "../04_Data/data/previous_needs_wide.csv", row.names = F)
+write.csv(purposeDF_wide_missing, "../04_Data/data/purpose_needs_wide.csv", row.names = F)
+```
+
 ## Fix Data Coding / Examine Covariates  
 
 In this section, we clean up the following data issues:
@@ -251,14 +279,28 @@ full_long$comp <- factor(full_long$comp,
                          labels = c("No", "Yes", "Not Sure"))
 
 # examine compensation type by lab
-table(full_long$comp, full_long$lab_id, useNA = "ifany")
-# big NA missing c("20a1ff", "c7b55a", "aba0ac", "b6c8ec", "87d100")
+table(full_long$lab_id, full_long$comp, useNA = "ifany")
+
+# fix compensation for labs that didn't see that question
+labs_compensated <- c("20a1ff", "1c0a06", "f6d5a9", "612ed8", "aba0ac", "2f579c") #this includes lottery compensation
+labs_notcompensated <- c("cb060d", "c1e6b4", "c7b55a", "9c8799", "6898ef")
+
+full_long$comp[full_long$lab_id %in% labs_compensated] <- "Yes"
+full_long$comp[full_long$lab_id %in% labs_notcompensated] <- "No"
 
 # this is mturk compensation is yes 
 full_long$comp[full_long$lab_id == "b6c8ec"] <- "Yes"
 full_long$turk <- full_long$lab_id == "b6c8ec"
 
+table(full_long$lab_id, full_long$comp, useNA = "ifany")
+
+# deal with not sures 
 table(full_long$comp, useNA = "ifany")
+
+full_long$comp[full_long$comp == "Not Sure" & is.na(full_long$comp_type)] <- "No"
+full_long$comp[full_long$comp == "Not Sure" & !is.na(full_long$comp_type)] <- "Yes"
+
+full_long$comp <- droplevels(full_long$comp)
 
 # gender
 table(full_long$gender, useNA = "ifany")
@@ -276,7 +318,7 @@ levels(full_long$education_level)
 # masters = 18
 # graduate = 20
 
-levels(full_long$education) <- c(levels(full_long$education), 20)
+levels(full_long$education) <- c(levels(full_long$education), 20, 21)
 
 full_long$education[full_long$education_level == "Less than high school" & !is.na(full_long$education_level)] <- 10
 full_long$education[full_long$education_level == "High school diploma (or GED)" & !is.na(full_long$education_level)] <- 12
@@ -284,6 +326,11 @@ full_long$education[full_long$education_level == "Some college or a 2-year colle
 full_long$education[full_long$education_level == "4-year college degree (B.A., B.S.)" & !is.na(full_long$education_level)] <- 16
 full_long$education[full_long$education_level == "Master’s degree (M.A., M.S.)" & !is.na(full_long$education_level)] <- 18
 full_long$education[full_long$education_level == "Graduate or professional degree (J.D., Ph.D., M.D.)" & !is.na(full_long$education_level)] <- 20
+
+# PRT lab bach = 15, master = 17, PHD = 21
+full_long$education[full_long$education_level == "4-year college degree (B.A., B.S.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 15
+full_long$education[full_long$education_level == "Master’s degree (M.A., M.S.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 17
+full_long$education[full_long$education_level == "Graduate or professional degree (J.D., Ph.D., M.D.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 21
 
 # describe age
 describe(full_long$age[!duplicated(full_long$id)])
@@ -426,6 +473,21 @@ length(unique(full_long$id))
 length(unique(final_long$id)) 
 ```
 
+## Examine the Distributions
+
+```{r}
+table(final_long$bin_order)
+final_long$bin_order <- droplevels(final_long$bin_order)
+
+# visualize the problem 
+ggplot(final_long, aes(know_vas)) + 
+  geom_histogram() + 
+  facet_grid(cond~vignette*bin_order) +  
+  theme_classic() + 
+  ylab("Frequency") + 
+  xlab("Knowledge Attribution Visual Analogue Score")
+```
+
 ## Descriptives and Demograhics
 
 ```{r}
@@ -498,7 +560,7 @@ ggplot(final_long, aes(know_vas)) +
 
 ## knowledge 
 ds.model <- lme(know_vas ~ cond + comp + age + gender + education,
-                random = list(~1|id, ~1|vignette, ~1|lab_id),
+                random = list(~1|vignette, ~1|id, ~1|lab_id),
                 data = final_long,
                 na.action = "na.omit")
 
@@ -535,8 +597,8 @@ ggplot(final_long, aes(reason_vas)) +
 
 ## reasonable 
 ds.model <- lme(reason_vas ~ cond + comp_type + age + 
-                  gender + education ,
-                random = list(~1|id, ~1|vignette, ~1|lab_id),
+                  gender + education,
+                random = list(~1|vignette, ~1|id), #won't converge with lab_id
                 data = final_long,
                 na.action = "na.omit")
 
@@ -574,7 +636,7 @@ ggplot(final_long, aes(luck_vas)) +
 
 ds.model <- lme(luck_vas ~ cond + comp_type + age + 
                   gender + education ,
-                random = list(~1|id, ~1|vignette, ~1|lab_id),
+                random = list(~1|vignette, ~1|id),
                 data = final_long,
                 na.action = "na.omit")
 
@@ -686,199 +748,9 @@ final_long$gender2 <- factor(final_long$gender,
                              levels = c("female", "male"))
 ```
 
-
-## Final Analysis Knowledge
-
-### Model 1 
-
-Intercept only model to help determine if the addition of random intercepts are useful.
-
-```{r}
-#scores should be 0 and 1 for this analysis 
-final_long$know_vas_combined <- final_long$know_vas_combined - 1
-
-model.1 <- glm(know_vas_combined ~ 1,
-               data = final_long,
-               family = binomial,
-               na.action = "na.omit")
-
-summary(model.1)
-```
-
-### Model 2
-
-Participant random intercept: 
-
-```{r}
-model.2 <- glmer(know_vas_combined ~ (1|id),
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.2)
-r.squaredGLMM(model.2)
-```
-
-  - Remember that 0 is knows and 1 is believes 
-  - Model 1 AIC: `r AIC(model.1)`
-  - Model 2 AIC: `r AIC(model.2)`
-  - Interpretation: the inclusion of participant ID isn't really useful, as the AIC is higher for this model. The variance between participants is very small.
-  
-### Model 3 = WHAT TO DO HERE 
-
-Vignette random intercept model:
-
-```{r}
-
-model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.3)
-
-coefficients <- coef(model.3) 
-coef_DF <- as.data.frame(coefficients$`vignette:id`)
-coef_DF$vig <- substr(rownames(coef_DF), 0, 3)
-tapply(coef_DF$`(Intercept)`, coef_DF$vig, mean)
-
-# log odds zero is the center 
-exp(coef(model.3)$vignette) # regular odds with 1 at the center 
-
-table(final_long$vignette, final_long$know_vas_combined)
-
-r.squaredGLMM(model.3)
-```
-
-  - Interpretation: the inclusion of the vignette random variable is useful
-  - Coefficients: interpretation overall of random intercept, which effectively tells us regardless of condition, which way the participants lean toward answering. See the table printed out to help understand these values. 
-    - Darrel: fairly even split for knows/believes with a slight favor to knows (because it's negative goes toward the 0 group)
-    - Emma: leans more heavily toward the believes category (almost 4 to 1 odds)
-    - Gerald: leans slightly toward the believes category
-    - The results here indicate what we were seeing with the "continuous" data as well - that there's a big difference in the way they respond to vignettes
-  - This vignette accounts for 8 to 10 percent of the random variance. 
-  
-### Model 4
-
-Vignette nested in participants which is then nested in labs:
-
-```{r}
-model.4 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id),
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.4)
-r.squaredGLMM(model.4)
-```
-
-  - Model 2 AIC: `r AIC(model.2)`
-  - Model 3 AIC: `r AIC(model.3)`
-  - Model 4 AIC: `r AIC(model.4)`
-  - Interpretation: the inclusion of lab ID isn't really useful, as the AIC is higher for this model. The variance parameter for lab is also very small. 
-  - This model accounts for approximately the same random variance.
-  - Therefore, we will continue with the random intercept for `vignette` as this parameter accounts for the variance in the DV. 
-  
-### Model 5
-
-Addition of the covariates added to the vignette random intercept model. 
-
-```{r}
-model.5 <- glmer(know_vas_combined ~ (1|vignette) + 
-                   comp + age + gender2 + education,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.5)
-
-table(model.5@frame$gender2, model.5@frame$know_vas_combined) #look at the used data 
-
-r.squaredGLMM(model.5)
-```
-
-  - Model 2 AIC: `r AIC(model.2)`
-  - Model 5 AIC: `r AIC(model.5)`
-  - Interpretation: this model is better than the vignette random intercept only model. 
-  - Compensation: no effect
-  - Age: no effect
-  - Gender: Males and females did the task differently - men are slightly more likely to say someone believes something over knows 
-  - Education: no effect 
-  - These fixed effects account for very little variance in the model though.
-  
-### Model 6
-
-The previous model of covariates plus the variable of focus: condition.
-
-```{r}
-model.6 <- glmer(know_vas_combined ~ (1|vignette) + 
-                   comp + age + gender2 + education + 
-                   cond,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.6)
-
-table(model.6@frame$cond, model.6@frame$know_vas_combined)
-
-r.squaredGLMM(model.6)
-```
-
-  - Model 5 AIC: `r AIC(model.5)`
-  - Model 6 AIC: `r AIC(model.6)`
-  - Interpretation: this model is better than the model with the covariates. 
-  - Both knowledge and ignorance are different than the Gettier condition.
-  - In Gettier, participants are slightly more likely to say believes.
-  - In Ignorance, participants are *way* more likely to say believes (so that's why this condition is different from Gettier).
-  - In Knowledge, participants are more like to say knows (also why this is different from Gettier). 
-  - This effect accounts for 13-15% of the fixed effect variance. 
-
-### Model 6A
-
-Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
-
-NEED TO FIX THE EDUCATION VARIABLE. 
-
-```{r eval = F}
-model.6A <- glmer(know_vas_combined ~ (1|vignette) + 
-                    comp + age + gender2 + education + 
-                    cond*turk,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.6A)
-
-r.squaredGLMM(model.6A)
-```
-
-  - Model 6 AIC: `r #AIC(model.6)`
-  - Model 6A AIC: `r #AIC(model.6A)`
-  - Interpretation: 
-
-### Model 6B
-
-Data was binned because of the distributions of the visual analogue scale - does the data source make a difference? 
-
-```{r eval = F}
-model.6B <- glmer(know_vas_combined ~ (1|vignette) + 
-                    comp + age + gender2 + education + 
-                    cond*know_vas_combined_source,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.6B)
-
-r.squaredGLMM(model.6B)
-```
-
-  - Model 6 AIC: `r #AIC(model.6)`
-  - Model 6B AIC: `r #AIC(model.6B)`
-  - Interpretation:
-
 ## Data Checks
+
+### Missing Data Information 
 
 ```{r}
 table(final_long$lab_id, final_long$vignette, useNA = "ifany")
@@ -903,4 +775,250 @@ tapply(final_long$education, final_long$lab_id, mean, na.rm = T)
 
 tapply(final_long$age, final_long$lab_id, mean, na.rm = T)
 ```
+
+### Check for Reverse Coding 
+
+```{r}
+table(final_long$bin_order)
+final_long$bin_order <- droplevels(final_long$bin_order)
+
+# visualize the problem 
+ggplot(final_long, aes(know_vas)) + 
+  geom_histogram() + 
+  facet_grid(cond~vignette*bin_order) +  
+  theme_classic() + 
+  ylab("Frequency") + 
+  xlab("Knowledge Attribution Visual Analogue Score")
+
+# visualize the problem 
+ggplot(final_long, aes(know_bin)) + 
+  geom_histogram() + 
+  facet_grid(cond~vignette*bin_order) +  
+  theme_classic() + 
+  ylab("Frequency") + 
+  xlab("Knowledge Attribution Bin Score")
+```
+
+## Final Analysis Knowledge
+
+### Model 1 
+
+Intercept only model to help determine if the addition of random intercepts are useful.
+
+```{r}
+#scores should be 0 and 1 for this analysis 
+final_long$know_vas_combined <- final_long$know_vas_combined - 1
+
+model.1 <- glm(know_vas_combined ~ 1,
+               data = final_long,
+               family = binomial,
+               na.action = "na.omit")
+
+summary(model.1)
+```
+
+### Model 2
+
+Vignette random intercept model:
+
+```{r}
+model.2 <- glmer(know_vas_combined ~ (1|vignette),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.2)
+coef(model.2) # log odds zero is the center 
+exp(coef(model.2)$vignette) # regular odds with 1 at the center 
+table(final_long$vignette, final_long$know_vas_combined)
+r.squaredGLMM(model.2)
+```
+
+  - Remember that 0 is knows and 1 is believes 
+  - Model 1 AIC: `r AIC(model.1)`
+  - Model 2 AIC: `r AIC(model.2)`
+  - Interpretation: the inclusion of the vignette random variable is useful
+  - Coefficients: interpretation overall of random intercept, which effectively tells us regardless of condition, which way the participants lean toward answering. See the table printed out to help understand these values. 
+    - Darrel: fairly even split for knows/believes with a slight favor to knows (because it's negative goes toward the 0 group)
+    - Emma: leans more heavily toward the believes category (almost 4 to 1 odds)
+    - Gerald: leans slightly toward the believes category
+    - The results here indicate what we were seeing with the "continuous" data as well - that there's a big difference in the way they respond to vignettes
+  - This vignette accounts for 8 to 10 percent of the random variance. 
+  
+### Model 3
+
+Vignette nested in participants random intercept:
+
+```{r}
+model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.3)
+r.squaredGLMM(model.3)
+```
+
+
+  - Model 2 AIC: `r AIC(model.2)`
+  - Model 3 AIC: `r AIC(model.3)`
+  - Interpretation: the inclusion of participant ID isn't really useful, as the AIC is higher for this model. The variance between participants is very small after accounting for vignettes.
+  - This model accounts for approximately the same random variance. 
+  
+### Model 4
+
+Vignette nested in participants which is then nested in labs:
+
+```{r}
+model.4 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.4)
+r.squaredGLMM(model.4)
+```
+
+  - Model 2 AIC: `r AIC(model.2)`
+  - Model 3 AIC: `r AIC(model.3)`
+  - Model 4 AIC: `r AIC(model.4)`
+  - Interpretation: the inclusion of lab ID isn't really useful, as the AIC is higher for this model. The variance parameter for lab is also very small. 
+  - This model accounts for approximately the same random variance.
+  - We will continue to use this cross classified structure to ensure we account for correlated error and to follow the pre-print.
+  
+### Model 5
+
+Addition of the covariates added to the vignette random intercept model. 
+
+```{r}
+model.5 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                   comp + age + gender2 + education,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.5)
+
+r.squaredGLMM(model.5)
+```
+
+  - Model 4 AIC: `r AIC(model.4)`
+  - Model 5 AIC: `r AIC(model.5)`
+  - Interpretation: this model is better than the vignette random intercept only model.
+  - No covariates predicted the outcome variable. 
+  
+### Model 6
+
+The previous model of covariates plus the variable of focus: condition.
+
+```{r}
+model.6 <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                   comp + age + gender2 + education + 
+                   cond,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.6)
+
+table(model.6@frame$cond, model.6@frame$know_vas_combined)
+
+r.squaredGLMM(model.6)
+```
+
+  - Model 5 AIC: `r AIC(model.5)`
+  - Model 6 AIC: `r AIC(model.6)`
+  - Interpretation: this model is better than the model with the covariates. 
+  - Both knowledge and ignorance are different than the Gettier condition.
+  - In Gettier, participants are slightly more likely to say believes.
+  - In Ignorance, participants are *way* more likely to say believes (so that's why this condition is different from Gettier).
+  - In Knowledge, participants are more like to say knows (also why this is different from Gettier). 
+  - This effect accounts for 13-15% of the fixed effect variance. 
+
+### Model 6A
+
+Does the vignette interact with the condition?
+
+```{r}
+model.6A <- glmer(know_vas_combined ~ (1 | vignette/id/lab_id) + 
+                   comp + age + gender2 + education + 
+                   cond*vignette,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.6A)
+
+r.squaredGLMM(model.6A)
+
+data_graph <- model.6A@frame
+data_graph$know_vas_combined <- factor(data_graph$know_vas_combined,
+                                          levels = c(0,1),
+                                          labels = c("Knows", "Believes"))
+
+#graph the three way binary 
+ggplot(data_graph) +
+  geom_mosaic(aes(x = product(know_vas_combined, cond, vignette), 
+                  fill = know_vas_combined)) + 
+  scale_fill_manual(name = "Knowledge Choice",
+                    values = c("gray", "black")) + 
+  scale_x_productlist(breaks = c(0.13,.5,.87),
+    labels = c("Darrel", "Emma", "Gerald")) + 
+  theme_classic() + 
+  xlab("Vignette") + 
+  ylab("Condition")
+```
+
+  - Model 6 AIC: `r AIC(model.6)`
+  - Model 6A AIC: `r AIC(model.6A)`
+  - Interpretation: This model is better than a model without the interaction. 
+  - There is an interaction between vignette and condition for choice. 
+  - In looking at the graph, we can see this is driven by the Emma vignette which shows a larger believes box for all conditions. 
+  - This interaction adds a good portion of variance to the fixed effects 7-9%. 
+
+### Model 6B
+
+Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
+
+```{r}
+model.6B <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.6B)
+
+r.squaredGLMM(model.6B)
+```
+
+  - Model 6 AIC: `r AIC(model.6)`
+  - Model 6A AIC: `r AIC(model.6B)`
+  - Interpretation: This model is better than a model without the interaction. 
+  - However, the interaction with the turk variable does not produce significant effects.
+  - The model is likely "better" because of the added variable and main effect of turk (likely drive by sample size differences in the two samples of turk versus not for knows versus believes). 
+  - Therefore, we do not find evidence for differences in the turk sample for condition effects. 
+
+### Model 6C
+
+Data was binned because of the distributions of the visual analogue scale - does the data source make a difference? 
+
+```{r}
+model.6C <- glmer(know_vas_combined ~ (1|vignette/id/lab_id) + 
+                    comp + age + gender2 + education + 
+                    cond*know_vas_combined_source,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+summary(model.6C)
+
+r.squaredGLMM(model.6C)
+```
+
+  - Model 6 AIC: `r AIC(model.6)`
+  - Model 6C AIC: `r AIC(model.6C)`
+  - Interpretation: This model is not better than a model without the condition.
+  - There is no evidence for an interaction between condition and the data source, indicating that the binning process did not give us evidence of different results. 
 
