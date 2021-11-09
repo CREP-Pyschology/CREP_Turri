@@ -77,6 +77,58 @@ recode_ethnicity <- function(df) {
            ethn_other_text= ethnicity_7_TEXT)
 }
 
+#' The raw SoSciSurvey dataset encodes all dependent variables _per vignette_
+#' (i.e., the VAS luck/ability judgement for Darrel's vignette is d_luck_vas
+#' regardless of which condition the vignette was presented in). For analyses,
+#' we will need these variables _per condition_. This function adds variables
+#' of the shape `cond_{g,k,i}_{variable}`, e.g., `cond_g_luck_vas` for the
+#' luck/ability judgement for whichever vignette was presented in the Gettier
+#' condition. This works for all variables in `vig_dvs`, i.e. `know_vas`,
+#' `know_bin`, `compr`, etc.
+#' 
+#' This function uses some quote/unquote and dplyr mutation magic...
+add_cond_dvs <- function(df) {
+  # Dependent variables that were collected for each vignette
+  vig_dvs <- c("know_vas", "know_bin", "compr", "reason_vas", "reason_bin",
+               "ri_wr", "luck_vas", "luck_bin", "know_alt")
+  
+  # Appends vig_dvs to each of cond_k_, cond_g_, and cond_i, thereby generating
+  # a list of all possible combinations of conditions and dvs
+  fields <- c("cond_k_", "cond_g_", "cond_i_") %>%
+    map(paste0, vig_dvs) %>%
+    flatten_chr()
+  
+  #' Generates the necessary mutation for a variable. For instance, the `field`
+  #' of `cond_k_compr` would generate the mutation
+  #' `ifelse(d_cond == "k", d_compr, ifelse(g_cond == "k", g_compr, e_compr))`.
+  #' Note that this mutation is not yet executed. Only a symbolic representation
+  #' of this expression is returned.
+  mut <- function(field) {
+    cond <- str_sub(field, 6, 6) %>% toupper()
+    dv   <- str_sub(field, 7)
+    dv_d <- sym(paste0("d", dv))
+    dv_g <- sym(paste0("g", dv))
+    dv_e <- sym(paste0("e", dv))
+    
+    expr(ifelse(d_cond == !! cond,
+                !! dv_d,
+                ifelse(g_cond == !! cond,
+                       !! dv_g,
+                       !! dv_e)))
+  }
+  
+  # This generates a list of mutations to be executed of the form field = expr,
+  # e.g. c(cond_k_compr = ..., cond_g_compr = ..., cond_i_compr = ..., ...)
+  # NB: set_names() also exists in magrittr. To avoid conflicts, we explicitly
+  # specify that we want purrr’s set_names().
+  mutations_cond <- fields %>%
+    purrr::set_names() %>%
+    map(mut)
+  
+  # Actually execute the mutations
+  mutate(df, !!!mutations_cond)
+}
+
 
 ```
 
@@ -307,6 +359,17 @@ d.87d100 <- d.87d100.raw %>%
 rm(d.turk.raw, d.87d100.raw, add_cond_order, recode_ethnicity)
 ```
 
+Import lab countries
+
+```{r}
+lab_countries <- import("./04_data/data/lab_countries.csv") %>%
+  select(lab_id, lab_country) %>%
+  mutate(lab_country = as.factor(lab_country)) %>%
+  glimpse()
+
+```
+
+
 ```{r}
 # Before we changed it, age was an open text field -- we recode cases that have
 # entered strings here so we can convert age to numeric type later.
@@ -318,10 +381,6 @@ d.sss.raw[d.sss.raw$CASE %in% c(878, 1012, 1117), "DD01_01"] <- c("18", "22", "2
 
 # TODO: We should probably have a general CSV of lab-level information. This one
 # contains only lab countries.
-
-lab_countries <- import("data/lab_countries.csv") %>%
-  select(lab_id, lab_country) %>%
-  mutate(lab_country = as.factor(lab_country))
 
 # This is a mapping of variable names. Only a subset of variables is selected
 # and subsequently renamed in order to have more meaningful variable names.
@@ -383,57 +442,6 @@ relevant_fields <- quos(lab_id=lab_ID, case=CASE,
                         start=STARTED, end=LASTDATA, duration=TIME_SUM,
                         last_page=LASTPAGE)
 
-#' The raw SoSciSurvey dataset encodes all dependent variables _per vignette_
-#' (i.e., the VAS luck/ability judgement for Darrel's vignette is d_luck_vas
-#' regardless of which condition the vignette was presented in). For analyses,
-#' we will need these variables _per condition_. This function adds variables
-#' of the shape `cond_{g,k,i}_{variable}`, e.g., `cond_g_luck_vas` for the
-#' luck/ability judgement for whichever vignette was presented in the Gettier
-#' condition. This works for all variables in `vig_dvs`, i.e. `know_vas`,
-#' `know_bin`, `compr`, etc.
-#' 
-#' This function uses some quote/unquote and dplyr mutation magic...
-add_cond_dvs <- function(df) {
-  # Dependent variables that were collected for each vignette
-  vig_dvs <- c("know_vas", "know_bin", "compr", "reason_vas", "reason_bin",
-               "ri_wr", "luck_vas", "luck_bin", "know_alt")
-  
-  # Appends vig_dvs to each of cond_k_, cond_g_, and cond_i, thereby generating
-  # a list of all possible combinations of conditions and dvs
-  fields <- c("cond_k_", "cond_g_", "cond_i_") %>%
-    map(paste0, vig_dvs) %>%
-    flatten_chr()
-  
-  #' Generates the necessary mutation for a variable. For instance, the `field`
-  #' of `cond_k_compr` would generate the mutation
-  #' `ifelse(d_cond == "k", d_compr, ifelse(g_cond == "k", g_compr, e_compr))`.
-  #' Note that this mutation is not yet executed. Only a symbolic representation
-  #' of this expression is returned.
-  mut <- function(field) {
-    cond <- str_sub(field, 6, 6) %>% toupper()
-    dv   <- str_sub(field, 7)
-    dv_d <- sym(paste0("d", dv))
-    dv_g <- sym(paste0("g", dv))
-    dv_e <- sym(paste0("e", dv))
-    
-    expr(ifelse(d_cond == !! cond,
-                !! dv_d,
-                ifelse(g_cond == !! cond,
-                       !! dv_g,
-                       !! dv_e)))
-  }
-  
-  # This generates a list of mutations to be executed of the form field = expr,
-  # e.g. c(cond_k_compr = ..., cond_g_compr = ..., cond_i_compr = ..., ...)
-  # NB: set_names() also exists in magrittr. To avoid conflicts, we explicitly
-  # specify that we want purrr’s set_names().
-  mutations_cond <- fields %>%
-    purrr::set_names() %>%
-    map(mut)
-  
-  # Actually execute the mutations
-  mutate(df, !!!mutations_cond)
-}
 
 # Prepare the SoSciSurvey dataset...
 d.sss <- d.sss.raw %>%
