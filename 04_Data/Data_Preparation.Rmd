@@ -7,15 +7,19 @@ output: html_document
 # Questions
 
 1. What is the difference between data marked "valid" and data not marked "valid"?
+2. Where is `data_preparation_qualtrics.R` and what is this?
 
 # Purpose
 
-The purpose of this script is to create the analysis dataset for PSA004 / CREP_Turri.
+The purpose of this script is to create the analysis dataset for PSA004 / CREP_Turri. 
+Data preparation consists of this script and `data_preparation_qualtrics.R`.
 
-Inputs: 
-- "data_sss_final.csv"
-- "b6c8ec_with_order.csv"
-- "87d100_with_order.csv"
+
+Inputs (all in the "data" directory)
+ - data_sss_final.csv - SoSciSurvey dataset
+ - b6c8ec_with_order.csv - b6c8ec Qualtrics dataset with display order information
+ - 87d100_with_order.csv - 87d100 Qualtrics dataset with display order information
+ - lab_countries.csv - mapping of lab ids to countries
 
 Outputs:
 - "csv/d_all_long.csv" all analysis data, long
@@ -30,6 +34,11 @@ Outputs:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+```{r libraryies}
+
+```
+
 
 ```{r}
 # Data preparation consists of this script and `data_preparation_qualtrics.R`.
