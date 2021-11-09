@@ -35,8 +35,11 @@ Outputs:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r libraryies}
+```{r packages}
+library(tidyverse)
+library(rio)
 
+library(tidylog)
 ```
 
 
@@ -48,8 +51,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # - 87d100_with_order.csv - 87d100 Qualtrics dataset with display order information
 # - lab_countries.csv - mapping of lab ids to countries
 
-library(tidyverse)
-library(rio)
+
 
 # Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
 # software like Excel from interpreting the value as a number instead of the
