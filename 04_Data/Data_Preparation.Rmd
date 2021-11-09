@@ -11,9 +11,9 @@ output: html_document
 3. Where is `data_preparation.R` and what is this? Why not just clean the data in one step?
 4. What was changed from the raw qualtrics data for analyses? Looks like some deidentification was done.
 5. Why use the position specifications for recoding ethnicity? (looks like results are the same without) (^|,)White/European(,|$)
-6. Qualtrics data notes that timezones need to be taken care of, but then assigns Denver TZ. Happy to help with this. Usually tz information is preserved.
+6. Qualtrics data notes that timezones need to be taken care of, but then assigns Denver TZ later. Happy to help with this.. My understanding is that the timezone is set by the account that administered the survey.
 7. Ideally, we'd read in the variable mappings for QT data rather than typing them manually
-
+8. Should the 'alt' DVs have factor levels 'knows' and 'feels' rather than 'knows' and 'believes'?
 
 # Purpose
 
@@ -93,13 +93,14 @@ d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
   glimpse()
 ```
 
-## Import and merge Qualtrics data
+## Import, wrangle, and merge Qualtrics data
 
 Import qualtrics files to join with SSS files
 ```{r}
 #### Import b6c8ec ####
 d.turk.raw <- read_survey("./04_Data/data/b6c8ec_with_order.csv") %>% 
   glimpse()
+
 ```
 
 
@@ -108,7 +109,7 @@ Wrangle qualtrics files to join with SSS files.
 Variable name mappings are from the following sources:
 d.turk.raw -- https://docs.google.com/spreadsheets/d/1LiWIC6mj-B1NskAga7PFSVt70I-itjjutn-UneW-A1Q/edit#gid=1768897241
 2055 -- https://docs.google.com/spreadsheets/d/1LiWIC6mj-B1NskAga7PFSVt70I-itjjutn-UneW-A1Q/edit#gid=518902961
-2054 -- https://docs.google.com/spreadsheets/d/1LiWIC6mj-B1NskAga7PFSVt70I-itjjutn-UneW-A1Q/edit#gid=869820268
+2054 -- https://docs.google.com/spreadsheets/d/1LiWIC6mj-B1NskAga7PFSVt70I-itjjutn-UneW-A1Q/edit#gid=869820268 
 
 ```{r}
 # Import b6c8ec's CSV in a manner that is compatible with the SoSciSurvey format
@@ -127,13 +128,13 @@ d.turk <- d.turk.raw %>%
   recode_ethnicity() %>% 
   select(vignette_order=FL_85_DO,
          case=ResponseId,
-         d_cond=FL_78_DO,
+         d_cond=FL_78_DO, #double checked by HM
          d_know_vas=d_knows_1, d_compr=d_fake, d_reason_vas=d_reasonable_1,
          d_ri_wr=d_right, d_luck_vas=d_ability_1, d_know_alt=d_situation,
-         g_cond=FL_41_DO,
+         g_cond=FL_41_DO, #double checked by HM
          g_know_vas=g_knows_1, g_compr=g_fake, g_reason_vas=g_reasonable_1,
          g_ri_wr=g_right, g_luck_vas=g_ability_1, g_know_alt=g_situation,
-         e_cond=FL_50_DO,
+         e_cond=FL_50_DO, #double checked by HM
          e_know_vas=e_knows_1, e_compr=e_fake, e_reason_vas=e_reasonable_1,
          e_ri_wr=e_right, e_luck_vas=e_ability_1, e_know_alt=e_situation,
 
@@ -154,12 +155,14 @@ d.turk <- d.turk.raw %>%
          consent) %>%
   mutate(across(c(start, end),
                 as.POSIXct, format="%Y-%m/%d %H:%M", tz="America/Denver")) %>%
-  mutate(d_cond = fct_recode(d_cond, K="FL_90", G="FL_91", I="FL_92"),
-         g_cond = fct_recode(g_cond, K="FL_62", G="FL_66", I="FL_64"),
-         e_cond = fct_recode(e_cond, K="FL_68", G="FL_70", I="FL_69")) %>%
+  mutate(d_cond = fct_recode(d_cond, K="FL_90", G="FL_91", I="FL_92"), #double checked by HM
+         g_cond = fct_recode(g_cond, K="FL_62", G="FL_66", I="FL_64"), #double checked by HM
+         e_cond = fct_recode(e_cond, K="FL_68", G="FL_70", I="FL_69")) %>% #double checked by HM
   mutate(vignette_order = vignette_order %>%
-           str_replace("FL_89", "D") %>% str_replace("FL_93", "G") %>%
-           str_replace("FL_94", "E") %>% str_replace_all(fixed("|"), "")) %>%
+           str_replace("FL_89", "D") %>% #double checked by HM
+           str_replace("FL_93", "G") %>% #double checked by HM
+           str_replace("FL_94", "E") %>% #double checked by HM
+           str_replace_all(fixed("|"), "")) %>%
   add_cond_order() %>%
   mutate(lab_id = "b6c8ec", id = paste0("q_turk_", case),
          source = "Qualtrics",
@@ -168,7 +171,7 @@ d.turk <- d.turk.raw %>%
   #mutate(gender_other = as.character(NA)) %>%
   mutate(consent = consent == "I agree to participate in this study.") %>%
   mutate(survey_lang = "eng") %>%
-  mutate(d_compr = factor(d_compr, c("ground squirrel","prairie dog"), labels=c("real", "fake")),
+  mutate(d_compr = factor(d_compr, c("ground squirrel","prairie dog"), labels=c("real", "fake")), 
          g_compr = factor(g_compr, c("real","fake"), labels=c("real", "fake")),
          e_compr = factor(e_compr, c("diamonds","cubic zirconium stones"), labels=c("real", "fake")),
          d_know_alt = factor(d_know_alt,
