@@ -164,10 +164,14 @@ d.turk <- d.turk.raw %>%
            str_replace("FL_94", "E") %>% #double checked by HM
            str_replace_all(fixed("|"), "")) %>%
   add_cond_order() %>%
-  mutate(lab_id = "b6c8ec", id = paste0("q_turk_", case),
+  mutate(lab_id = "b6c8ec", #setting constant variables
+         id = paste0("q_turk_", case),
          source = "Qualtrics",
-         bin_order = "mixed", scale="vas") %>%
-  mutate_at(vars(starts_with("sx_"), -"sx_comments"), ~as.integer(sub("\\..*", "", .))) %>%
+         bin_order = "mixed", 
+         scale="vas") %>%
+  mutate_at(vars(starts_with("sx_"), #for the variables that start with sx_, only the poles were labeled
+                 -"sx_comments"), #when poles were labeled there was a period after the number... this fixes that
+            ~as.integer(sub("\\..*", "", .))) %>%
   #mutate(gender_other = as.character(NA)) %>%
   mutate(consent = consent == "I agree to participate in this study.") %>%
   mutate(survey_lang = "eng") %>%
