@@ -8,6 +8,7 @@ output: html_document
 
 1. What is the difference between data marked "valid" and data not marked "valid"?
 2. Where is `data_preparation_qualtrics.R` and what is this?
+3. Where is `data_preparation.R` and what is this? Why not just clean the data in one step?
 
 # Purpose
 
@@ -38,41 +39,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r packages}
 library(tidyverse)
 library(rio)
-
+library(qualtRics)
 library(tidylog)
 ```
 
+```{r functions}
 
-```{r}
-# Data preparation consists of this script and `data_preparation_qualtrics.R`.
-# The script expects the following data files in a data/ subfolder:
-# - data_sss_final.csv - SoSciSurvey dataset
-# - b6c8ec_with_order.csv - b6c8ec Qualtrics dataset with display order information
-# - 87d100_with_order.csv - 87d100 Qualtrics dataset with display order information
-# - lab_countries.csv - mapping of lab ids to countries
-
-
-
-# Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
-# software like Excel from interpreting the value as a number instead of the
-# string "000"). Also filter out rows from the development phase
-d.sss.raw <- import("data/data_sss_final.csv") %>%
-  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>%
-  filter(MODE != "admin")
-```
-
-Import qualtrics files to join with SSS files:
-
-```{r}
-# Import b6c8ec's CSV in a manner that is compatible with the SoSciSurvey format
-# Note that the datasets generated here are not completely cleaned yet -- some
-# processing steps need to happen in data_preparation.R afterwards! (this is imported at the bottom) 
-
-library(qualtRics)
-
-#### Import b6c8ec ####
-
-d.turk.raw <- read_survey("data/b6c8ec_with_order.csv")
+# this function is for qualtrics data, and it creates condition order
 
 add_cond_order <- function(df) {
   vign_1 <- str_sub(df$vignette_order, 1, 1)
@@ -96,6 +69,37 @@ recode_ethnicity <- function(df) {
     mutate(ethn_selected = rowSums(across(starts_with("ethn_"))),
            ethn_other_text= ethnicity_7_TEXT)
 }
+
+
+```
+
+
+## Import SocSciSurvey data
+
+```{r}
+# Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
+# software like Excel from interpreting the value as a number instead of the
+# string "000"). Also filter out rows from the development phase
+d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
+  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>%
+  filter(MODE != "admin")
+```
+
+## Import and merge Qualtrics data
+
+Import qualtrics files to join with SSS files
+```{r}
+#### Import b6c8ec ####
+d.turk.raw <- read_survey("./04_Data/data/b6c8ec_with_order.csv")
+```
+
+
+Wrangle qualtrics files to join with SSS files
+
+```{r}
+# Import b6c8ec's CSV in a manner that is compatible with the SoSciSurvey format
+# Note that the datasets generated here are not completely cleaned yet -- some
+# processing steps need to happen in data_preparation.R afterwards! (this is imported at the bottom) 
 
 d.turk <- d.turk.raw %>%
   # need the as.character here because country_now_2_TEXT is always empty and
