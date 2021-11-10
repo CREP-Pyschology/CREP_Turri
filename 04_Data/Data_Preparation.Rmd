@@ -1,6 +1,6 @@
 ---
 title: "Data_Preparation"
-author: "Felix Kiunke ... with minor EMB adjustments"
+author: "Felix Kiunke ... with minor EMB & HM adjustments"
 date: "Last Update `r Sys.Date()`"
 output: html_document
 ---
