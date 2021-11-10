@@ -641,15 +641,15 @@ d.dge_valid.long <- d.dge_valid %>%
 # Save data
 
 ```{r}
-saveRDS(d.all, "rds/d_all.Rds")
-saveRDS(d.all.long, "rds/d_all_long.Rds")
-saveRDS(d.dge_valid, "rds/d_dge_valid.Rds")
-saveRDS(d.dge_valid.long, "rds/d_dge_valid_long.Rds")
+saveRDS(d.all, "./04_Data/rds/d_all.Rds")
+saveRDS(d.all.long, "./04_Data/rds/d_all_long.Rds")
+saveRDS(d.dge_valid, "./04_Data/rds/d_dge_valid.Rds")
+saveRDS(d.dge_valid.long, "./04_Data/rds/d_dge_valid_long.Rds")
 
-write_csv(d.all, "csv/d_all.csv")
-write_csv(d.all.long, "csv/d_all_long.csv")
-write_csv(d.dge_valid, "csv/d_dge_valid.csv")
-write_csv(d.dge_valid.long, "csv/d_dge_valid_long.csv")
+write_csv(d.all, "./04_Data/csv/d_all.csv")
+write_csv(d.all.long, "./04_Data/csv/d_all_long.csv")
+write_csv(d.dge_valid, "./04_Data/csv/d_dge_valid.csv")
+write_csv(d.dge_valid.long, "./04_Data/csv/d_dge_valid_long.csv")
 
 # Remove variables that should not be exported
 #rm(d.sss.raw, relevant_fields, add_cond_dvs)
