@@ -6,14 +6,12 @@ output: html_document
 ---
 # Questions
 
-1. What is the difference between data marked "valid" and data not marked "valid"?
-2. Where is `data_preparation_qualtrics.R` and what is this?
-3. Where is `data_preparation.R` and what is this? Why not just clean the data in one step?
-4. What was changed from the raw qualtrics data for analyses? Looks like some deidentification was done.
-5. Why use the position specifications for recoding ethnicity? (looks like results are the same without) (^|,)White/European(,|$)
-6. Qualtrics data notes that timezones need to be taken care of, but then assigns Denver TZ later. Happy to help with this.. My understanding is that the timezone is set by the account that administered the survey.
-7. Ideally, we'd read in the variable mappings for QT data rather than typing them manually
-8. Should the 'alt' DVs have factor levels 'knows' and 'feels' rather than 'knows' and 'believes'?
+1. What was changed from the raw qualtrics data for analyses? Looks like some deidentification was done.
+2. Why use the position specifications for recoding ethnicity? (looks like results are the same without) (^|,)White/European(,|$)
+3. Qualtrics data notes that timezones need to be taken care of, but then assigns Denver TZ later. Happy to help with this.. My understanding is that the timezone is set by the account that administered the survey.
+4. Ideally, we'd read in the variable mappings for QT data rather than typing them manually
+5. Should the 'alt' DVs have factor levels 'knows' and 'feels' rather than 'knows' and 'believes'?
+6. Some filtering is done here based on responses to comprehension questions -- is Erin using this? if not, we don't need the 'valid' versions of the data
 
 # Purpose
 
@@ -550,8 +548,8 @@ d.all <- d.sss %>%
          j_valid = j_compr == if_else(j_cond == "I", "fake", "real")) %>%
   # ...reorder columns a little
   relocate(ethn_as_sea_pac, ethn_sa, ethn_none, .before = ethn_other) %>%
-  relocate(education_level, .after = education)
-
+  relocate(education_level, .after = education) %>% 
+  glimpse()
 
 # Correct responses on Darrel+Emma+Gerald comprehension questions
 d.dge_valid = d.all %>% filter(dge_valid)
@@ -579,6 +577,7 @@ d.dge_valid.long <- d.dge_valid %>%
   mutate(cond = toupper(cond)) %>%
   mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)
 ```
+
 
 # Save data
 
