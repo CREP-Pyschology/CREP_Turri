@@ -658,7 +658,7 @@ write_csv(d.dge_valid.long, "./04_Data/csv/d_dge_valid_long.csv")
 # Create spreadsheets for coding / translating open-ended responses
 
 
-```{r}
+```{r include = FALSE, eval = FALSE}
 
 # Take the most common responses for purpose and previous so we don't have to
 # code them manually:
@@ -698,22 +698,27 @@ write_csv(d.dge_valid.long, "./04_Data/csv/d_dge_valid_long.csv")
 #                 "Nu ", "οχι", "Όχι")
   
 
-previous <- d.all[ , c("id", "survey_lang", "previous")]
-previous <- subset(previous, nchar(previous) > 1)
-write.csv(previous, "data/previous.csv", row.names = F)
+previous <- d.all %>% 
+  select(id, survey_lang, previous) %>% 
+  filter(nchar(previous) > 1)
+
+write.csv(previous, "./04_Data/data/previous.csv", row.names = F)
+
 for (lang in unique(previous$survey_lang)) {
   write.csv(subset(previous, survey_lang == lang), 
-            paste0("data/previous_", lang, ".csv"), 
+            paste0("./04_Data/data/previous_", lang, ".csv"), 
             row.names = F)
 }
 
+purpose <- d.all %>% 
+  select(id, survey_lang, purpose) %>% 
+  filter(nchar(purpose) > 1)
 
-purpose <- d.all[ , c("id", "survey_lang", "purpose")]
-purpose <- subset(purpose, nchar(purpose) > 1)
-write.csv(purpose, "data/purpose.csv", row.names = F)
+write.csv(purpose, "./04_Data/data/purpose.csv", row.names = F)
+
 for (lang in unique(purpose$survey_lang)) {
   write.csv(subset(purpose, survey_lang == lang), 
-            paste0("data/purpose_", lang, ".csv"), 
+            paste0("./04_Data/data/purpose_", lang, ".csv"), 
             row.names = F)
 }
 ```
