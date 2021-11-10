@@ -550,6 +550,65 @@ d.all <- d.sss %>%
   relocate(ethn_as_sea_pac, ethn_sa, ethn_none, .before = ethn_other) %>%
   relocate(education_level, .after = education) %>% 
   glimpse()
+```
+
+###  Removing duplciate responses for 87d100 & filling in credit type for 87d100
+
+```{r}
+#create vector of unique ids
+unique_SPI_ids <- d.all %>% 
+  filter(lab_id == "87d100",
+         !is.na(SPI)) %>% 
+  select(SPI, id, source, lab_id, case, end) %>% 
+  group_by(SPI) %>% 
+  #sort by end dttm, with earlier listed first
+  arrange(end) %>% 
+  #select the response that was finished first
+  slice(1) %>% 
+  pull(id)
+
+#checking
+#unique_SPI <- d.all %>% 
+#  filter(lab_id == "87d100") %>% 
+#  pull(SPI) %>% 
+#  unique() %>% 
+#  na.omit()
+
+#length(unique_SPI) == length(unique_SPI_ids)
+
+#filter out the 25 rows that are from this lab, have an SPI value, but are not in the vector 
+#of unique SPI ids
+d.all <- d.all %>% 
+  filter(!(lab_id == "87d100" & !is.na(SPI) & (!(id %in% unique_SPI_ids)))) %>% 
+  glimpse()
+
+```
+
+
+```{r}
+#show table of comp before
+tabyl(d.all, comp)
+
+#ideally we would not be using numeric codes for any of these variables
+d.all <- d.all %>% 
+  #create a variable to indicate credit type for folks in this lab
+  mutate(comp_87d100 = as.integer(case_when(!is.na(SPI) ~ "2", #subjpool
+                                 (lab_id == "87d100" & is.na(SPI))  ~ "1"))) %>% #no credit / social media
+  #change values of comp for folks in this lab from NA to 1 or 2 depending on missingness of SPI 
+  mutate(comp = case_when(lab_id != "87d100" ~ comp,
+                          is.na(lab_id) ~ comp,
+                          lab_id == "87d100" ~ comp_87d100)) 
+
+#show table of comp after
+tabyl(d.all, comp)
+
+```
+
+
+
+# Creating final datasets and saving
+
+```{r}
 
 # Correct responses on Darrel+Emma+Gerald comprehension questions
 d.dge_valid = d.all %>% filter(dge_valid)
