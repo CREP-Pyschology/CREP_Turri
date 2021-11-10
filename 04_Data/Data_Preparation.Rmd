@@ -4,20 +4,10 @@ author: "Felix Kiunke ... with minor EMB & HM adjustments"
 date: "Last Update `r Sys.Date()`"
 output: html_document
 ---
-# Questions
-
-1. What was changed from the raw qualtrics data for analyses? Looks like some deidentification was done.
-2. Why use the position specifications for recoding ethnicity? (looks like results are the same without) (^|,)White/European(,|$)
-3. Qualtrics data notes that timezones need to be taken care of, but then assigns Denver TZ later. Happy to help with this.. My understanding is that the timezone is set by the account that administered the survey.
-4. Ideally, we'd read in the variable mappings for QT data rather than typing them manually
-5. Should the 'alt' DVs have factor levels 'knows' and 'feels' rather than 'knows' and 'believes'?
-6. Some filtering is done here based on responses to comprehension questions -- is Erin using this? if not, we don't need the 'valid' versions of the data
 
 # Purpose
 
 The purpose of this script is to create the analysis dataset for PSA004 / CREP_Turri. 
-Data preparation consists of this script and `data_preparation_qualtrics.R`.
-
 
 Inputs (all in the "data" directory)
  - data_sss_final.csv - SoSciSurvey dataset
@@ -32,6 +22,8 @@ Outputs:
 - "csv/d_dge_valid_long.csv" analysis data, valid cases only, wide
 - "previous.csv" and other datasets for open-ended coding
 = "purpose.csv" and other datasets for open-ended coding
+
+Ideally, we'd read in the variable mappings for QT data rather than typing them manually. 
 
 # Set up 
 
