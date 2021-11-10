@@ -517,15 +517,14 @@ d.sss <- d.sss.raw %>%
 
 # Join sosci data with qualtrics datasets and further process the whole thing...
 # fix differences in column types
-d.sss$ethn_as <- as.logical(d.sss$ethn_as)
-d.sss$ethn_aus <- as.logical(d.sss$ethn_aus)
-d.sss$ethn_bl <- as.logical(d.sss$ethn_bl)
-d.sss$ethn_lat <- as.logical(d.sss$ethn_lat)
-d.sss$ethn_nat <- as.logical(d.sss$ethn_nat)
-d.sss$ethn_other <- as.logical(d.sss$ethn_other)
-d.sss$ethn_pac <- as.logical(d.sss$ethn_pac)
-d.sss$ethn_sea <- as.logical(d.sss$ethn_sea)
-d.sss$ethn_wh <- as.logical(d.sss$ethn_wh)
+d.sss <- d.sss %>% 
+  mutate(
+    across(
+      .cols = c(ethn_as, ethn_aus, ethn_bl, 
+                ethn_lat, ethn_nat, ethn_other,
+                ethn_pac, ethn_sea, ethn_wh), 
+      as.logical))
+
 
 d.all <- d.sss %>%
   bind_rows(d.turk, d.87d100) %>%
