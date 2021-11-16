@@ -1,48 +1,50 @@
 ---
 title: "Data_Preparation"
-author: "Felix Kiunke ... with minor EMB adjustments"
+author: "Felix Kiunke ... with minor EMB & HM adjustments"
 date: "Last Update `r Sys.Date()`"
 output: html_document
 ---
+
+# Purpose
+
+The purpose of this script is to create the analysis dataset for PSA004 / CREP_Turri. 
+
+Inputs (all in the "data" directory)
+ - data_sss_final.csv - SoSciSurvey dataset
+ - b6c8ec_with_order.csv - b6c8ec Qualtrics dataset with display order information
+ - 87d100_with_order.csv - 87d100 Qualtrics dataset with display order information
+ - lab_countries.csv - mapping of lab ids to countries
+
+Outputs:
+- "csv/d_all_long.csv" all analysis data, long
+- "csv/d_all.csv" all analysis data, wide
+- "csv/d_dge_valid.csv" analysis data, valid cases only, wide
+- "csv/d_dge_valid_long.csv" analysis data, valid cases only, wide
+- "previous.csv" and other datasets for open-ended coding
+= "purpose.csv" and other datasets for open-ended coding
+
+Ideally, we'd read in the variable mappings for QT data rather than typing them manually. 
+
+# Set up 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
-# Data preparation consists of this script and `data_preparation_qualtrics.R`.
-# The script expects the following data files in a data/ subfolder:
-# - data_sss_final.csv - SoSciSurvey dataset
-# - b6c8ec_with_order.csv - b6c8ec Qualtrics dataset with display order information
-# - 87d100_with_order.csv - 87d100 Qualtrics dataset with display order information
-# - lab_countries.csv - mapping of lab ids to countries
-
+```{r packages}
 library(tidyverse)
 library(rio)
-
-# Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
-# software like Excel from interpreting the value as a number instead of the
-# string "000"). Also filter out rows from the development phase
-d.sss.raw <- import("data/data_sss_final.csv") %>%
-  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>%
-  filter(MODE != "admin")
+library(qualtRics)
+library(tidylog)
+library(janitor)
 ```
 
-Import qualtrics files to join with SSS files:
+```{r functions}
 
-```{r}
-# Import b6c8ec's CSV in a manner that is compatible with the SoSciSurvey format
-# Note that the datasets generated here are not completely cleaned yet -- some
-# processing steps need to happen in data_preparation.R afterwards! (this is imported at the bottom) 
+# this function is for qualtrics data, and it creates condition order
 
-library(qualtRics)
-
-#### Import b6c8ec ####
-
-d.turk.raw <- read_survey("data/b6c8ec_with_order.csv")
-
-add_cond_order <- function(df) {
-  vign_1 <- str_sub(df$vignette_order, 1, 1)
+add_cond_order <- function(df) { 
+  vign_1 <- str_sub(df$vignette_order, 1, 1) 
   vign_2 <- str_sub(df$vignette_order, 2, 2)
   vign_3 <- str_sub(df$vignette_order, 3, 3)
   cond_1 <- case_when(vign_1 == "D" ~ df$d_cond, vign_1 == "G" ~ df$g_cond, vign_1 == "E" ~ df$e_cond)
@@ -52,277 +54,18 @@ add_cond_order <- function(df) {
 }
 
 recode_ethnicity <- function(df) {
-  df %>%
-    mutate(ethn_wh = str_detect(ethnicity, "(^|,)White/European(,|$)"),
+  df %>% #ethnicity is a string that lists all selection options
+    # this function creates individual variables by detecting strings corresponding to different categories
+    mutate(ethn_wh = str_detect(ethnicity, "(^|,)White/European(,|$)"), #pending question above, remove position info "(^|,) and (,|$)
            ethn_bl = str_detect(ethnicity, "(^|,)Black/African American(,|$)"),
            ethn_lat = str_detect(ethnicity, "(^|,)Hispanic Latino(,|$)"),
-           ethn_as_sea_pac = str_detect(ethnicity, "(^|,)East or Southeast Asian / Pacific Islander"),
-           ethn_sa = str_detect(ethnicity, "(^|,)South Asian"),
+           ethn_as_sea_pac = str_detect(ethnicity, "(^|,)East or Southeast Asian / Pacific Islander(,|$)"),
+           ethn_sa = str_detect(ethnicity, "(^|,)South Asian(,|$)"),
            ethn_none = str_detect(ethnicity, "(^|,)I prefer not to answer this question(,|$)"),
-           ethn_other = str_detect(ethnicity, "(^|,)Other(,|$)")) %>%
+           ethn_other = str_detect(ethnicity, "(^|,)Other(,|$)")) %>% 
     mutate(ethn_selected = rowSums(across(starts_with("ethn_"))),
            ethn_other_text= ethnicity_7_TEXT)
 }
-
-d.turk <- d.turk.raw %>%
-  # need the as.character here because country_now_2_TEXT is always empty and
-  # NAs are thus interpreted as numeric, clashing with the "United States" string
-  mutate(country = if_else(country_now == "United States",
-                           "United States", as.character(country_now_2_TEXT)),
-         birth_country = if_else(country_birth == "United States",
-                                 "United States", as.character(country_birth_2_TEXT))) %>%
-  # Replace -99 with NA in all columns
-  mutate(across(everything(), na_if, -99)) %>%
-  recode_ethnicity() %>%
-  select(vignette_order=FL_85_DO,
-         case=ResponseId,
-         d_cond=FL_78_DO,
-         d_know_vas=d_knows_1, d_compr=d_fake, d_reason_vas=d_reasonable_1,
-         d_ri_wr=d_right, d_luck_vas=d_ability_1, d_know_alt=d_situation,
-         g_cond=FL_41_DO,
-         g_know_vas=g_knows_1, g_compr=g_fake, g_reason_vas=g_reasonable_1,
-         g_ri_wr=g_right, g_luck_vas=g_ability_1, g_know_alt=g_situation,
-         e_cond=FL_50_DO,
-         e_know_vas=e_knows_1, e_compr=e_fake, e_reason_vas=e_reasonable_1,
-         e_ri_wr=e_right, e_luck_vas=e_ability_1, e_know_alt=e_situation,
-
-         purpose=purpose_study, materials=impression_study, previous=similar_study,
-         sx_enjoy=enjoy_study, sx_nervous=nervous_study, sx_difficult=difficult_study,
-         sx_boring=boring_study, sx_tiring=tiring_study, sx_speed=quickly_study,
-         sx_experience=regularly_study, sx_selfconscious=selfcons_study,
-         sx_motivation=motivated_study, sx_contribution=important_study,
-         sx_goal=aim_study, sx_comments=comment_study,
-         
-         age, gender, gender_other=gender_3_TEXT,
-         country, birth_country, education_level=lvl_edu, language=english,
-         ethn_selected, ethn_wh, ethn_bl, ethn_lat, ethn_as_sea_pac,
-         ethn_sa, ethn_none, ethn_other, ethn_other_text,
-         
-         start=StartDate, # TODO: timezones
-         end=EndDate, duration=`Duration (in seconds)`,
-         consent) %>%
-  mutate(across(c(start, end),
-                as.POSIXct, format="%Y-%m/%d %H:%M", tz="America/Denver")) %>%
-  mutate(d_cond = fct_recode(d_cond, K="FL_90", G="FL_91", I="FL_92"),
-         g_cond = fct_recode(g_cond, K="FL_62", G="FL_66", I="FL_64"),
-         e_cond = fct_recode(e_cond, K="FL_68", G="FL_70", I="FL_69")) %>%
-  mutate(vignette_order = vignette_order %>%
-           str_replace("FL_89", "D") %>% str_replace("FL_93", "G") %>%
-           str_replace("FL_94", "E") %>% str_replace_all(fixed("|"), "")) %>%
-  add_cond_order() %>%
-  mutate(lab_id = "b6c8ec", id = paste0("q_turk_", case),
-         source = "Qualtrics",
-         bin_order = "mixed", scale="vas") %>%
-  mutate_at(vars(starts_with("sx_"), -"sx_comments"), ~as.integer(sub("\\..*", "", .))) %>%
-  #mutate(gender_other = as.character(NA)) %>%
-  mutate(consent = consent == "I agree to participate in this study.") %>%
-  mutate(survey_lang = "eng") %>%
-  mutate(d_compr = factor(d_compr, c("ground squirrel","prairie dog"), labels=c("real", "fake")),
-         g_compr = factor(g_compr, c("real","fake"), labels=c("real", "fake")),
-         e_compr = factor(e_compr, c("diamonds","cubic zirconium stones"), labels=c("real", "fake")),
-         d_know_alt = factor(d_know_alt,
-                             c("Darrel knows that the animal he saw is a red speckled ground squirrel.",
-                               "Darrel feels like he knows that the animal he saw is a red speckled ground squirrel, but he doesn't actually know that it is."),
-                             labels=c("knows", "believes")),
-         g_know_alt = factor(g_know_alt,
-                             c("Gerald knows that the house he is pointing at is a real house.",
-                               "Gerald feels like he knows that the house he is pointing at is a real house, but he doesn't actually know that it is."),
-                             labels=c("knows", "believes")),
-         e_know_alt = factor(e_know_alt,
-                             c("Emma knows that she chose a necklace made of diamonds.",
-                               "Emma feels like she knows that she chose a necklace made of diamonds, but she doesn't actually know that it is."),
-                             labels=c("knows", "believes")),
-         across(ends_with("_ri_wr"), factor, c("right", "wrong"), labels=c("right", "wrong")),
-         across(ends_with("_cond"), as_factor),
-         gender = factor(gender, c("Female", "Male", "Other (please specify):"),
-                         c("female", "male", "other")),
-         gender_other = as.character(gender_other), # ensure correct type even if always NA
-         education_level = ordered(education_level,
-                                   c("Less than high school",
-                                     "High school diploma (or GED)",
-                                     "Some college or a 2-year college degree (A.A.)",
-                                     "4-year college degree (B.A., B.S.)",
-                                     "Master’s degree (M.A., M.S.)",
-                                     "Graduate or professional degree (J.D., Ph.D., M.D.)")),
-         language = ordered(tolower(language),
-                            c("not well at all", "not very well", "well", "very well")))
-
-#### Import 87d100 ####
-
-
-d.87d100.raw <- read_survey("data/87d100_with_order.csv")
-
-d.87d100 <- d.87d100.raw %>%
-  # This lab is Portugal-based, however, the country of Portugal is coded as
-  # United States.
-  mutate(country = if_else(country_now == "United States",
-                           "Portugal", as.character(country_now_2_TEXT)),
-         birth_country = if_else(country_birth == "Portugal",
-                                 "United States", as.character(country_birth_2_TEXT))) %>%
-  # Replace -99 with NA in all columns
-  mutate(across(everything(), na_if, -99)) %>%
-  recode_ethnicity() %>%
-  select(vignette_order=FL_40_DO,
-         case=ResponseId,
-         d_cond=FL_56_DO,
-         d_know_vas=d_knows_1, d_compr=d_fake, d_reason_vas=d_reasonable_1,
-         d_ri_wr=d_right, d_luck_vas=d_ability_1, d_know_alt=d_situation,
-         g_cond=FL_41_DO,
-         g_know_vas=g_knows_1, g_compr=g_fake, g_reason_vas=g_reasonable_1,
-         g_ri_wr=g_right, g_luck_vas=g_ability_1, g_know_alt=g_situation,
-         e_cond=FL_50_DO,
-         e_know_vas=e_knows_1, e_compr=e_fake, e_reason_vas=e_reasonable_1,
-         e_ri_wr=e_right, e_luck_vas=e_ability_1, e_know_alt=e_situation,
-         
-         purpose=purpose_study, previous=similar_study,
-         sx_enjoy=enjoy_study, sx_nervous=nervous_study, sx_difficult=difficult_study,
-         sx_boring=boring_study, sx_tiring=tiring_study, sx_speed=quickly_study,
-         sx_experience=regularly_study, sx_selfconscious=selfcons_study,
-         sx_motivation=motivated_study, sx_contribution=important_study,
-         sx_goal=aim_study, sx_comments=comments_study,
-         
-         age, gender, gender_other=gender_3_TEXT,
-         country, birth_country, education_level=lvl_edu,
-         language=english, # this is presumably actually portuguese-proficiency
-         ethn_selected, ethn_wh, ethn_bl, ethn_lat, ethn_as_sea_pac,
-         ethn_sa, ethn_none, ethn_other, ethn_other_text,
-         
-         start=StartDate, # TODO: timezones
-         end=EndDate, duration=`Duration (in seconds)`,
-         consent) %>%
-  mutate(across(c(start, end),
-                as.POSIXct, format="%m/%d/%Y %H:%M", tz="America/Denver")) %>%
-  mutate(d_cond = fct_recode(d_cond, K="FL_71", G="FL_72", I="FL_73"),
-         g_cond = fct_recode(g_cond, K="FL_62", G="FL_66", I="FL_64"),
-         e_cond = fct_recode(e_cond, K="FL_68", G="FL_70", I="FL_69")) %>%
-  mutate(vignette_order = vignette_order %>%
-           str_replace("FL_55", "D") %>% str_replace("FL_43", "G") %>%
-           str_replace("FL_49", "E") %>% str_replace_all(fixed("|"), "")) %>%
-  add_cond_order() %>%
-  mutate(lab_id = "87d100", id = paste0("q_87d100_", case),
-         source = "Qualtrics",
-         bin_order = "normal", scale="vas") %>%
-  mutate_at(vars(starts_with("sx_"), -"sx_comments"), ~as.integer(sub("\\..*", "", .))) %>%
-  mutate(consent = consent == "I agree to participate in this study") %>%
-  mutate(survey_lang = "prt") %>%
-  # knowledge/reasonable VAS scales were coded reversely in the 87d100 survey!
-  mutate(across(ends_with(c("_know_vas", "_reason_vas")), ~(100-.))) %>%
-  mutate(d_compr = factor(d_compr, c("ground squirrel","prairie dog"), labels=c("real", "fake")),
-         g_compr = factor(g_compr, c("real","fake"), labels=c("real", "fake")),
-         e_compr = factor(e_compr, c("diamonds","cubic zirconium stones"), labels=c("real", "fake")),
-         d_know_alt = factor(d_know_alt,
-                             c("Darrel knows that the animal he saw is a red speckled ground squirrel.",
-                               "Darrel feels like he knows that the animal he saw is a red speckled ground squirrel, but he doesn't actually know that it is."),
-                             labels=c("knows", "believes")),
-         g_know_alt = factor(g_know_alt,
-                             c("Gerald knows that the house he is pointing at is a real house.",
-                               "Gerald feels like he knows that the house he is pointing at is a real house, but he doesn't actually know that it is."),
-                             labels=c("knows", "believes")),
-         e_know_alt = factor(e_know_alt,
-                             c("Emma knows that she chose a necklace made of diamonds.",
-                               "Emma feels like she knows that she chose a necklace made of diamonds, but she doesn't actually know that it is."),
-                             labels=c("knows", "believes")),
-         across(ends_with("_ri_wr"), factor, c("right", "wrong"), labels=c("right", "wrong")),
-         across(ends_with("_cond"), as_factor),
-         gender = factor(gender, c("Female", "Male", "Other (please specify):"),
-                         c("female", "male", "other")),
-         gender_other = as.character(gender_other), # ensure correct type even if always NA
-         education_level = ordered(education_level,
-                                   c("Less than high school",
-                                     "High school diploma (or GED)",
-                                     "Some college or a 2-year college degree (A.A.)",
-                                     "4-year college degree (B.A., B.S.)",
-                                     "Master’s degree (M.A., M.S.)",
-                                     "Graduate or professional degree (J.D., Ph.D., M.D.)")),
-         language = ordered(tolower(language),
-                            c("not well at all", "not very well", "well", "very well")))
-# 
-# d87d100.raw %>%
-#   select(ends_with("_study")) %>% View()
-#   pivot_longer(everything()) %>%
-#   mutate(value=as.integer(sub("\\..*", "", na_if(value, -99)))) %>%
-#   group_by(name) %>%
-#   summarize(min=min(value), max=max(value))
-
-
-# Cleanup
-rm(d.turk.raw, d.87d100.raw, add_cond_order, recode_ethnicity)
-```
-
-```{r}
-# Before we changed it, age was an open text field -- we recode cases that have
-# entered strings here so we can convert age to numeric type later.
-# These are test rows except 1162 (unclear, subject entered "jjj" for age)
-d.sss.raw[d.sss.raw$CASE %in% c(706, 710, 712, 715, 723, 1111, 1113, 1114,
-                        1162, 1180, 1181, 1205, 1211), "DD01_01"] <- NA
-# 878 and 1012 appended "years" to the number; 1117 entered age as words
-d.sss.raw[d.sss.raw$CASE %in% c(878, 1012, 1117), "DD01_01"] <- c("18", "22", "25")
-
-# TODO: We should probably have a general CSV of lab-level information. This one
-# contains only lab countries.
-lab_countries <- import("data/lab_countries.csv") %>%
-  select(lab_id, lab_country) %>%
-  mutate(lab_country = as.factor(lab_country))
-
-# This is a mapping of variable names. Only a subset of variables is selected
-# and subsequently renamed in order to have more meaningful variable names.
-# The format is new_name=old_name. Variables not mentioned here are removed
-relevant_fields <- quos(lab_id=lab_ID, case=CASE,
-                        dge_valid=UR01_01, j_valid=UR01_02,
-                        # Conditions
-                        vignette_order=Name_order, cond_order=Condition_order,
-                        bin_order=Binary_label_balance, scale=Scale_type,
-                        # Darrel
-                        d_cond=Darrel_cond,
-                        d_know_vas=VD02_01, d_know_bin=VD08, d_compr=VD03,
-                        d_reason_vas=VD04_01, d_reason_bin=VD09, d_ri_wr=VD05,
-                        d_luck_vas=VD06_01, d_luck_bin=VD10, d_know_alt=VD07,
-                        # Gerald
-                        g_cond=Gerald_cond,
-                        g_know_vas=VG02_01, g_know_bin=VG08, g_compr=VG03,
-                        g_reason_vas=VG04_01, g_reason_bin=VG09, g_ri_wr=VG05,
-                        g_luck_vas=VG06_01, g_luck_bin=VG10, g_know_alt=VG07,
-                        # Emma
-                        e_cond=Emma_cond,
-                        e_know_vas=VE02_01, e_know_bin=VE08, e_compr=VE03,
-                        e_reason_vas=VE04_01, e_reason_bin=VE09, e_ri_wr=VE05,
-                        e_luck_vas=VE06_01, e_luck_bin=VE10, e_know_alt=VE07,
-                        # Julie (additional vignette, only some labs)
-                        j_cond=Add_vignette_cond,
-                        j_expertise=Normal_vs_expertise,
-                        # Julie DVs (except binary variables which only appeared
-                        # for German labs) are coalesced from XB__ (German) and
-                        # XC__ (English) below. Note that XA is dropped since it
-                        # was only presented for taiwanese lab 20a1ff
-                        j_know_vas, j_know_bin=XB07, j_compr,
-                        j_reason_vas, j_reason_bin=XB08, j_ri_wr,
-                        j_luck_vas, j_luck_bin=XB09,
-                        # Study purpose etc.
-                        purpose=DF13_01, materials=DF14_01, previous=DF15_01,
-                        # Study experience questionnaire
-                        sx_enjoy=DF01_01, sx_nervous=DF02_01, sx_difficult=DF03_01,
-                        sx_boring=DF04_01, sx_tiring=DF05_01, sx_speed=DF06_01,
-                        sx_experience=DF07_01, sx_selfconscious=DF08_01,
-                        sx_motivation=DF09_01, sx_contribution=DF10_01,
-                        sx_goal=DF11_01, sx_comments=DF12_01,
-                        # Demographics
-                        age=DD01_01, gender=DD02, gender_other=DD02_03,
-                        country=DD03_01, birth_country=DD04_01,
-                        education=DD06, language=SF01,
-                        # Ethnicity (multiple could be selected)
-                        ethn_selected=DD05,
-                        ethn_wh=DD05_01, ethn_bl=DD05_02, ethn_lat=DD05_03,
-                        ethn_aus=DD05_04, ethn_as=DD05_05, ethn_sea=DD05_06,
-                        ethn_nat=DD05_07, ethn_pac=DD05_08,
-                        ethn_other=DD05_09, ethn_other_text=DD05_09a,
-                        # Compensation
-                        comp=RW01, comp_type=RW02, comp_lottery=RW03,
-                        comp_credits=RW02_01, comp_gift=RW02_02,
-                        comp_money=RW02_03, comp_other=RW02_04,
-                        # misc.
-                        tag=REF, survey_lang=LANGUAGE, consent,
-                        start=STARTED, end=LASTDATA, duration=TIME_SUM,
-                        last_page=LASTPAGE)
 
 #' The raw SoSciSurvey dataset encodes all dependent variables _per vignette_
 #' (i.e., the VAS luck/ability judgement for Darrel's vignette is d_luck_vas
@@ -376,6 +119,324 @@ add_cond_dvs <- function(df) {
   mutate(df, !!!mutations_cond)
 }
 
+
+```
+
+## Import, wrangle Qualtrics data
+
+Import qualtrics files to join with SSS files
+```{r}
+#### Import b6c8ec ####
+d.turk.raw <- read_survey("./04_Data/data/b6c8ec_with_order.csv") %>% 
+  glimpse()
+
+```
+
+
+Wrangle qualtrics files to join with SSS files.
+
+Variable name mappings are from the following sources:
+d.turk.raw -- https://docs.google.com/spreadsheets/d/1LiWIC6mj-B1NskAga7PFSVt70I-itjjutn-UneW-A1Q/edit#gid=1768897241
+2055 -- https://docs.google.com/spreadsheets/d/1LiWIC6mj-B1NskAga7PFSVt70I-itjjutn-UneW-A1Q/edit#gid=518902961
+2054 -- https://docs.google.com/spreadsheets/d/1LiWIC6mj-B1NskAga7PFSVt70I-itjjutn-UneW-A1Q/edit#gid=869820268 
+
+```{r}
+# Import b6c8ec's CSV in a manner that is compatible with the SoSciSurvey format
+# Note that the datasets generated here are not completely cleaned yet -- some
+# processing steps need to happen in data_preparation.R afterwards! (this is imported at the bottom) 
+
+d.turk <- d.turk.raw %>%
+  # need the as.character here because country_now_2_TEXT is always empty and
+  # NAs are thus interpreted as numeric, clashing with the "United States" string
+  mutate(country = if_else(country_now == "United States",
+                           "United States", as.character(country_now_2_TEXT)),
+         birth_country = if_else(country_birth == "United States",
+                                 "United States", as.character(country_birth_2_TEXT))) %>%
+  # Replace -99 with NA in all columns
+  mutate(across(everything(), na_if, -99)) %>%
+  recode_ethnicity() %>% 
+  select(vignette_order=FL_85_DO,
+         case=ResponseId,
+         d_cond=FL_78_DO, #double checked by HM
+         d_know_vas=d_knows_1, d_compr=d_fake, d_reason_vas=d_reasonable_1,
+         d_ri_wr=d_right, d_luck_vas=d_ability_1, d_know_alt=d_situation,
+         g_cond=FL_41_DO, #double checked by HM
+         g_know_vas=g_knows_1, g_compr=g_fake, g_reason_vas=g_reasonable_1,
+         g_ri_wr=g_right, g_luck_vas=g_ability_1, g_know_alt=g_situation,
+         e_cond=FL_50_DO, #double checked by HM
+         e_know_vas=e_knows_1, e_compr=e_fake, e_reason_vas=e_reasonable_1,
+         e_ri_wr=e_right, e_luck_vas=e_ability_1, e_know_alt=e_situation,
+
+         purpose=purpose_study, materials=impression_study, previous=similar_study,
+         sx_enjoy=enjoy_study, sx_nervous=nervous_study, sx_difficult=difficult_study,
+         sx_boring=boring_study, sx_tiring=tiring_study, sx_speed=quickly_study,
+         sx_experience=regularly_study, sx_selfconscious=selfcons_study,
+         sx_motivation=motivated_study, sx_contribution=important_study,
+         sx_goal=aim_study, sx_comments=comment_study,
+         
+         age, gender, gender_other=gender_3_TEXT,
+         country, birth_country, education_level=lvl_edu, language=english,
+         ethn_selected, ethn_wh, ethn_bl, ethn_lat, ethn_as_sea_pac,
+         ethn_sa, ethn_none, ethn_other, ethn_other_text,
+         
+         start=StartDate, # TODO: timezones
+         end=EndDate, duration=`Duration (in seconds)`,
+         consent) %>%
+  mutate(across(c(start, end),
+                as.POSIXct, format="%Y-%m/%d %H:%M", tz="America/Denver")) %>%
+  mutate(d_cond = fct_recode(d_cond, K="FL_90", G="FL_91", I="FL_92"), #double checked by HM
+         g_cond = fct_recode(g_cond, K="FL_62", G="FL_66", I="FL_64"), #double checked by HM
+         e_cond = fct_recode(e_cond, K="FL_68", G="FL_70", I="FL_69")) %>% #double checked by HM
+  mutate(vignette_order = vignette_order %>%
+           str_replace("FL_89", "D") %>% #double checked by HM
+           str_replace("FL_93", "G") %>% #double checked by HM
+           str_replace("FL_94", "E") %>% #double checked by HM
+           str_replace_all(fixed("|"), "")) %>%
+  add_cond_order() %>%
+  mutate(lab_id = "b6c8ec", #setting constant variables
+         id = paste0("q_turk_", case),
+         source = "Qualtrics",
+         bin_order = "mixed", 
+         scale="vas") %>%
+  mutate_at(vars(starts_with("sx_"), #for the variables that start with sx_, only the poles were labeled
+                 -"sx_comments"), #when poles were labeled there was a period after the number... this fixes that
+            ~as.integer(sub("\\..*", "", .))) %>%
+  #mutate(gender_other = as.character(NA)) %>%
+  mutate(consent = consent == "I agree to participate in this study.") %>%
+  mutate(survey_lang = "eng") %>%
+  mutate(d_compr = factor(d_compr, c("ground squirrel","prairie dog"), labels=c("real", "fake")), 
+         g_compr = factor(g_compr, c("real","fake"), labels=c("real", "fake")),
+         e_compr = factor(e_compr, c("diamonds","cubic zirconium stones"), labels=c("real", "fake")),
+         d_know_alt = factor(d_know_alt,
+                             c("Darrel knows that the animal he saw is a red speckled ground squirrel.",
+                               "Darrel feels like he knows that the animal he saw is a red speckled ground squirrel, but he doesn't actually know that it is."),
+                             labels=c("knows", "believes")),
+         g_know_alt = factor(g_know_alt,
+                             c("Gerald knows that the house he is pointing at is a real house.",
+                               "Gerald feels like he knows that the house he is pointing at is a real house, but he doesn't actually know that it is."),
+                             labels=c("knows", "believes")),
+         e_know_alt = factor(e_know_alt,
+                             c("Emma knows that she chose a necklace made of diamonds.",
+                               "Emma feels like she knows that she chose a necklace made of diamonds, but she doesn't actually know that it is."),
+                             labels=c("knows", "believes")),
+         across(ends_with("_ri_wr"), factor, c("right", "wrong"), labels=c("right", "wrong")),
+         across(ends_with("_cond"), as_factor),
+         gender = factor(gender, c("Female", "Male", "Other (please specify):"),
+                         c("female", "male", "other")),
+         gender_other = as.character(gender_other), # ensure correct type even if always NA
+         education_level = ordered(education_level,
+                                   c("Less than high school",
+                                     "High school diploma (or GED)",
+                                     "Some college or a 2-year college degree (A.A.)",
+                                     "4-year college degree (B.A., B.S.)",
+                                     "Master’s degree (M.A., M.S.)",
+                                     "Graduate or professional degree (J.D., Ph.D., M.D.)")),
+         language = ordered(tolower(language),
+                            c("not well at all", "not very well", "well", "very well")))
+
+#### Import 87d100 ####
+
+
+d.87d100.raw <- read_survey("./04_data/data/87d100_with_order.csv") %>% 
+  glimpse()
+
+d.87d100 <- d.87d100.raw %>%
+  # This lab is Portugal-based, however, the country of Portugal is coded as
+  # United States.
+  mutate(country = if_else(country_now == "United States",
+                           "Portugal", as.character(country_now_2_TEXT)),
+         birth_country = if_else(country_birth == "Portugal",
+                                 "United States", as.character(country_birth_2_TEXT))) %>%
+  # Replace -99 with NA in all columns
+  mutate(across(everything(), na_if, -99)) %>%
+  recode_ethnicity() %>%
+  select(vignette_order=FL_40_DO,
+         case=ResponseId,
+         d_cond=FL_56_DO,
+         d_know_vas=d_knows_1, d_compr=d_fake, d_reason_vas=d_reasonable_1,
+         d_ri_wr=d_right, d_luck_vas=d_ability_1, d_know_alt=d_situation,
+         g_cond=FL_41_DO,
+         g_know_vas=g_knows_1, g_compr=g_fake, g_reason_vas=g_reasonable_1,
+         g_ri_wr=g_right, g_luck_vas=g_ability_1, g_know_alt=g_situation,
+         e_cond=FL_50_DO,
+         e_know_vas=e_knows_1, e_compr=e_fake, e_reason_vas=e_reasonable_1,
+         e_ri_wr=e_right, e_luck_vas=e_ability_1, e_know_alt=e_situation,
+         
+         purpose=purpose_study, previous=similar_study,
+         sx_enjoy=enjoy_study, sx_nervous=nervous_study, sx_difficult=difficult_study,
+         sx_boring=boring_study, sx_tiring=tiring_study, sx_speed=quickly_study,
+         sx_experience=regularly_study, sx_selfconscious=selfcons_study,
+         sx_motivation=motivated_study, sx_contribution=important_study,
+         sx_goal=aim_study, sx_comments=comments_study,
+         
+         age, gender, gender_other=gender_3_TEXT,
+         country, birth_country, education_level=lvl_edu,
+         language=english, # this is presumably actually portuguese-proficiency
+         ethn_selected, ethn_wh, ethn_bl, ethn_lat, ethn_as_sea_pac,
+         ethn_sa, ethn_none, ethn_other, ethn_other_text,
+         
+         start=StartDate, # TODO: timezones
+         end=EndDate, duration=`Duration (in seconds)`,
+         consent,
+         SPI) %>% #this captures credit
+  mutate(across(c(start, end),
+                as.POSIXct, format="%m/%d/%Y %H:%M", tz="America/Denver")) %>%
+  mutate(d_cond = fct_recode(d_cond, K="FL_71", G="FL_72", I="FL_73"),
+         g_cond = fct_recode(g_cond, K="FL_62", G="FL_66", I="FL_64"),
+         e_cond = fct_recode(e_cond, K="FL_68", G="FL_70", I="FL_69")) %>%
+  mutate(vignette_order = vignette_order %>%
+           str_replace("FL_55", "D") %>% str_replace("FL_43", "G") %>%
+           str_replace("FL_49", "E") %>% str_replace_all(fixed("|"), "")) %>%
+  add_cond_order() %>%
+  mutate(lab_id = "87d100", id = paste0("q_87d100_", case), #setting values for all participants
+         source = "Qualtrics",
+         bin_order = "normal", scale="vas") %>%
+  mutate_at(vars(starts_with("sx_"), -"sx_comments"), ~as.integer(sub("\\..*", "", .))) %>%
+  mutate(consent = consent == "I agree to participate in this study") %>%
+  mutate(survey_lang = "prt") %>%
+  # knowledge/reasonable VAS scales were coded reversely in the 87d100 survey!
+  mutate(across(ends_with(c("_know_vas", "_reason_vas")), ~(100-.))) %>%
+  mutate(d_compr = factor(d_compr, c("ground squirrel","prairie dog"), labels=c("real", "fake")),
+         g_compr = factor(g_compr, c("real","fake"), labels=c("real", "fake")),
+         e_compr = factor(e_compr, c("diamonds","cubic zirconium stones"), labels=c("real", "fake")),
+         d_know_alt = factor(d_know_alt,
+                             c("Darrel knows that the animal he saw is a red speckled ground squirrel.",
+                               "Darrel feels like he knows that the animal he saw is a red speckled ground squirrel, but he doesn't actually know that it is."),
+                             labels=c("knows", "believes")),
+         g_know_alt = factor(g_know_alt,
+                             c("Gerald knows that the house he is pointing at is a real house.",
+                               "Gerald feels like he knows that the house he is pointing at is a real house, but he doesn't actually know that it is."),
+                             labels=c("knows", "believes")),
+         e_know_alt = factor(e_know_alt,
+                             c("Emma knows that she chose a necklace made of diamonds.",
+                               "Emma feels like she knows that she chose a necklace made of diamonds, but she doesn't actually know that it is."),
+                             labels=c("knows", "believes")),
+         across(ends_with("_ri_wr"), factor, c("right", "wrong"), labels=c("right", "wrong")),
+         across(ends_with("_cond"), as_factor),
+         gender = factor(gender, c("Female", "Male", "Other (please specify):"),
+                         c("female", "male", "other")),
+         gender_other = as.character(gender_other), # ensure correct type even if always NA
+         education_level = ordered(education_level,
+                                   c("Less than high school",
+                                     "High school diploma (or GED)",
+                                     "Some college or a 2-year college degree (A.A.)",
+                                     "4-year college degree (B.A., B.S.)",
+                                     "Master’s degree (M.A., M.S.)",
+                                     "Graduate or professional degree (J.D., Ph.D., M.D.)")),
+         language = ordered(tolower(language),
+                            c("not well at all", "not very well", "well", "very well")))
+# 
+# d87d100.raw %>%
+#   select(ends_with("_study")) %>% View()
+#   pivot_longer(everything()) %>%
+#   mutate(value=as.integer(sub("\\..*", "", na_if(value, -99)))) %>%
+#   group_by(name) %>%
+#   summarize(min=min(value), max=max(value))
+
+
+# Cleanup
+rm(d.turk.raw, d.87d100.raw, add_cond_order, recode_ethnicity)
+```
+
+
+## Import, wrangle SocSciSurvey data
+
+```{r}
+# Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
+# software like Excel from interpreting the value as a number instead of the
+# string "000"). Also filter out rows from the development phase
+d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
+  mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>% #fix SSS use of '
+  filter(MODE != "admin") %>% #filter dev tests
+  glimpse()
+```
+
+Import lab countries
+
+```{r}
+lab_countries <- import("./04_data/data/lab_countries.csv") %>%
+  select(lab_id, lab_country) %>%
+  mutate(lab_country = as.factor(lab_country)) %>%
+  glimpse()
+
+```
+
+
+```{r}
+# Before we changed it, age was an open text field -- we recode cases that have
+# entered strings here so we can convert age to numeric type later.
+# These are test rows except 1162 (unclear, subject entered "jjj" for age)
+d.sss.raw[d.sss.raw$CASE %in% c(706, 710, 712, 715, 723, 1111, 1113, 1114,
+                        1162, 1180, 1181, 1205, 1211), "DD01_01"] <- NA
+# 878 and 1012 appended "years" to the number; 1117 entered age as words
+d.sss.raw[d.sss.raw$CASE %in% c(878, 1012, 1117), "DD01_01"] <- c("18", "22", "25")
+
+# TODO: We should probably have a general CSV of lab-level information. This one
+# contains only lab countries.
+
+# This is a mapping of variable names. Only a subset of variables is selected
+# and subsequently renamed in order to have more meaningful variable names.
+# The format is new_name=old_name. Variables not mentioned here are removed
+relevant_fields <- quos(lab_id=lab_ID, case=CASE,
+                        dge_valid=UR01_01, j_valid=UR01_02,
+                        # Conditions
+                        vignette_order=Name_order, 
+                        cond_order=Condition_order,
+                        bin_order=Binary_label_balance, 
+                        scale=Scale_type,
+                        # Darrel
+                        d_cond=Darrel_cond,
+                        d_know_vas=VD02_01, d_know_bin=VD08, d_compr=VD03,
+                        d_reason_vas=VD04_01, d_reason_bin=VD09, d_ri_wr=VD05,
+                        d_luck_vas=VD06_01, d_luck_bin=VD10, d_know_alt=VD07,
+                        # Gerald
+                        g_cond=Gerald_cond,
+                        g_know_vas=VG02_01, g_know_bin=VG08, g_compr=VG03,
+                        g_reason_vas=VG04_01, g_reason_bin=VG09, g_ri_wr=VG05,
+                        g_luck_vas=VG06_01, g_luck_bin=VG10, g_know_alt=VG07,
+                        # Emma
+                        e_cond=Emma_cond,
+                        e_know_vas=VE02_01, e_know_bin=VE08, e_compr=VE03,
+                        e_reason_vas=VE04_01, e_reason_bin=VE09, e_ri_wr=VE05,
+                        e_luck_vas=VE06_01, e_luck_bin=VE10, e_know_alt=VE07,
+                        # Julie (additional vignette, only some labs)
+                        j_cond=Add_vignette_cond,
+                        j_expertise=Normal_vs_expertise,
+                        # Julie DVs (except binary variables which only appeared
+                        # for German labs) are coalesced from XB__ (German) and
+                        # XC__ (English) below. Note that XA is dropped since it
+                        # was only presented for taiwanese lab 20a1ff
+                        j_know_vas, j_know_bin=XB07, j_compr,
+                        j_reason_vas, j_reason_bin=XB08, j_ri_wr,
+                        j_luck_vas, j_luck_bin=XB09,
+                        # Study purpose etc.
+                        purpose=DF13_01, materials=DF14_01, previous=DF15_01,
+                        # Study experience questionnaire
+                        sx_enjoy=DF01_01, sx_nervous=DF02_01, sx_difficult=DF03_01,
+                        sx_boring=DF04_01, sx_tiring=DF05_01, sx_speed=DF06_01,
+                        sx_experience=DF07_01, sx_selfconscious=DF08_01,
+                        sx_motivation=DF09_01, sx_contribution=DF10_01,
+                        sx_goal=DF11_01, sx_comments=DF12_01,
+                        # Demographics
+                        age=DD01_01, gender=DD02, gender_other=DD02_03,
+                        country=DD03_01, birth_country=DD04_01,
+                        education=DD06, language=SF01,
+                        # Ethnicity (multiple could be selected)
+                        ethn_selected=DD05,
+                        ethn_wh=DD05_01, ethn_bl=DD05_02, ethn_lat=DD05_03,
+                        ethn_aus=DD05_04, ethn_as=DD05_05, ethn_sea=DD05_06,
+                        ethn_nat=DD05_07, ethn_pac=DD05_08,
+                        ethn_other=DD05_09, ethn_other_text=DD05_09a,
+                        # Compensation
+                        comp=RW01, comp_type=RW02, comp_lottery=RW03,
+                        comp_credits=RW02_01, comp_gift=RW02_02,
+                        comp_money=RW02_03, comp_other=RW02_04,
+                        # misc.
+                        tag=REF, survey_lang=LANGUAGE, consent,
+                        start=STARTED, end=LASTDATA, duration=TIME_SUM,
+                        last_page=LASTPAGE)
+
+
 # Prepare the SoSciSurvey dataset...
 d.sss <- d.sss.raw %>%
   # ...code consent: for AC2061, consent was recorded in CS03, all other labs
@@ -418,9 +479,9 @@ d.sss <- d.sss.raw %>%
   # ...make the binary variables factors (please note that most of these are
   #    coded in reverse direction compared to the VAS versions -- e.g. for
   #    knowledge, the VAS goes 0=believes->100=knows while the binary version is
-  #    coded 1 for believes and 2 for knows)
+  #    coded 2 for believes and 1 for knows)
   mutate(across(ends_with(c("_know_bin", "_know_alt")),
-                factor, c(1,2), labels=c("knows", "believes")),
+                factor, c(1,2), labels=c("knows", "believes")), 
          across(ends_with("_compr"),
                 factor, c(1,2), labels=c("real", "fake")),
          across(ends_with("_reason_bin"),
@@ -446,15 +507,14 @@ d.sss <- d.sss.raw %>%
 
 # Join sosci data with qualtrics datasets and further process the whole thing...
 # fix differences in column types
-d.sss$ethn_as <- as.logical(d.sss$ethn_as)
-d.sss$ethn_aus <- as.logical(d.sss$ethn_aus)
-d.sss$ethn_bl <- as.logical(d.sss$ethn_bl)
-d.sss$ethn_lat <- as.logical(d.sss$ethn_lat)
-d.sss$ethn_nat <- as.logical(d.sss$ethn_nat)
-d.sss$ethn_other <- as.logical(d.sss$ethn_other)
-d.sss$ethn_pac <- as.logical(d.sss$ethn_pac)
-d.sss$ethn_sea <- as.logical(d.sss$ethn_sea)
-d.sss$ethn_wh <- as.logical(d.sss$ethn_wh)
+d.sss <- d.sss %>% 
+  mutate(
+    across(
+      .cols = c(ethn_as, ethn_aus, ethn_bl, 
+                ethn_lat, ethn_nat, ethn_other,
+                ethn_pac, ethn_sea, ethn_wh), 
+      as.logical))
+
 
 d.all <- d.sss %>%
   bind_rows(d.turk, d.87d100) %>%
@@ -480,7 +540,117 @@ d.all <- d.sss %>%
          j_valid = j_compr == if_else(j_cond == "I", "fake", "real")) %>%
   # ...reorder columns a little
   relocate(ethn_as_sea_pac, ethn_sa, ethn_none, .before = ethn_other) %>%
-  relocate(education_level, .after = education)
+  relocate(education_level, .after = education) %>% 
+  glimpse()
+```
+
+###  Removing duplciate responses for 87d100 & filling in credit type for 87d100
+
+```{r}
+#create vector of unique ids
+unique_SPI_ids <- d.all %>% 
+  filter(lab_id == "87d100",
+         !is.na(SPI)) %>% 
+  select(SPI, id, source, lab_id, case, end) %>% 
+  group_by(SPI) %>% 
+  #sort by end dttm, with earlier listed first
+  arrange(end) %>% 
+  #select the response that was finished first
+  slice(1) %>% 
+  pull(id)
+
+#checking
+#unique_SPI <- d.all %>% 
+#  filter(lab_id == "87d100") %>% 
+#  pull(SPI) %>% 
+#  unique() %>% 
+#  na.omit()
+
+#length(unique_SPI) == length(unique_SPI_ids)
+
+#filter out the 25 rows that are from this lab, have an SPI value, but are not in the vector 
+#of unique SPI ids
+d.all <- d.all %>% 
+  filter(!(lab_id == "87d100" & !is.na(SPI) & (!(id %in% unique_SPI_ids)))) %>% 
+  glimpse()
+
+```
+
+
+```{r}
+#show table of comp before
+tabyl(d.all, comp)
+
+#ideally we would not be using numeric codes for any of these variables
+d.all <- d.all %>% 
+  #create a variable to indicate credit type for folks in this lab
+  mutate(comp_87d100 = as.integer(case_when(!is.na(SPI) ~ "2", #subjpool
+                                 (lab_id == "87d100" & is.na(SPI))  ~ "1"))) %>% #no credit / social media
+  #change values of comp for folks in this lab from NA to 1 or 2 depending on missingness of SPI 
+  mutate(comp = case_when(lab_id != "87d100" ~ comp,
+                          is.na(lab_id) ~ comp,
+                          lab_id == "87d100" ~ comp_87d100)) 
+
+#show table of comp after
+tabyl(d.all, comp)
+
+```
+
+
+
+# Creating final datasets and saving
+
+```{r}
+
+# Correct responses on Darrel+Emma+Gerald comprehension questions
+d.dge_valid = d.all %>% filter(dge_valid)
+
+# Correct responses on additional vignette (Julie) comprehension question
+d.add_valid = d.all %>% filter(j_valid)
+
+# Correct responses on ALL comprehension questions
+d.all_valid = d.all %>% filter(dge_valid & j_valid)
+
+# Long form transformations
+d.all.long <- d.all %>%
+  pivot_longer(starts_with(c("cond_k_", "cond_g_", "cond_i_")),
+               names_pattern = "cond_([kgi])_(.*)",
+               names_to = c("cond", ".value")) %>%
+  select(-starts_with(c("d_", "g_", "e_"))) %>%
+  mutate(cond = toupper(cond)) %>%
+  mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)
+
+d.dge_valid.long <- d.dge_valid %>%
+  pivot_longer(starts_with(c("cond_k_", "cond_g_", "cond_i_")),
+               names_pattern = "cond_([kgi])_(.*)",
+               names_to = c("cond", ".value")) %>%
+  select(-starts_with(c("d_", "g_", "e_"))) %>%
+  mutate(cond = toupper(cond)) %>%
+  mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)
+```
+
+
+# Save data
+
+```{r}
+saveRDS(d.all, "./04_Data/rds/d_all.Rds")
+saveRDS(d.all.long, "./04_Data/rds/d_all_long.Rds")
+saveRDS(d.dge_valid, "./04_Data/rds/d_dge_valid.Rds")
+saveRDS(d.dge_valid.long, "./04_Data/rds/d_dge_valid_long.Rds")
+
+write_csv(d.all, "./04_Data/csv/d_all.csv")
+write_csv(d.all.long, "./04_Data/csv/d_all_long.csv")
+write_csv(d.dge_valid, "./04_Data/csv/d_dge_valid.csv")
+write_csv(d.dge_valid.long, "./04_Data/csv/d_dge_valid_long.csv")
+
+# Remove variables that should not be exported
+#rm(d.sss.raw, relevant_fields, add_cond_dvs)
+```
+
+# Create spreadsheets for coding / translating open-ended responses
+
+
+```{r include = FALSE, eval = FALSE}
 
 # Take the most common responses for purpose and previous so we don't have to
 # code them manually:
@@ -519,65 +689,28 @@ d.all <- d.sss %>%
 #                 "I have not participated in a similar study. ", "never", "no. ",
 #                 "Nu ", "οχι", "Όχι")
   
-# Correct responses on Darrel+Emma+Gerald comprehension questions
-d.dge_valid = d.all %>% filter(dge_valid)
 
-# Correct responses on additional vignette (Julie) comprehension question
-d.add_valid = d.all %>% filter(j_valid)
+previous <- d.all %>% 
+  select(id, survey_lang, previous) %>% 
+  filter(nchar(previous) > 1)
 
-# Correct responses on ALL comprehension questions
-d.all_valid = d.all %>% filter(dge_valid & j_valid)
+write.csv(previous, "./04_Data/data/previous.csv", row.names = F)
 
-# Long form transformations
-d.all.long <- d.all %>%
-  pivot_longer(starts_with(c("cond_k_", "cond_g_", "cond_i_")),
-               names_pattern = "cond_([kgi])_(.*)",
-               names_to = c("cond", ".value")) %>%
-  select(-starts_with(c("d_", "g_", "e_"))) %>%
-  mutate(cond = toupper(cond)) %>%
-  mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)
-
-d.dge_valid.long <- d.dge_valid %>%
-  pivot_longer(starts_with(c("cond_k_", "cond_g_", "cond_i_")),
-               names_pattern = "cond_([kgi])_(.*)",
-               names_to = c("cond", ".value")) %>%
-  select(-starts_with(c("d_", "g_", "e_"))) %>%
-  mutate(cond = toupper(cond)) %>%
-  mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)
-
-saveRDS(d.all, "rds/d_all.Rds")
-saveRDS(d.all.long, "rds/d_all_long.Rds")
-saveRDS(d.dge_valid, "rds/d_dge_valid.Rds")
-saveRDS(d.dge_valid.long, "rds/d_dge_valid_long.Rds")
-
-write_csv(d.all, "csv/d_all.csv")
-write_csv(d.all.long, "csv/d_all_long.csv")
-write_csv(d.dge_valid, "csv/d_dge_valid.csv")
-write_csv(d.dge_valid.long, "csv/d_dge_valid_long.csv")
-
-# Remove variables that should not be exported
-#rm(d.sss.raw, relevant_fields, add_cond_dvs)
-```
-
-Write out data to process by hand:
-
-```{r}
-previous <- d.all[ , c("id", "survey_lang", "previous")]
-previous <- subset(previous, nchar(previous) > 1)
-write.csv(previous, "data/previous.csv", row.names = F)
 for (lang in unique(previous$survey_lang)) {
   write.csv(subset(previous, survey_lang == lang), 
-            paste0("data/previous_", lang, ".csv"), 
+            paste0("./04_Data/data/previous_", lang, ".csv"), 
             row.names = F)
 }
 
+purpose <- d.all %>% 
+  select(id, survey_lang, purpose) %>% 
+  filter(nchar(purpose) > 1)
 
-purpose <- d.all[ , c("id", "survey_lang", "purpose")]
-purpose <- subset(purpose, nchar(purpose) > 1)
-write.csv(purpose, "data/purpose.csv", row.names = F)
+write.csv(purpose, "./04_Data/data/purpose.csv", row.names = F)
+
 for (lang in unique(purpose$survey_lang)) {
   write.csv(subset(purpose, survey_lang == lang), 
-            paste0("data/purpose_", lang, ".csv"), 
+            paste0("./04_Data/data/purpose_", lang, ".csv"), 
             row.names = F)
 }
 ```
