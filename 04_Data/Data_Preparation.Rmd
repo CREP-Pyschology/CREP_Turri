@@ -18,12 +18,18 @@ Inputs (all in the "data" directory)
 Outputs:
 - "csv/d_all_long.csv" all analysis data, long
 - "csv/d_all.csv" all analysis data, wide
-- "csv/d_dge_valid.csv" analysis data, valid cases only, wide
-- "csv/d_dge_valid_long.csv" analysis data, valid cases only, wide
+- "csv/d_dge_valid.csv" analysis data, valid cases only, wide (note this has been updated to not run)
+- "csv/d_dge_valid_long.csv" analysis data, valid cases only, wide (note this has been updated to not run)
 - "previous.csv" and other datasets for open-ended coding
 = "purpose.csv" and other datasets for open-ended coding
 
 Ideally, we'd read in the variable mappings for QT data rather than typing them manually. 
+
+# Data Deidentification (EMB)
+
+- I deidentified labs as requested by giving them 5 digit unique codes and find/replaced/rewrote the data with the updated lab codes in `lab_countries.csv` and `data_sss_final.csv`.
+- I don't believe I did anything to the original data in `87d100_with_order.csv` - just changed the name of the file to deidentify the lab code.
+- For the `b6c8ec_with_order.csv` data, I deidentified the lab code name and removed all the information from the IP, Lat, Long, and turk columns to deidentify that dataset. 
 
 # Set up 
 
@@ -125,13 +131,13 @@ add_cond_dvs <- function(df) {
 ## Import, wrangle Qualtrics data
 
 Import qualtrics files to join with SSS files
+
 ```{r}
 #### Import b6c8ec ####
-d.turk.raw <- read_survey("./04_Data/data/b6c8ec_with_order.csv") %>% 
+d.turk.raw <- read_survey("../04_Data/data/b6c8ec_with_order.csv") %>% 
   glimpse()
 
 ```
-
 
 Wrangle qualtrics files to join with SSS files.
 
@@ -237,7 +243,7 @@ d.turk <- d.turk.raw %>%
 #### Import 87d100 ####
 
 
-d.87d100.raw <- read_survey("./04_data/data/87d100_with_order.csv") %>% 
+d.87d100.raw <- read_survey("../04_data/data/87d100_with_order.csv") %>% 
   glimpse()
 
 d.87d100 <- d.87d100.raw %>%
@@ -338,29 +344,27 @@ d.87d100 <- d.87d100.raw %>%
 rm(d.turk.raw, d.87d100.raw, add_cond_order, recode_ethnicity)
 ```
 
-
 ## Import, wrangle SocSciSurvey data
 
 ```{r}
 # Read CSV data and fix columns reading "'000" (where the ' is meant to prevent
 # software like Excel from interpreting the value as a number instead of the
 # string "000"). Also filter out rows from the development phase
-d.sss.raw <- import("./04_Data/data/data_sss_final.csv") %>%
+d.sss.raw <- import("../04_Data/data/data_sss_final.csv") %>%
   mutate(across(where(is.character), ~(sub("^'(?=\\d)", "", ., perl=T)))) %>% #fix SSS use of '
   filter(MODE != "admin") %>% #filter dev tests
   glimpse()
 ```
 
-Import lab countries
+## Import lab countries
 
 ```{r}
-lab_countries <- import("./04_data/data/lab_countries.csv") %>%
+lab_countries <- import("../04_data/data/lab_countries.csv") %>%
   select(lab_id, lab_country) %>%
   mutate(lab_country = as.factor(lab_country)) %>%
   glimpse()
 
 ```
-
 
 ```{r}
 # Before we changed it, age was an open text field -- we recode cases that have
@@ -576,7 +580,6 @@ d.all <- d.all %>%
 
 ```
 
-
 ```{r}
 #show table of comp before
 tabyl(d.all, comp)
@@ -595,8 +598,6 @@ d.all <- d.all %>%
 tabyl(d.all, comp)
 
 ```
-
-
 
 # Creating final datasets and saving
 
@@ -629,26 +630,24 @@ d.dge_valid.long <- d.dge_valid %>%
   mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)
 ```
 
-
 # Save data
 
 ```{r}
-saveRDS(d.all, "./04_Data/rds/d_all.Rds")
-saveRDS(d.all.long, "./04_Data/rds/d_all_long.Rds")
-saveRDS(d.dge_valid, "./04_Data/rds/d_dge_valid.Rds")
-saveRDS(d.dge_valid.long, "./04_Data/rds/d_dge_valid_long.Rds")
+saveRDS(d.all, "../04_Data/rds/d_all.Rds")
+saveRDS(d.all.long, "../04_Data/rds/d_all_long.Rds")
+#saveRDS(d.dge_valid, "../04_Data/rds/d_dge_valid.Rds")
+#saveRDS(d.dge_valid.long, "../04_Data/rds/d_dge_valid_long.Rds")
 
-write_csv(d.all, "./04_Data/csv/d_all.csv")
-write_csv(d.all.long, "./04_Data/csv/d_all_long.csv")
-write_csv(d.dge_valid, "./04_Data/csv/d_dge_valid.csv")
-write_csv(d.dge_valid.long, "./04_Data/csv/d_dge_valid_long.csv")
+write_csv(d.all, "../04_Data/csv/d_all.csv")
+write_csv(d.all.long, "../04_Data/csv/d_all_long.csv")
+#write_csv(d.dge_valid, "../04_Data/csv/d_dge_valid.csv")
+#write_csv(d.dge_valid.long, "../04_Data/csv/d_dge_valid_long.csv")
 
 # Remove variables that should not be exported
 #rm(d.sss.raw, relevant_fields, add_cond_dvs)
 ```
 
 # Create spreadsheets for coding / translating open-ended responses
-
 
 ```{r include = FALSE, eval = FALSE}
 
@@ -694,11 +693,11 @@ previous <- d.all %>%
   select(id, survey_lang, previous) %>% 
   filter(nchar(previous) > 1)
 
-write.csv(previous, "./04_Data/data/previous.csv", row.names = F)
+write.csv(previous, "../04_Data/data/previous.csv", row.names = F)
 
 for (lang in unique(previous$survey_lang)) {
   write.csv(subset(previous, survey_lang == lang), 
-            paste0("./04_Data/data/previous_", lang, ".csv"), 
+            paste0("../04_Data/data/previous_", lang, ".csv"), 
             row.names = F)
 }
 
@@ -706,12 +705,11 @@ purpose <- d.all %>%
   select(id, survey_lang, purpose) %>% 
   filter(nchar(purpose) > 1)
 
-write.csv(purpose, "./04_Data/data/purpose.csv", row.names = F)
+write.csv(purpose, "../04_Data/data/purpose.csv", row.names = F)
 
 for (lang in unique(purpose$survey_lang)) {
   write.csv(subset(purpose, survey_lang == lang), 
-            paste0("./04_Data/data/purpose_", lang, ".csv"), 
+            paste0("../04_Data/data/purpose_", lang, ".csv"), 
             row.names = F)
 }
 ```
-
