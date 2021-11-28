@@ -1571,8 +1571,7 @@ r.squaredGLMM(model.5)
   - Interpretation: this model is better than the vignette random intercept only model.
   - Coeffients:
     - Education: this effect indicates that people who select lower education levels are more likely to select luck versus ability. The variance accounted for is small. 
-    - **Compensation**: Yes group slightly more likely to say luck. **Check again after comp questions answered**
-  
+    
 ### Model 6
 
 The previous model of covariates plus the variable of focus: condition.
