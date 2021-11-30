@@ -1841,93 +1841,6 @@ v.chi.sq(x2 = prop2$statistic,
 
 ## Exploratory Analyses
 
-### Condition by Reason 
-
-```{r}
-model.6D <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
-                    comp + age + gender2 + education + 
-                    cond*reason_vas_combined,
-                      data = final_long,
-                      family = binomial,
-                      control = glmerControl(optimizer = "bobyqa"),
-                      nAGQ = 0)
-summary(model.6D)
-
-r.squaredGLMM(model.6D)
-
-data_graph <- model.6D@frame
-data_graph$know_vas_combined <- factor(data_graph$know_vas_combined, 
-                                       levels = 0:1,
-                                       labels = c("Know", "Believes"))
-data_graph$reason_vas_combined <- factor(data_graph$reason_vas_combined, 
-                                       levels = 0:1,
-                                       labels = c("Reasonable", "Unreasonable"))
-
-table(data_graph$know_vas_combined, data_graph$cond, data_graph$reason_vas_combined)
-
-#graph the three way binary 
-ggplot(data_graph) +
-  geom_mosaic(aes(x = product(know_vas_combined, cond, reason_vas_combined), 
-                  fill = know_vas_combined)) + 
-  scale_fill_manual(name = "Knows Choice",
-                    values = c("gray", "black")) + 
-  scale_x_productlist(breaks = c(0.13,.87),
-    labels = c("Reasonable", "Unreasonable")) + 
-  theme_classic() + 
-  xlab("Source") + 
-  ylab("Condition")
-```
-
-  - Model 6 AIC: `r AIC(model.6)`
-  - Model 6D AIC: `r AIC(model.6D)`
-  - Interpretation: This model is better than the original model without the interaction.
-  - There is an interaction between condition, reasoning choice to predict knowledge. 
-  
-```{r}
-# break down by reasonable and unreasonable 
-
-# reasonable
-r_table <- table(data_graph$know_vas_combined[data_graph$reason_vas_combined == "Reasonable"], data_graph$cond[data_graph$reason_vas_combined == "Reasonable"])
-chisq.test(data_graph$know_vas_combined[data_graph$reason_vas_combined == "Reasonable"], data_graph$cond[data_graph$reason_vas_combined == "Reasonable"])
-
-# prop tests
-prop1 <- prop.test(t(r_table[1:2, 1:2]))
-prop1
-v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(r_table[1:2, 1:2])),
-         r = 2, c = 2)
-
-prop2 <- prop.test(t(r_table[1:2, c(1,3)]))
-prop2
-v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(r_table[1:2, c(1,3)])),
-         r = 2, c = 2)
-
-# unreasonable
-u_table <- table(data_graph$know_vas_combined[data_graph$reason_vas_combined == "Unreasonable"], data_graph$cond[data_graph$reason_vas_combined == "Unreasonable"])
-chisq.test(data_graph$know_vas_combined[data_graph$reason_vas_combined == "Unreasonable"], data_graph$cond[data_graph$reason_vas_combined == "Unreasonable"])
-
-# prop tests
-prop1 <- prop.test(t(u_table[1:2, 1:2]))
-prop1
-v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(u_table[1:2, 1:2])),
-         r = 2, c = 2)
-
-prop2 <- prop.test(t(u_table[1:2, c(1,3)]))
-prop2
-v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(u_table[1:2, c(1,3)])),
-         r = 2, c = 2)
-```
-
-- When we pick reasonable:
-  - Gettier more likely to pick knows than Ignorance
-  - Knowledge more likely to pick knows than Gettier
-- When we pick unreasonable:
-  - Gettier more likely to pick knows than Ignorance
-  - Knowledge and Gettier do not support differences 
-
 ### Condition by Luck 
 
 ```{r}
@@ -1987,7 +1900,7 @@ v.chi.sq(x2 = prop1$statistic,
 prop2 <- prop.test(t(l_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(r_table[1:2, c(1,3)])),
+         n = sum(t(l_table[1:2, c(1,3)])),
          r = 2, c = 2)
 
 # ability
