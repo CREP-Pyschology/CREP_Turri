@@ -2,29 +2,59 @@
 title: "ACrep_Results.Rmd"
 author: "Hannah Moshontz"
 date: "Last Updated `r Sys.Date()`"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Purpose
+
+This script generates text for the results section of the ACREP / PSA004 Stage 2 RRR. It also runs the analysis .Rmd.
+
+
+# Run the analysis script
+
+```{r, child = '../05_Analysis/ACrep_Analysis_V2.Rmd'}
 ```
 
-## R Markdown
+# Method
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Participants
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+```{r}
+#create dataset for demographics
+final_demographics <- final_long %>% 
+  group_by(id) %>%
+  slice(1) %>% 
+  ungroup() %>% 
+  select(id, 
+         contains("exclusion"),
+         survey_lang,
+         turk,
+         language,
+         lab_id, 
+         lab_country,
+         country,
+         UN_Region,
+         gender, 
+         gender_other,
+         starts_with("ethn_"),
+         education,
+         education_level,
+         starts_with("comp"),
+         birth_country,
+         case,
+         age)
 
-```{r cars}
-summary(cars)
+#error out if count doesn't match
+if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
+
 ```
 
-## Including Plots
+Questions
+- What is 'Person' (35 unique values)
+- What is 'case'
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Participants were 
