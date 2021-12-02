@@ -13,11 +13,42 @@ output:
 
 This script generates text for the results section of the ACREP / PSA004 Stage 2 RRR. It also runs the analysis .Rmd.
 
+```{r}
+library(janitor)
+```
+
 
 # Run the analysis script
 
 ```{r, child = '../05_Analysis/ACrep_Analysis_V2.Rmd'}
 ```
+
+# EDA on the analysis set
+
+```{r}
+final_long %>% 
+  glimpse()
+```
+
+A few notes about variables that will be moot when we complete the codebook:
+- Person is a unique lab identifier (identifies PI)
+- lab_id is a not a unique lab identifier, but rather identifies the undergraduate PI
+(and some of these undergraduate PIs were students with the same lab PI)
+- lab_country is the variable we are using to identify country/region
+- UN_Region groups lab country into larger regions
+- source identifies the method of data collection
+- id uniquely identifies each participant by concatenating the source (qualtrics vs socscisurvey),
+undergraduate PI (lab_id), and the unique identifier (case, which was of a different format depending on source)
+- variables ending in valid are logical and identify valid cases (in the "final_long" dataset, there will not be variance)
+- variables ending in order indicate the order in which vignettes or condition were presented (varies by participant),
+or the order in which binary DVs were presented (for socscisurvey, this varies by person within lab such that people 
+were presented with "normal" (*not sure what direction this is*) or "swapped", but for Qualtrics, this was randomized 
+within person and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
+
+
+Outstanding questions:
+- Need to double check that we do not know the order of binary variables within person in the Qualtrics data (and document)
+- For binary order, what is "normal" and what is "swapped"?
 
 # Method
 
