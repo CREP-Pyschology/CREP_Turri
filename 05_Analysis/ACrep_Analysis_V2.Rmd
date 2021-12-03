@@ -1422,7 +1422,6 @@ Data was collected from mechanical turk participants. Are there differences in t
 ```{r}
 model.6B <- glmer(reason_vas_combined ~ (1|vignette/id/Person) + 
                     comp + age + gender2 + education + 
-                    cond*turk,
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),

@@ -9,12 +9,22 @@ output:
     code_folding: hide
 ---
 
+*Questions*
+- Need to double check that we do not know the order of binary variables within person in the Qualtrics data (and document)
+- For binary order, what is "normal" and what is "swapped"? (asked here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638471460121200?thread_ts=1636489085.046400&cid=C029HKSQAUU)
+- Why is the age exclusion SO extreme? Many labs mostly collected data from people younger than the age of consent in their country.
+- Something is happening with age. A lot of improbably values (mentioned here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638486797125900)
+- Is it accurate to say that participants had to correctly answer *all* comprehension questions? What if it was for the Julie / bonus vignette?
+- In SSS, were people asked how well they understood English, or how well they understood the language the survey was in?
+- I'm not seeing random slope on condition. Do we have an estimate of heterogeneity of the effect by site/lab?
+
 ## Purpose
 
 This script generates text for the results section of the ACREP / PSA004 Stage 2 RRR. It also runs the analysis .Rmd.
 
 ```{r}
 library(janitor)
+library(stringr)
 ```
 
 
@@ -30,6 +40,7 @@ final_long %>%
   glimpse()
 ```
 
+
 A few notes about variables that will be moot when we complete the codebook:
 - Person is a unique lab identifier (identifies PI)
 - lab_id is a not a unique lab identifier, but rather identifies the undergraduate PI
@@ -44,11 +55,7 @@ undergraduate PI (lab_id), and the unique identifier (case, which was of a diffe
 or the order in which binary DVs were presented (for socscisurvey, this varies by person within lab such that people 
 were presented with "normal" (*not sure what direction this is*) or "swapped", but for Qualtrics, this was randomized 
 within person and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
-
-
-Outstanding questions:
-- Need to double check that we do not know the order of binary variables within person in the Qualtrics data (and document)
-- For binary order, what is "normal" and what is "swapped"?
+- 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.
 
 # Method
 
@@ -61,11 +68,38 @@ final_demographics <- final_long %>%
   slice(1) %>% 
   ungroup() %>% 
   select(id, 
+         source,
          contains("exclusion"),
          survey_lang,
          turk,
          language,
          lab_id, 
+         Person,
+         lab_country,
+         country,
+         UN_Region,
+         gender, 
+         gender_other,
+         starts_with("ethn_"),
+         education,
+         education_level,
+         starts_with("comp"),
+         birth_country,
+         case,
+         age)
+
+full_demographics <- full_long %>% 
+  group_by(id) %>%
+  slice(1) %>% 
+  ungroup() %>% 
+    select(id, 
+         source,
+         contains("exclusion"),
+         survey_lang,
+         turk,
+         language,
+         lab_id, 
+         Person,
          lab_country,
          country,
          UN_Region,
@@ -84,8 +118,28 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 
 ```
 
-Questions
-- What is 'Person' (35 unique values)
-- What is 'case'
 
-Participants were 
+Participants were recruited to participate by student researchers at `r length(unique(full_demographics$Person))` data collection sites in `r length(unique(full_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`).
+
+The full dataset (the deidentified raw data without any exclusions) is available at osf.io/XXXX. Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded. 
+
+Specifically, data were excluded for the following pre-registered reasons:
+(1) the participant was not the majority age of their country or older (_n_ = `r nrow(filter(full_demographics, age_exclusion)`); operationalized as at least 18 in all countries except Slovakia (where the age of consent is 19) and United Arab Emirates (where the age of consent is 21));
+(2) the participant had taken part in a previous version of this study or in another contributors' replication of the same study (_n_ = `r nrow(filter(full_demographics, previous_exclusion)`;as evaluated by three human coders, as described in Supplement X, Section X);
+(3) the participant failed to answer all comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion)`; e.g., did not correctly identify what Darrel was looking at in the vignette);
+(4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose)`; as evaluated by three human coders, as described in Supplement X, Section X);
+(5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion)`; see Vickstrom, Shin, Collazo, & Bauman, 2015). 
+
+
+In addition, data were excluded on the basis of criteria that were not in our preregistration. No clear method was devised to identify test responses, but, at many data collection sites, the students and other researchers executing the study tested their survey link multiple times, resulting in invalid survey observations. The following exclusions were designed to remove these invalid test observations using consistent, reliable criteria: Data were excluded if the participant did not provide an age (_n_ = `r nrow(filter(full_demographics, is.na(age)))`) or listed an age greater than or equal to 100 (_n_ = `r nrow(filter(full_demographics, !(age < 100)))`).
+
+Participants in the analysis sample were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). 
+
+```{r}
+final_demographics %>% 
+  describe()
+```
+
+
+
+
