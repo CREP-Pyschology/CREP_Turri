@@ -26,6 +26,8 @@ This script generates text for the results section of the ACREP / PSA004 Stage 2
 library(janitor)
 library(stringr)
 library(kableExtra)
+library(countrycode)
+library(ISOcodes)
 ```
 
 
@@ -133,7 +135,9 @@ Specifically, data were excluded for the following pre-registered reasons:
 
 In addition, data were excluded on the basis of criteria that were not in our preregistration. No clear method was devised to identify test responses, but, at many data collection sites, the students and other researchers executing the study tested their survey link multiple times, resulting in invalid survey observations. The following exclusions were designed to remove these invalid test observations using consistent, reliable criteria: Data were excluded if the participant did not provide an age (_n_ = `r nrow(filter(full_demographics, is.na(age)))`) or listed an age greater than or equal to 100 (_n_ = `r nrow(filter(full_demographics, !(age < 100)))`).
 
-Participants in the analysis sample were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of age and education in the sample, and Table X
+Participants in the analysis sample were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
+
+Participants received different kinds of compensation for their completion of the survey (see Table X). Most participants completed the survey using a centralized survey on the data collection platform SocSciSurvey, but a small number of participants completed the survey in Qualtrics (see Table X). Variable names and response options have been harmonized across versions, as described in Supplement X. 
 
 ```{r}
 final_demographics %>% 
@@ -159,6 +163,33 @@ final_demographics %>%
 # Once sorted, we'll make a table of these binary variables
 ```
 
+```{r}
+final_demographics %>% 
+  mutate(lab_country_full = countrycode(lab_country, "iso3c", "country.name.en")) %>% 
+  tabyl(lab_country_full) %>% 
+  arrange(-n) %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants by Country") %>% 
+  kable_styling()
+```
 
+```{r}
+survey_lang_table <- final_demographics %>%
+  mutate(survey_lang = str_replace_all(survey_lang, "prt", "por"),
+         survey_lang = str_replace_all(survey_lang, "zho", "chi")) %>% 
+  tabyl(survey_lang) %>% 
+  arrange(-n)
+
+for (i in 1:length(survey_lang_table$survey_lang)) {
+  
+  survey_lang_table$survey_lang[i] <- ISO_639_2$Name[ISO_639_2$Alpha_3_B == survey_lang_table$survey_lang[i]]
+  
+}
+
+survey_lang_table %>% 
+  mutate(survey_lang = str_replace_all(survey_lang, "Greek, Modern \\(1453\\-\\)", "Greek"),
+         survey_lang = str_replace_all(survey_lang, "Romanian; Moldavian; Moldovan", "Romanian")) %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants by Survey Language") %>% 
+  kable_styling()
+```
 
 
