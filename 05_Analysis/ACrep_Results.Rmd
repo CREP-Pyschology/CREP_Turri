@@ -25,6 +25,7 @@ This script generates text for the results section of the ACREP / PSA004 Stage 2
 ```{r}
 library(janitor)
 library(stringr)
+library(kableExtra)
 ```
 
 
@@ -92,7 +93,7 @@ full_demographics <- full_long %>%
   group_by(id) %>%
   slice(1) %>% 
   ungroup() %>% 
-    select(id, 
+  select(id, 
          source,
          contains("exclusion"),
          survey_lang,
@@ -130,14 +131,32 @@ Specifically, data were excluded for the following pre-registered reasons:
 (4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose)`; as evaluated by three human coders, as described in Supplement X, Section X);
 (5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion)`; see Vickstrom, Shin, Collazo, & Bauman, 2015). 
 
-
 In addition, data were excluded on the basis of criteria that were not in our preregistration. No clear method was devised to identify test responses, but, at many data collection sites, the students and other researchers executing the study tested their survey link multiple times, resulting in invalid survey observations. The following exclusions were designed to remove these invalid test observations using consistent, reliable criteria: Data were excluded if the participant did not provide an age (_n_ = `r nrow(filter(full_demographics, is.na(age)))`) or listed an age greater than or equal to 100 (_n_ = `r nrow(filter(full_demographics, !(age < 100)))`).
 
-Participants in the analysis sample were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). 
+Participants in the analysis sample were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of age and education in the sample, and Table X
 
 ```{r}
 final_demographics %>% 
+  select(age, education) %>% 
+  describe() %>% 
+  .[1:2,c(2,3,4,8,9)] %>% 
+  kable(digits = 2) %>% 
+  kable_styling()
+```
+
+```{r}
+final_demographics %>% 
+  select(comp, contains("ethn_"), turk, source) %>% 
+  mutate(source = as.factor(source)) %>% 
+  mutate(across(.cols = everything(), ~as.numeric(.x))) %>% 
+  select(-ethn_other_text) %>% 
+  mutate(comp = comp - 1,
+         `centralized survey` = source - 1) %>%  #adjusting numeric values so 0 is no and 1 is yes
   describe()
+
+#Braeden is helping sort out an issue where SSS and QT labs used different ethn categories
+#Need to resolve/combine ethn_as_sea_pac, ethn_sa, and ethn_none into the other categories
+# Once sorted, we'll make a table of these binary variables
 ```
 
 
