@@ -14,7 +14,7 @@ output:
 - For binary order, what is "normal" and what is "swapped"? (asked here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638471460121200?thread_ts=1636489085.046400&cid=C029HKSQAUU)
 - Why is the age exclusion SO extreme? Many labs mostly collected data from people younger than the age of consent in their country.
 - Something is happening with age. A lot of improbably values (mentioned here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638486797125900)
-- Is it accurate to say that participants had to correctly answer *all* comprehension questions? What if it was for the Julie / bonus vignette?
+- Is it accurate to say that participants had to correctly answer *all* comprehension questions? What if it was for the Julie / bonus vignette? And were the comprehension questions the correct answer (e.g., Darrel was looking at a red ground squirrel) or also whether Darrel was right or wrong?
 - In SSS, were people asked how well they understood English, or how well they understood the language the survey was in?
 - I'm not seeing random slope on condition. Do we have an estimate of heterogeneity of the effect by site/lab?
 
@@ -195,6 +195,21 @@ survey_lang_table %>%
 
 ## Procedure
 
+Data collection took place between January 1, 2019 and June 1, 2021. Participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
+
+Vignette content varied by subject and identification target. In one scenario, Darrel identified prarie dogs vs red speckled ground squirrels (cite original). In another scenario, .... In a third scenario, .... Some student researchers opted to include a fourth scenario that was not included in the present analyses but can be found in Appendix X. 
+
+After each vignette, participants evaluated: 1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 or as a binary choice;
+2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options;
+3) the extent to which the subject's belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or as a binary choice;
+4) whether or not the subject correctly identified the target.
+
+The Method and Results sections of Empirical Articles should be concise, but complete and accessible. Every Empirical Article should fully describe the procedures necessary to reproduce the study and should fully convey the results of the study. Concisely reported robustness checks are encouraged, and more extensive analyses can be included in Supplemental Material. Results and discussion should be combined to ensure clear and concise communication of findings. Broader theoretical discussion and speculation should be confined to the General Discussion section. Tables and figures may be used as necessary to convey the results.
+
+# Results
+
+# Disclosures
+
 ## Preregistration
 
 This subsection of the Disclosures section provides one or more links to any preregistration documentation. If only some of the reported studies were preregistered, this subsection should indicate which ones were and which ones were not.
@@ -208,3 +223,31 @@ This subsection provides one or more permanent, persisting links to a public arc
 For all manuscripts reporting new empirical work, the text in this subsection should state, “We report how we determined our sample size, all data exclusions, all manipulations, and all measures in the study” (see Simmons, Nelson, & Simonsohn, 2011). If any aspect of this statement is untrue or not applicable, the authors should instead explain why (e.g., “This study involved an analysis of existing data rather than new data collection”). For studies not involving new empirical work, authors should verify that they have reported any and all simulations or other analyses they conducted as part of the work.
 
 ## Ethical approval 
+
+Authors reporting research involving human subjects should indicate whether the protocol was approved by an institutional review board or similar committee and whether it was carried out in accordance with the provisions of the World Medical Association Declaration of Helsinki (note that the latest version of the Declaration of Helsinki requires preregistration before data collection begins). Authors reporting research involving nonhuman animal subjects should indicate whether institutional and national guidelines for the care and use of laboratory animals were followed. If ethical approval was not required, the reason should be given. Information that could identify subjects will not be published unless the information is necessary and written, informed consent is obtained.
+
+## Author Contributions
+
+Authorship implies significant participation in the research reported or in writing the manuscript, including participation in designing and/or interpreting reported experiments or results, participation in acquiring and/or analyzing data, or participation in drafting and/or revising the manuscript. All authors must agree to the order in which the authors are listed and must have read the final manuscript and approved its submission. They must also agree to take responsibility for the work in the event that its integrity or veracity is questioned. In complete sentences, authors should precisely describe their contributions to the research and manuscript, identifying each author by his or her initials and surname. For example: “D. J. Simons and A. O. Holcombe jointly generated the idea for the study. A. O. Holcombe programmed the study and collected the data. D. J. Simons wrote the analysis code and analyzed the data, and A. O. Holcombe verified the accuracy of those analyses. D. J. Simons wrote the first draft of the manuscript, and both authors critically edited it. Both authors approved the final submitted version of the manuscript.”
+
+## Conflicts of Interest
+
+Authors should identify any conflicts of interest in this section (and should also report them during the submission process). If authors have no conflicts of interest, they should state, “The author(s) declare that there were no conflicts of interest with respect to the authorship or the publication of this article.”
+
+## Acknowledgments
+
+Authors should use this section to identify any people who should be credited for their assistance with the reported research.
+
+## Funding
+
+This section should be used to acknowledge funding sources, in complete sentences and with the full names of funders spelled out.
+    
+    
+## Supplemental Material
+
+If Supplemental Material will be posted on the journal’s Web site, include this heading and the appropriate link will be added during editing.
+
+
+## Prior versions
+
+If part or all of a submitted manuscript was previously posted to a blog or to a preprint archive, the authors should provide a link to that source and briefly indicate what aspects of the submitted manuscript are shared with that prior version.
