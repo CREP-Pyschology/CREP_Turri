@@ -210,21 +210,17 @@ The Method and Results sections of Empirical Articles should be concise, but com
 
 # Disclosures
 
-## Preregistration
 
-This subsection of the Disclosures section provides one or more links to any preregistration documentation. If only some of the reported studies were preregistered, this subsection should indicate which ones were and which ones were not.
+*Data, materials, and online resources:* All data are posted publicly on our master OSF page (https://osf.io/n5b3w/), and each contributing site has posted their data on an OSF page linked to our master OSF page.
 
-## Data, materials, and online resources
-
-This subsection provides one or more permanent, persisting links to a public archive (e.g., osf.io, perma.cc, clinicaltrials.gov) where readers can access any code, materials, de-identified data, or other resources . It should also refer to any Supplemental Material that will be posted on the journal’s Web site. If any materials or data are not publicly available, this paragraph should explain why and should note how researchers can access them for research purposes.
 
 ## Reporting
 
-For all manuscripts reporting new empirical work, the text in this subsection should state, “We report how we determined our sample size, all data exclusions, all manipulations, and all measures in the study” (see Simmons, Nelson, & Simonsohn, 2011). If any aspect of this statement is untrue or not applicable, the authors should instead explain why (e.g., “This study involved an analysis of existing data rather than new data collection”). For studies not involving new empirical work, authors should verify that they have reported any and all simulations or other analyses they conducted as part of the work.
-
+ “We report how we determined our sample size, all data exclusions, all manipulations, and all measures in the study” (see Simmons, Nelson, & Simonsohn, 2011).
+ 
 ## Ethical approval 
 
-Authors reporting research involving human subjects should indicate whether the protocol was approved by an institutional review board or similar committee and whether it was carried out in accordance with the provisions of the World Medical Association Declaration of Helsinki (note that the latest version of the Declaration of Helsinki requires preregistration before data collection begins). Authors reporting research involving nonhuman animal subjects should indicate whether institutional and national guidelines for the care and use of laboratory animals were followed. If ethical approval was not required, the reason should be given. Information that could identify subjects will not be published unless the information is necessary and written, informed consent is obtained.
+All contributing labs were required to submit their local institutional ethics approval prior to data collection as part of their pre-registstration and CREP review process and will be carried out in accordance with the provisions of the World Medical Association Declaration of Helsinki. All participating labs posted their ethics approval to their lab's OSF page for this study. 
 
 ## Author Contributions
 
@@ -232,7 +228,7 @@ Authorship implies significant participation in the research reported or in writ
 
 ## Conflicts of Interest
 
-Authors should identify any conflicts of interest in this section (and should also report them during the submission process). If authors have no conflicts of interest, they should state, “The author(s) declare that there were no conflicts of interest with respect to the authorship or the publication of this article.”
+The author(s) declare that there were no conflicts of interest with respect to the authorship or the publication of this article.
 
 ## Acknowledgments
 
@@ -242,11 +238,9 @@ Authors should use this section to identify any people who should be credited fo
 
 This section should be used to acknowledge funding sources, in complete sentences and with the full names of funders spelled out.
     
-    
 ## Supplemental Material
 
 If Supplemental Material will be posted on the journal’s Web site, include this heading and the appropriate link will be added during editing.
-
 
 ## Prior versions
 
