@@ -333,6 +333,9 @@ table(full_long$comp, useNA = "ifany")
 full_long$comp[full_long$comp == "Not Sure" & is.na(full_long$comp_type)] <- "No"
 full_long$comp[full_long$comp == "Not Sure" & !is.na(full_long$comp_type)] <- "Yes"
 
+#deal with random person from 12c361 who still has an NA 
+full_long$comp[is.na(full_long$comp) & full_long$lab_id == "12c361"] <- "Yes"
+
 full_long$comp <- droplevels(full_long$comp)
 ```
 
