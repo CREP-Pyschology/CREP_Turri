@@ -33,7 +33,7 @@ library(ISOcodes)
 
 # Run the analysis script
 
-```{r, child = '../05_Analysis/ACrep_Analysis_V2.Rmd'}
+```{r, child = '../05_Analysis/ACrep_Analysis_V2.Rmd', results = FALSE}
 ```
 
 # EDA on the analysis set
@@ -60,11 +60,16 @@ were presented with "normal" (*not sure what direction this is*) or "swapped", b
 within person and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
 - 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.
 
-# Method
+# Planned Analyses
 
-## Participants
 
 ```{r}
+
+#labs that applied
+n_labs_applied <- 62
+n_labs_rejected <- 0
+n_labs_failed <- 10
+
 #create dataset for demographics
 final_demographics <- final_long %>% 
   group_by(id) %>%
@@ -122,9 +127,9 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 ```
 
 
-Participants were recruited to participate by student researchers at `r length(unique(full_demographics$Person))` data collection sites in `r length(unique(full_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`).
+In total, `r n_labs_applied` labs applied to collect data as part of this multilab replication. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Sometimes, multiple student researchers from the same lab collected data at the same data collection site (e.g., using the same university subject pool). Data collection sites were located in `r length(unique(full_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). `r n_labs_failed` labs that applied to participate and were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to Covid-19 related campus closures) or because data were collected in a way that rendered them unsuable for these analyses (e.g., data were collected in Qualtrics and the raw data were deleted or were otherwise inaccessible to the anlaysis team). 
 
-The full dataset (the deidentified raw data without any exclusions) is available at osf.io/XXXX. Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded. 
+The deidentified raw data without any exclusions is available at osf.io/XXXX. Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded. 
 
 Specifically, data were excluded for the following pre-registered reasons:
 (1) the participant was not the majority age of their country or older (_n_ = `r nrow(filter(full_demographics, age_exclusion)`); operationalized as at least 18 in all countries except Slovakia (where the age of consent is 19) and United Arab Emirates (where the age of consent is 21));
@@ -133,11 +138,11 @@ Specifically, data were excluded for the following pre-registered reasons:
 (4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose)`; as evaluated by three human coders, as described in Supplement X, Section X);
 (5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion)`; see Vickstrom, Shin, Collazo, & Bauman, 2015). 
 
-In addition, data were excluded on the basis of criteria that were not in our preregistration. No clear method was devised to identify test responses, but, at many data collection sites, the students and other researchers executing the study tested their survey link multiple times, resulting in invalid survey observations. The following exclusions were designed to remove these invalid test observations using consistent, reliable criteria: Data were excluded if the participant did not provide an age (_n_ = `r nrow(filter(full_demographics, is.na(age)))`) or listed an age greater than or equal to 100 (_n_ = `r nrow(filter(full_demographics, !(age < 100)))`).
+No additional exclusions were described in our approved protocol. However, after pre-registered exclusion criteria, there appeared to be invalid test responses in the data (e.g., the word "test" was written in response to open-ended questions). No clear method was devised to identify test responses, but, at many data collection sites, the students and other researchers executing the study tested their survey link multiple times, resulting in invalid survey observations. The following exclusions were designed to remove these invalid test observations using consistent, reliable criteria that related to a covariate: Data were excluded if the participant did not provide an age (_n_ = `r nrow(filter(full_demographics, is.na(age)))`) or listed an age greater than or equal to 100 (_n_ = `r nrow(filter(full_demographics, !(age < 100)))`).
 
-Participants in the analysis sample were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
+In the analysis sample (i.e., following exclusions), participants were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
 
-Participants received different kinds of compensation for their completion of the survey (see Table X). Most participants completed the survey using a centralized survey on the data collection platform SocSciSurvey, but a small number of participants completed the survey in Qualtrics (see Table X). Variable names and response options have been harmonized across versions, as described in Supplement X. 
+Participation details, like compensation, varied by data collection site, as summarized in Table X and Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. Most data collection sites used the central SocSciSurvey survey. However, some used Qualtrics surveys that student researchers programmed themselves.  
 
 ```{r}
 final_demographics %>% 
@@ -153,15 +158,50 @@ final_demographics %>%
   select(comp, contains("ethn_"), turk, source) %>% 
   mutate(source = as.factor(source)) %>% 
   mutate(across(.cols = everything(), ~as.numeric(.x))) %>% 
-  select(-ethn_other_text) %>% 
+  select(-ethn_other_text,
+         -ethn_none) %>%  #Mturk and Portuguese labs added a 'prefer not to say' response option
   mutate(comp = comp - 1,
          `centralized survey` = source - 1) %>%  #adjusting numeric values so 0 is no and 1 is yes
-  describe()
+  select(-source, -ethn_selected) %>% 
+  rename(mturk = turk) %>% 
+  describe() %>% 
+  .[,c(2,3,4,8,9)] %>% 
+  mutate(count = n*mean,
+         percent = count/n*100) %>% 
+  select(n, count, percent, everything()) %>% 
+  kable(digits = 2) %>% 
+  kable_styling()
 
-#Braeden is helping sort out an issue where SSS and QT labs used different ethn categories
-#Need to resolve/combine ethn_as_sea_pac, ethn_sa, and ethn_none into the other categories
-# Once sorted, we'll make a table of these binary variables
 ```
+
+```{r}
+final_demographics %>% 
+  select(comp, turk, source) %>% 
+  mutate(source = as.factor(source)) %>% 
+  mutate(across(.cols = everything(), ~as.numeric(.x))) %>% 
+  mutate(comp = comp - 1,
+         `Took the centralized survey` = source - 1) %>%  #adjusting numeric values so 0 is no and 1 is yes
+  select(-source) %>% 
+  rename(`Recruited through Mturk` = turk,
+         `Compensated for participation` = comp) %>% 
+  describe() %>% 
+  .[,c(2,3,4,8,9)] %>% 
+  mutate(count = n*mean,
+         percent = count/n*100) %>% 
+  select(count, percent) %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants by Data Collection Context Variables") %>% 
+  kable_styling()
+
+comp_missing_lab <- final_demographics %>% 
+  filter(is.na(comp)) %>% 
+  pull(lab_id)
+
+final_demographics %>% 
+  filter(lab_id == comp_missing_lab) %>% 
+  tabyl(comp)
+
+```
+
 
 ```{r}
 final_demographics %>% 
@@ -195,7 +235,7 @@ survey_lang_table %>%
 
 ## Procedure
 
-Data collection took place between January 1, 2019 and June 1, 2021. Participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
+Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
 
 Vignette content varied by subject and identification target. In one scenario, Darrel identified prarie dogs vs red speckled ground squirrels (cite original). In another scenario, .... In a third scenario, .... Some student researchers opted to include a fourth scenario that was not included in the present analyses but can be found in Appendix X. 
 
@@ -204,9 +244,6 @@ After each vignette, participants evaluated: 1) whether the subject believes or 
 3) the extent to which the subject's belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or as a binary choice;
 4) whether or not the subject correctly identified the target.
 
-The Method and Results sections of Empirical Articles should be concise, but complete and accessible. Every Empirical Article should fully describe the procedures necessary to reproduce the study and should fully convey the results of the study. Concisely reported robustness checks are encouraged, and more extensive analyses can be included in Supplemental Material. Results and discussion should be combined to ensure clear and concise communication of findings. Broader theoretical discussion and speculation should be confined to the General Discussion section. Tables and figures may be used as necessary to convey the results.
-
-# Results
 
 # Disclosures
 
