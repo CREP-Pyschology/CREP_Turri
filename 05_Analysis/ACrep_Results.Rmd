@@ -12,6 +12,8 @@ output:
 *Questions*
 - Need to double check that we do not know the order of binary variables within person in the Qualtrics data (and document)
 - For binary order, what is "normal" and what is "swapped"? (asked here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638471460121200?thread_ts=1636489085.046400&cid=C029HKSQAUU)
+- Portuguese lab swapped directions
+- Last lab could be added to the data?
 - Why is the age exclusion SO extreme? Many labs mostly collected data from people younger than the age of consent in their country.
 - Something is happening with age. A lot of improbably values (mentioned here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638486797125900)
 - Is it accurate to say that participants had to correctly answer *all* comprehension questions? What if it was for the Julie / bonus vignette? And were the comprehension questions the correct answer (e.g., Darrel was looking at a red ground squirrel) or also whether Darrel was right or wrong?
@@ -127,7 +129,7 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 ```
 
 
-In total, `r n_labs_applied` labs applied to collect data as part of this multilab replication. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Sometimes, multiple student researchers from the same lab collected data at the same data collection site (e.g., using the same university subject pool). Data collection sites were located in `r length(unique(full_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). `r n_labs_failed` labs that applied to participate and were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to Covid-19 related campus closures) or because data were collected in a way that rendered them unsuable for these analyses (e.g., data were collected in Qualtrics and the raw data were deleted or were otherwise inaccessible to the anlaysis team). 
+In total, `r n_labs_applied` labs applied to collect data as part of this multilab replication. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Sometimes, multiple student researchers from the same lab collected data at the same data collection site (e.g., using the same university subject pool). Data collection sites were located in `r length(unique(full_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). `r n_labs_failed` labs that applied to participate and were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to Covid-19 related campus closures) or because data were collected in a way that rendered them unsuable for these analyses (e.g., data were collected in Qualtrics and the response options were on a different scale or the raw data were deleted). 
 
 The deidentified raw data without any exclusions is available at osf.io/XXXX. Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded. 
 
@@ -142,7 +144,7 @@ No additional exclusions were described in our approved protocol. However, after
 
 In the analysis sample (i.e., following exclusions), participants were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
 
-Participation details, like compensation, varied by data collection site, as summarized in Table X and Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. Most data collection sites used the central SocSciSurvey survey. However, some used Qualtrics surveys that student researchers programmed themselves.  
+Participation details, like compensation, varied by data collection site, as summarized in Table X and Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. However, some used Qualtrics surveys that student researchers programmed themselves. Most data collection sites used the central SocSciSurvey survey.
 
 ```{r}
 final_demographics %>% 
@@ -153,26 +155,62 @@ final_demographics %>%
   kable_styling()
 ```
 
+In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Supplemental Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r`% (_n_ = `r`) identified as one of these 
+
+
+*One version in SSS had these response options:*
+White / European descent
+Black / African descent
+Latino*a / Latin American descent
+Australian descent
+Asian
+Southeast Asian descent
+Native American
+Hawaiian descent / Pacific Islands
+Other
+
+*The other version in SSS had these response options:*
+European descent
+African descent
+Latino*a / Latin American descent
+Indigenous Australian or Torres Strait Islander descent
+East Asian descent
+South Asian descent
+Pacific Island descent
+Native American descent
+
+*In Qualtrics these were the response options:*
+White/European
+Black/African American
+Hispanic Latino
+East or Southeast Asian / Pacific Islander (e.g. from Japan, China, Korea, Vietnam, Thailand, Philippines, native Hawaiian)
+South Asian (e.g. from India, Pakistan)
+I prefer not to answer this question
+Other
+
 ```{r}
+#Qualtrics labs combined categories, and had a south asian category, but had no positive cases
+#combining those here such that false responses are coded as false for each cateory
+final_demographics$ethn_as[final_demographics$ethn_as_sea_pac == FALSE] <- FALSE
+final_demographics$ethn_as[final_demographics$ethn_sa == FALSE] <- FALSE
+final_demographics$ethn_sea[final_demographics$ethn_as_sea_pac == FALSE] <- FALSE
+final_demographics$ethn_pac[final_demographics$ethn_as_sea_pac == FALSE] <- FALSE
+
 final_demographics %>% 
-  select(comp, contains("ethn_"), turk, source) %>% 
-  mutate(source = as.factor(source)) %>% 
+  select(contains("ethn_")) %>% 
   mutate(across(.cols = everything(), ~as.numeric(.x))) %>% 
   select(-ethn_other_text,
-         -ethn_none) %>%  #Mturk and Portuguese labs added a 'prefer not to say' response option
-  mutate(comp = comp - 1,
-         `centralized survey` = source - 1) %>%  #adjusting numeric values so 0 is no and 1 is yes
-  select(-source, -ethn_selected) %>% 
-  rename(mturk = turk) %>% 
+         -ethn_none, -ethn_sa) %>%  #Qualtrics labs added a 'prefer not to say' response option
   describe() %>% 
   .[,c(2,3,4,8,9)] %>% 
   mutate(count = n*mean,
          percent = count/n*100) %>% 
   select(n, count, percent, everything()) %>% 
-  kable(digits = 2) %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants Self-Identified with each Ethnic or Racial Category)") %>% 
   kable_styling()
 
 ```
+
 
 ```{r}
 final_demographics %>% 
@@ -189,16 +227,8 @@ final_demographics %>%
   mutate(count = n*mean,
          percent = count/n*100) %>% 
   select(count, percent) %>% 
-  kable(digits = 2, caption = "Number and Percent of Participants by Data Collection Context Variables") %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants by Data Collection Context Variables (Total N = 2957)") %>% 
   kable_styling()
-
-comp_missing_lab <- final_demographics %>% 
-  filter(is.na(comp)) %>% 
-  pull(lab_id)
-
-final_demographics %>% 
-  filter(lab_id == comp_missing_lab) %>% 
-  tabyl(comp)
 
 ```
 
@@ -243,6 +273,8 @@ After each vignette, participants evaluated: 1) whether the subject believes or 
 2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options;
 3) the extent to which the subject's belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or as a binary choice;
 4) whether or not the subject correctly identified the target.
+
+*Obvious mistakes in entering data*
 
 
 # Disclosures
