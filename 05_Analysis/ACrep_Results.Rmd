@@ -9,17 +9,6 @@ output:
     code_folding: hide
 ---
 
-*Questions*
-- Need to double check that we do not know the order of binary variables within person in the Qualtrics data (and document)
-- For binary order, what is "normal" and what is "swapped"? (asked here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638471460121200?thread_ts=1636489085.046400&cid=C029HKSQAUU)
-- Portuguese lab swapped directions
-- Last lab could be added to the data?
-- Why is the age exclusion SO extreme? Many labs mostly collected data from people younger than the age of consent in their country.
-- Something is happening with age. A lot of improbably values (mentioned here: https://psych-sci-accelerator.slack.com/archives/C029HKSQAUU/p1638486797125900)
-- Is it accurate to say that participants had to correctly answer *all* comprehension questions? What if it was for the Julie / bonus vignette? And were the comprehension questions the correct answer (e.g., Darrel was looking at a red ground squirrel) or also whether Darrel was right or wrong?
-- In SSS, were people asked how well they understood English, or how well they understood the language the survey was in?
-- I'm not seeing random slope on condition. Do we have an estimate of heterogeneity of the effect by site/lab?
-
 ## Purpose
 
 This script generates text for the results section of the ACREP / PSA004 Stage 2 RRR. It also runs the analysis .Rmd.
@@ -46,7 +35,7 @@ final_long %>%
 ```
 
 
-A few notes about variables that will be moot when we complete the codebook:
+A few notes about variables:
 - Person is a unique lab identifier (identifies PI)
 - lab_id is a not a unique lab identifier, but rather identifies the undergraduate PI
 (and some of these undergraduate PIs were students with the same lab PI)
@@ -68,9 +57,11 @@ within person and so is coded as "mixed" and and we do not have more detailed in
 ```{r}
 
 #labs that applied
-n_labs_applied <- 62
+n_labs_applied <- 69
 n_labs_rejected <- 0
-n_labs_failed <- 10
+n_labs_failed <- 30
+# sources: https://docs.google.com/spreadsheets/d/1Y4ZFB0AZQMhjVwGP-aA9eEC2CWKUUq5LdJu7wZLAdQ8/edit#gid=575778621
+# https://docs.google.com/spreadsheets/d/1Y4ZFB0AZQMhjVwGP-aA9eEC2CWKUUq5LdJu7wZLAdQ8/edit#gid=1889366473
 
 #create dataset for demographics
 final_demographics <- final_long %>% 
@@ -283,34 +274,30 @@ After each vignette, participants evaluated: 1) whether the subject believes or 
 *Data, materials, and online resources:* All data are posted publicly on our master OSF page (https://osf.io/n5b3w/), and each contributing site has posted their data on an OSF page linked to our master OSF page.
 
 
-## Reporting
+*Reporting:*
 
  “We report how we determined our sample size, all data exclusions, all manipulations, and all measures in the study” (see Simmons, Nelson, & Simonsohn, 2011).
  
-## Ethical approval 
+*Ethical approval:*
 
 All contributing labs were required to submit their local institutional ethics approval prior to data collection as part of their pre-registstration and CREP review process and will be carried out in accordance with the provisions of the World Medical Association Declaration of Helsinki. All participating labs posted their ethics approval to their lab's OSF page for this study. 
 
-## Author Contributions
+*Author Contributions:*
 
-Authorship implies significant participation in the research reported or in writing the manuscript, including participation in designing and/or interpreting reported experiments or results, participation in acquiring and/or analyzing data, or participation in drafting and/or revising the manuscript. All authors must agree to the order in which the authors are listed and must have read the final manuscript and approved its submission. They must also agree to take responsibility for the work in the event that its integrity or veracity is questioned. In complete sentences, authors should precisely describe their contributions to the research and manuscript, identifying each author by his or her initials and surname. For example: “D. J. Simons and A. O. Holcombe jointly generated the idea for the study. A. O. Holcombe programmed the study and collected the data. D. J. Simons wrote the analysis code and analyzed the data, and A. O. Holcombe verified the accuracy of those analyses. D. J. Simons wrote the first draft of the manuscript, and both authors critically edited it. Both authors approved the final submitted version of the manuscript.”
+TBD
 
-## Conflicts of Interest
+*Conflicts of Interest:*
 
 The author(s) declare that there were no conflicts of interest with respect to the authorship or the publication of this article.
 
-## Acknowledgments
+*Funding:*
 
-Authors should use this section to identify any people who should be credited for their assistance with the reported research.
+TBD
 
-## Funding
-
-This section should be used to acknowledge funding sources, in complete sentences and with the full names of funders spelled out.
-    
-## Supplemental Material
+*Supplemental Material:*
 
 If Supplemental Material will be posted on the journal’s Web site, include this heading and the appropriate link will be added during editing.
 
-## Prior versions
+*Prior versions:*
 
 If part or all of a submitted manuscript was previously posted to a blog or to a preprint archive, the authors should provide a link to that source and briefly indicate what aspects of the submitted manuscript are shared with that prior version.
