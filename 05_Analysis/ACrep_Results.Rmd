@@ -52,6 +52,12 @@ were presented with "normal" (*not sure what direction this is*) or "swapped", b
 within person and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
 - 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.
 
+```{r}
+full_long %>% filter(is.na(UN_Region)) %>% tabyl(lab_id)
+```
+Information that came from lab_sheet (ultimately the source was a google doc) is not accurate and doesn't contain information about qualtrics labs. This is a problem.
+
+
 # Method
 
 
@@ -106,6 +112,10 @@ platform <- full_long %>%
   ungroup() %>% 
   glimpse()
 
+#save world region info
+full_long %>% 
+  group_by(Person)
+
 #check assumption that each site had one compensation type...
 #something is fishy
 multiple_compensation <- lab_sheet %>% 
@@ -126,20 +136,14 @@ lab_sheet %>%
   count()
 
 left_join(teams_per_site, full_data_n_per_site, by = "Person") %>% 
-  distinct() %>% 
   left_join(final_data_n_per_site, by = "Person") %>% 
-  distinct() %>% 
   left_join(platform, by = "Person") %>% 
-  distinct() %>% 
-  left_join(select(lab_sheet, Person, Compensation), by = "Person") %>% 
-  distinct()
 arrange(-final_data_n) %>% 
   mutate(site_id = row_number()) %>% 
   select(site_id, everything()) %>% 
   kable(caption = "data collection sites") %>% 
   kable_styling()
 ```
-
 
 
 In the approved protocol, sections of the manuscript relevant to understanding the study method included detailed descriptions of the study's logistics, including the recruitment and approval of collaborators who would collect data. This section has been restructured to more closely resemble a typical study method description, including relevant information about the study's logisitics. The text from the approved protocol has been updated and moved to Appendix X.
@@ -152,7 +156,7 @@ For the present article and analyses, data are structured such that observations
 
 *Student-led teams*
 
-In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project.
+In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. See Table X for a summary.
 
 *Data collection sites*
 
