@@ -244,38 +244,9 @@ final_demographics %>%
   kable_styling()
 ```
 
-In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Supplemental Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r`% (_n_ = `r`) identified as one of these 
+In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Supplemental Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r`% (_n_ = `r`) identified as White.
 
 
-*One version in SSS had these response options:*
-White / European descent
-Black / African descent
-Latino*a / Latin American descent
-Australian descent
-Asian
-Southeast Asian descent
-Native American
-Hawaiian descent / Pacific Islands
-Other
-
-*The other version in SSS had these response options:*
-European descent
-African descent
-Latino*a / Latin American descent
-Indigenous Australian or Torres Strait Islander descent
-East Asian descent
-South Asian descent
-Pacific Island descent
-Native American descent
-
-*In Qualtrics these were the response options:*
-White/European
-Black/African American
-Hispanic Latino
-East or Southeast Asian / Pacific Islander (e.g. from Japan, China, Korea, Vietnam, Thailand, Philippines, native Hawaiian)
-South Asian (e.g. from India, Pakistan)
-I prefer not to answer this question
-Other
 
 ```{r}
 #Qualtrics labs combined categories, and had a south asian category, but had no positive cases
@@ -399,3 +370,42 @@ If Supplemental Material will be posted on the journal’s Web site, include thi
 *Prior versions:*
 
 If part or all of a submitted manuscript was previously posted to a blog or to a preprint archive, the authors should provide a link to that source and briefly indicate what aspects of the submitted manuscript are shared with that prior version.
+
+# Supplement
+
+### Demographics
+
+*One version in SSS had these response options:*
+White / European descent
+Black / African descent
+Latino*a / Latin American descent
+Australian descent
+Asian
+Southeast Asian descent
+Native American
+Hawaiian descent / Pacific Islands
+Other
+
+*The other version in SSS had these response options:*
+European descent
+African descent
+Latino*a / Latin American descent
+Indigenous Australian or Torres Strait Islander descent
+East Asian descent
+South Asian descent
+Pacific Island descent
+Native American descent
+
+*In Qualtrics these were the response options:*
+White/European
+Black/African American
+Hispanic Latino
+East or Southeast Asian / Pacific Islander (e.g. from Japan, China, Korea, Vietnam, Thailand, Philippines, native Hawaiian)
+South Asian (e.g. from India, Pakistan)
+I prefer not to answer this question
+Other
+
+```{r}
+
+```
+
