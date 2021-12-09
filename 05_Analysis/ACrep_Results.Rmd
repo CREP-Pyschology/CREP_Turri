@@ -19,6 +19,7 @@ library(stringr)
 library(kableExtra)
 library(countrycode)
 library(ISOcodes)
+library(tidylog)
 ```
 
 
@@ -51,19 +52,112 @@ were presented with "normal" (*not sure what direction this is*) or "swapped", b
 within person and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
 - 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.
 
-# Planned Analyses
+# Method
 
 
 ```{r}
 
 #labs that applied
 n_labs_applied <- 69
-n_labs_rejected <- 0
+n_labs_rejected <- (69-37)
 n_labs_failed <- 30
+n_labs_finished_crep <- 22
 # sources: https://docs.google.com/spreadsheets/d/1Y4ZFB0AZQMhjVwGP-aA9eEC2CWKUUq5LdJu7wZLAdQ8/edit#gid=575778621
 # https://docs.google.com/spreadsheets/d/1Y4ZFB0AZQMhjVwGP-aA9eEC2CWKUUq5LdJu7wZLAdQ8/edit#gid=1889366473
 
-#create dataset for demographics
+#create table content
+
+#save teams per site
+teams_per_site <- final_long %>% 
+  group_by(Person, lab_id) %>% group_by(Person, lab_id) %>% count() %>% 
+  group_by(Person) %>% count() %>%
+  rename(n_student_teams = n) %>% 
+  ungroup() %>% 
+  glimpse()
+
+#save full n per site
+full_data_n_per_site <- full_long %>% 
+  group_by(Person, id) %>% count() %>% 
+  group_by(Person) %>% count() %>% 
+  rename(full_data_n = n) %>% 
+  ungroup() %>% 
+  glimpse()
+
+#save final n per site
+final_data_n_per_site <- final_long %>% 
+  group_by(Person, id) %>% count() %>% 
+  group_by(Person) %>% count() %>% 
+  rename(final_data_n = n) %>% 
+  ungroup() %>% 
+  glimpse()
+
+#check assumption that each site had one data collection source...
+#error out if any site contributed data from both Qualtrics and SSS
+if (full_long %>% 
+  group_by(Person, source) %>% count() %>% 
+  group_by(Person) %>% count() %>% 
+  filter(n > 1) %>% 
+  nrow() %>% .[1] != 0) STOP
+
+#save survey platform info
+platform <- full_long %>% 
+  group_by(Person) %>% 
+  summarize(survey_platform = first(source)) %>%
+  ungroup() %>% 
+  glimpse()
+
+#check assumption that each site had one compensation type...
+#something is fishy
+multiple_compensation <- lab_sheet %>% 
+   group_by(Person, Compensation) %>% count() %>% 
+   group_by(Person) %>% count() %>% 
+   filter(n > 1) %>% pull(Person)
+
+lab_sheet %>% 
+  filter(Person %in% multiple_compensation) %>% 
+  select(lab_code, Person, Compensation, comp) 
+  #write.csv("compensation_discrepancies.csv")
+#hmm looking into this
+
+#save compensation information 
+lab_sheet %>% 
+  select(Person, Compensation) %>% 
+  group_by(Person) %>% 
+  count()
+
+left_join(teams_per_site, full_data_n_per_site, by = "Person") %>% 
+  distinct() %>% 
+  left_join(final_data_n_per_site, by = "Person") %>% 
+  distinct() %>% 
+  left_join(platform, by = "Person") %>% 
+  distinct() %>% 
+  left_join(select(lab_sheet, Person, Compensation), by = "Person") %>% 
+  distinct()
+arrange(-final_data_n) %>% 
+  mutate(site_id = row_number()) %>% 
+  select(site_id, everything()) %>% 
+  kable(caption = "data collection sites") %>% 
+  kable_styling()
+```
+
+
+
+In the approved protocol, sections of the manuscript relevant to understanding the study method included detailed descriptions of the study's logistics, including the recruitment and approval of collaborators who would collect data. This section has been restructured to more closely resemble a typical study method description, including relevant information about the study's logisitics. The text from the approved protocol has been updated and moved to Appendix X.
+
+## Participants
+
+This project was designed to be a training and learning experience for undergraduate students. Consequently, for undergraduate researchers, the project involved collecting data and completing a series of tasks with pedagogical value, like independetly designing an analysis plan, completing a preregistration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository. Each team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved (for more information about this process, see Supplement X).
+
+For the present article and analyses, data are structured such that observations are nested within data collection sites. At some sites, there were multiple student-led teams that independently engaged in the project. Because observations collected by different teams are organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unsuable for analyses (e.g., vignettes were not appropriately randomized). For a summary of student-led team and data collection site information, see Supplement X.
+
+*Student-led teams*
+
+In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project.
+
+*Data collection sites*
+
+```{r}
+#create dataset for demographics 
 final_demographics <- final_long %>% 
   group_by(id) %>%
   slice(1) %>% 
@@ -120,7 +214,7 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 ```
 
 
-In total, `r n_labs_applied` labs applied to collect data as part of this multilab replication. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Sometimes, multiple student researchers from the same lab collected data at the same data collection site (e.g., using the same university subject pool). Data collection sites were located in `r length(unique(full_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). `r n_labs_failed` labs that applied to participate and were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to Covid-19 related campus closures) or because data were collected in a way that rendered them unsuable for these analyses (e.g., data were collected in Qualtrics and the response options were on a different scale or the raw data were deleted). 
+Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Data collection sites were located in `r length(unique(full_long$lab_country)` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). 
 
 The deidentified raw data without any exclusions is available at osf.io/XXXX. Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded. 
 
