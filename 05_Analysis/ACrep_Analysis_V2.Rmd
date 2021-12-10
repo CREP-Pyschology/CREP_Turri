@@ -11,6 +11,9 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 options(scipen = 15)
+
+#note -- may need to change the working directory if you default to project
+#setwd("./05_Analysis")
 ```
 
 ## Information
@@ -19,7 +22,7 @@ Multilab close replication of: Experiment 1 from Turri, J., Buckwalter, W., & Bl
 
 [Data and registered protocols:](https://osf.io/n5b3w/)
 
-[Codebook](https://docs.google.com/spreadsheets/d/1KjXqgfVgguHeDXVtlHHhJ9zsRGVDfPVPH4tbh75P46U/edit#gid=903093128)
+[Codebook (raw data)](https://docs.google.com/spreadsheets/d/1KjXqgfVgguHeDXVtlHHhJ9zsRGVDfPVPH4tbh75P46U/edit#gid=903093128)
 
 [Preprint](https://psyarxiv.com/zeux9/)
 
