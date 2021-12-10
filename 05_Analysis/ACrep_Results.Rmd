@@ -24,7 +24,8 @@ library(stringr)
 library(kableExtra)
 library(countrycode)
 library(ISOcodes)
-library(tidylog)
+#library(tidylog)
+library(naniar) # to evaluate missing data
 ```
 
 
@@ -118,13 +119,15 @@ full_long %>%
 
 #check assumption that each site had one compensation type...
 #something is fishy
-#FIX: Need to check all information in lab_sheet and it's source gsheet
+#FIX: Need to check all comp information in lab_sheet and it's source gsheet -- people in the same data site have different values
+#these values should reflect the compensation that was in people's
+#IRB approvals
 multiple_compensation <- lab_sheet %>% 
    group_by(Person, Compensation) %>% count() %>% 
    group_by(Person) %>% count() %>% 
    filter(n > 1) %>% pull(Person)
 
-#exporting summary of issue
+#FIX:exporting summary of issue
 lab_sheet %>% 
   filter(Person %in% multiple_compensation) %>% 
   select(lab_code, Person, Compensation, comp) 
@@ -135,6 +138,14 @@ lab_sheet %>%
   select(Person, Compensation) %>% 
   group_by(Person) %>% 
   count()
+
+#FIX: Need to do the same for the remaining columns:
+#(this is the table we hope to fill with this code https://docs.google.com/spreadsheets/d/1zjnaAMd8EbGsgY5PPAWwoZg7Fkm5P-0NO-amhmHqDpg/edit#gid=0)
+# UN_Region
+# Method variations or extension notes
+# Whether any data were collected in groups
+# Whether any data were collected in person
+# Whether community samples were used / what the sampled population is
 
 left_join(teams_per_site, full_data_n_per_site, by = "Person") %>% 
   left_join(final_data_n_per_site, by = "Person") %>% 
@@ -151,11 +162,11 @@ In the approved protocol, sections of the manuscript relevant to understanding t
 
 ## Participants
 
-This project was designed to be a training and learning experience for undergraduate students. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., cite) in concert with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the undergraduate students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independetly designing an analysis plan, completing a preregistration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository. Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved (for more information about this process, see Supplement X).
+This project was designed to be a training and learning experience for undergraduate students. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., cite) in concert with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the undergraduate students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independetly designing an analysis plan, completing a preregistration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository. Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved (for more information about this process, see Appendix X).
 
-For the present article and analyses, data are structured such that observations are nested within data collection sites. At some sites, there were multiple student-led teams who completed the project. Because observations collected by different teams are organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unsuable for analyses (e.g., vignettes were not appropriately randomized). For a summary of student-led team and data collection site information, see Supplement X.
+For the present article and analyses, data are structured such that observations are nested within data collection sites. At some sites, there were multiple student-led teams who completed the project. Because observations collected by different teams are organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unsuable for analyses (e.g., vignettes were not appropriately randomized). For a summary of student-led team and data collection site information, see Appendix X.
 
-In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Data collection sites were located in `r length(unique(full_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.
+
 
 ```{r}
 #create dataset for demographics 
@@ -220,18 +231,18 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 
 ```
 
-
+In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Data collection sites were located in `r length(unique(full_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.
 
 Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded.
 
 Data were excluded for the following reasons (applied in the order listed):
 (1) the participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older,  operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (_n_ = `r nrow(filter(full_demographics, age_exclusion))`);
 (2) the participant had taken part in a previous version of this study or in another contributors' replication of the same study (_n_ = `r nrow(filter(full_demographics, previous_exclusion))`);
-(3) the participant failed to answer all three of the vignette comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion)))`; e.g., did not correctly identify what Darrel was looking at);
+(3) the participant failed to answer all three of the vignette comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion))`; e.g., did not correctly identify what Darrel was looking at);
 (4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose_exclusion))`);
 (5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion))`); see Vickstrom, Shin, Collazo, & Bauman, 2015).
 
-Many excluded observations met multiple criteria.
+Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age.
 
 ```{r}
 exclusions %>% 
@@ -242,10 +253,9 @@ exclusions %>%
 ```
 
 
-Evaluating criteria 2 and 4 required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the langauge. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Supplement for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at osf.io/gs29c. Responses marked as identified test cases (e.g., "TEST") were excluded. Responses that were not coherent were labeled, but not excluded, and some observations in the final data were not coherent (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). Responses that were missing were not evaluated by raters, but no observations in the final dataset were missing evalutions (_n_ study purpose = `r nrow(filter(final_demographics, is.na(purpose_exclusion)))`; _n_ previously participated = `r nrow(filter(final_demographics, is.na(previous_exclusion)))`). 
+Evaluating criteria 2 and 4 required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the langauge. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at osf.io/gs29c. Responses marked as identified test cases (e.g., "TEST") were excluded. Responses that were not coherent were labeled, but not excluded, and some observations in the final data were not coherent (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). Responses that were missing were not evaluated by raters, but no observations in the final dataset were missing evalutions (_n_ study purpose = `r nrow(filter(final_demographics, is.na(purpose_exclusion)))`; _n_ previously participated = `r nrow(filter(final_demographics, is.na(previous_exclusion)))`). 
 
 All of these exclusions were preregistered with one exception. We did not pregister the exclusion of people over the age of 100, which resulted in the excusion of data from `r nrow(filter(full_demographics, !(age < 100)))` people. The age exclusion was made first, and captured many observations in the data that appeared to be invalid test responses. Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked "test"). The exclusion of people over the age of 100 likely captured many invalid test responses. 
-
 
 In the analysis sample (i.e., following exclusions), participants were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
 
@@ -260,7 +270,7 @@ final_demographics %>%
   kable_styling()
 ```
 
-In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Supplemental Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r round(nrow(filter(final_demographics, ethn_wh == TRUE))/nrow(final_demographics)*100, 2)`% (_n_ = `r nrow(filter(final_demographics, ethn_wh == TRUE))`) identified as White.
+In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Appendixal Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r round(nrow(filter(final_demographics, ethn_wh == TRUE))/nrow(final_demographics)*100, 2)`% (_n_ = `r nrow(filter(final_demographics, ethn_wh == TRUE))`) identified as White.
 
 
 ```{r}
@@ -314,18 +324,30 @@ survey_lang_table %>%
 ```
 
 
-## Procedure
+## Materials
 
 Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
 
-Vignette content varied by subject and identification target. In one scenario, Darrel identified prarie dogs vs red speckled ground squirrels (cite original). In another scenario, .... In a third scenario, .... Some student researchers opted to include a fourth scenario that was not included in the present analyses but can be found in Appendix X. 
+Vignette content varied by subject and identification target. There were three vignette scenarios that were randomly presented to participants: the "Squirrel/Darrel" vignette from Turri et al. (2015), the “Fake Barn/Gerald” vignette from Colaca et al. (2014; altered to include matched knowledge and ignorance control conditions), and the “Diamond/Emma” vignette from Nagel, San Juan, & Mar (2013). The vigenettes are reported in full in Appendix X. Vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix B). Some labs tested an additional vignette that was not described in the approved protocol (for more information, see [LINK TO MORE INFORMATION]).
 
-After each vignette, participants evaluated: 1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 or as a binary choice;
-2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options;
-3) the extent to which the subject's belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or as a binary choice;
-4) whether or not the subject correctly identified the target.
+For each vignette, there were three conditions: a Gettier case condition in which subjects correctly identified the target, but not due to their knowledge; a knowledge control condition in which subjects correctly identified the target due to their knowledge; an ignorance control condition in which subjects incorrectly identified the taraget, but not due to their knowledge. Vignette content and condition were randomly assigned. Each participant read and evaluated three vignettes (one of each subject/identification target type and one of each condition).
+
+For each of the three vignettes they read, participants evaluated the subject's knowledge on a series of questions. Student-led teams varied in the exact questions they asked. The percentage of observations that have each question among all vignettes for all participants in the final data is listed in parentheses after each question description. After each vignette, participants were asked:
+1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 (`r round(pct_complete(final_long$know_vas), 2)`% complete) or as a binary choice (`r round(pct_complete(final_long$know_bin), 2)`% complete);
+2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options (`r round(pct_complete(final_long$compr), 2)`% complete);
+3) the extent to which the subject's belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or (`r round(pct_complete(final_long$reason_vas), 2)`% complete) as a binary choice (`r round(pct_complete(final_long$reason_bin), 2)`% complete); 
+4a) whether or the subject identified the target correctly or incorrectly (`r round(pct_complete(final_long$ri_wr), 2)`% complete) and then,
+4b) whether this was due to ability/inability versus good luck/ bad luck, measured either on a continuous scale from 0 to 100 (`r round(pct_complete(final_long$luck_vas), 2)`% complete) or as a binary choice (`r round(pct_complete(final_long$luck_bin), 2)`% complete);
+4) an alternative knowledge probe in which participants were asked whether the subject knew or only thought they knew what the identification target was (`r round(pct_complete(final_long$know_alt), 2)`% complete). 
+
+In the original protocol, 4a and 4b were described as being one question, but further piloting revealed that the question confused participants.
+
+After reading three vignettes and answering three sets of questions, participants answered questions related to exclusion criteria and demographics. They described the purpose of the study (used for exclusions), their impression of study materials (not used in any analyses), whether they had participated in a similar study (used for exclusions), their language comprehension of the survey language (used for exclusions), and their age, gender, country, birth country, the number of years they had attended school, and their ethnicity. Participants described their perceptions of their compensation ("Will you receive any kind of compensation or reward for taking part in this study?"), before describing the compensation in more detail (e.g., the number of course credits, the amount of money). Participants also completed a 12-question study experience questionnaire that was not used in analyses.
+
+All materials used in this replication, including the details of these vignettes and related pretests, are available at osf.io/n5b3w.
 
 
+## Procedure
 
 
 # Disclosures
@@ -362,7 +384,62 @@ If Supplemental Material will be posted on the journal’s Web site, include thi
 
 If part or all of a submitted manuscript was previously posted to a blog or to a preprint archive, the authors should provide a link to that source and briefly indicate what aspects of the submitted manuscript are shared with that prior version.
 
-# Supplement
+# Appendix
+
+### Vignettes
+
+*For the Gerald vignette, all participants read:*
+
+“Gerald is driving through the countryside with his young son Andrew. Along the way he sees numerous objects and points them out to his son. 'That's a cow, Andrew,' Gerald says, 'and that over there is a house where farmers live.' Gerald has no doubt about what the objects are.
+
+What Gerald and Andrew do not realize is the area they are driving through was recently hit by a very serious tornado. This tornado did not harm any of the animals, but did destroy most buildings. In an effort to maintain the rural area's tourist industry, local townspeople built new houses in the place of the destroyed houses. These new houses were rebuilt with all the materials necessary for them to look exactly like the original houses from the road, and they are also fully furnished and can now be used as actual housing.”
+
+In the knowledge condition, participants read:
+
+“Having just entered the tornado-ravaged area, Gerald notices the many houses lining the roads. When he tells Andrew 'That's a house,' the object he sees and points at is a real house that has survived the tornado and not one of the new houses.”
+
+In the ignorance condition, participants read:
+
+“Having driven through the tornado-ravaged area, Gerald has encountered many of these fake houses. When he tells Andrew 'That's a house,' the object he sees and points at is a fake house that was built after the tornado and is not actually a house.”
+
+In the gettier condition, participants read:
+
+“Having just entered the tornado-ravaged area, Gerald has not yet encountered any fake houses. When he tells Andrew 'That's a house,' the object he sees and points at is a real house that has survived the tornado and not one of the fake houses.”
+
+*For the Emma vignette, all participants read:*
+
+“Emma is shopping for jewelry. She goes into a nice-looking store and selects a necklace from a tray marked "Diamond Earrings and Pendants." "What a lovely diamond!" she says as she tries it on. Emma could not tell the difference between a real diamond and a cubic zirconium fake just by looking or touching.”
+
+In the knowledge condition, participants read:
+
+“However, this particular store has very honest employees who have a really positive reputation for their guaranteed real diamonds; in the tray Emma chose, all of the pendants had real diamonds rather than fake cubic zirconium stones (and the one she chose was really nice).”
+
+In the ignorance condition, participants read:
+
+“Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose, almost all of the pendants had cubic zirconium stones rather than diamonds (and the one she chose was in fact fake).”
+
+In the gettier condition, participants read:
+
+“Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose, almost all of the pendants had cubic zirconium stones rather than diamonds (but the one she chose happened to be real).”
+
+*For the Darrel vignette, all participants read:*
+
+“Darrel is an ecologist collecting data on red speckled ground squirrels in Canyon Falls national park. The park is divided into ten zones and today Darrel is working Zone 3. While scanning the river valley with his binoculars, Darrel sees a small, bushy-tailed creature with distinctive red markings on its chest and belly. The red speckled ground squirrel is the only native species with such markings. Darrel records in his journal, ‘At least one red speckled ground squirrel in Zone 3 today.’
+
+
+In the knowledge condition, participants read:
+
+“Ecologists are unaware that a complex network of aquifers recently began drying up in the park. These aquifers carry vital nutrients to the trees and other forms of plant life that support the squirrels. And the aquifers in the river valley running through Zone 3 are no exception. The animal Darrel is looking at is indeed a thirsty red speckled ground squirrel.”
+
+In the ignorance condition, participants read:
+
+“Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. And, the animal Darrel is looking at is indeed one of the prairie dogs.”
+
+In the gettier condition, participants read:
+
+“Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. Still, the animal Darrel is looking at is a red speckled ground squirrel.”
+
+
 
 ### Exclusion ratings
 

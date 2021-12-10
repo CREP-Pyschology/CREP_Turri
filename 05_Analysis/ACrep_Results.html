@@ -256,7 +256,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ACrep_Results.Rmd</h1>
 <h4 class="author">Hannah Moshontz</h4>
-<h4 class="date">Last Updated 2021-12-09</h4>
+<h4 class="date">Last Updated 2021-12-10</h4>
 
 </div>
 
@@ -271,7 +271,7 @@ div.tocify {
 <h2>Information</h2>
 <p>Multilab close replication of: Experiment 1 from Turri, J., Buckwalter, W., &amp; Blouw, P. (2015). Knowledge and luck. <em>Psychonomic Bulletin and Review</em>, 22, 378-390.</p>
 <p><a href="https://osf.io/n5b3w/">Data and registered protocols:</a></p>
-<p><a href="https://docs.google.com/spreadsheets/d/1KjXqgfVgguHeDXVtlHHhJ9zsRGVDfPVPH4tbh75P46U/edit#gid=903093128">Codebook</a></p>
+<p><a href="https://docs.google.com/spreadsheets/d/1KjXqgfVgguHeDXVtlHHhJ9zsRGVDfPVPH4tbh75P46U/edit#gid=903093128">Codebook (raw data)</a></p>
 <p><a href="https://psyarxiv.com/zeux9/">Preprint</a></p>
 </div>
 <div id="libraries" class="section level2">
@@ -2339,32 +2339,9 @@ library(kableExtra)</code></pre>
 <pre><code>## Warning: package &#39;countrycode&#39; was built under R version 4.1.2</code></pre>
 <pre class="r"><code>library(ISOcodes)</code></pre>
 <pre><code>## Warning: package &#39;ISOcodes&#39; was built under R version 4.1.1</code></pre>
-<pre class="r"><code>library(tidylog)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;tidylog&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
-## 
-##     add_count, add_tally, anti_join, count, distinct, distinct_all,
-##     distinct_at, distinct_if, filter, filter_all, filter_at, filter_if,
-##     full_join, group_by, group_by_all, group_by_at, group_by_if,
-##     inner_join, left_join, mutate, mutate_all, mutate_at, mutate_if,
-##     relocate, rename, rename_all, rename_at, rename_if, rename_with,
-##     right_join, sample_frac, sample_n, select, select_all, select_at,
-##     select_if, semi_join, slice, slice_head, slice_max, slice_min,
-##     slice_sample, slice_tail, summarise, summarise_all, summarise_at,
-##     summarise_if, summarize, summarize_all, summarize_at, summarize_if,
-##     tally, top_frac, top_n, transmute, transmute_all, transmute_at,
-##     transmute_if, ungroup</code></pre>
-<pre><code>## The following objects are masked from &#39;package:tidyr&#39;:
-## 
-##     drop_na, fill, gather, pivot_longer, pivot_wider, replace_na,
-##     spread, uncount</code></pre>
-<pre><code>## The following objects are masked from &#39;package:plyr&#39;:
-## 
-##     count, mutate, rename, summarise, summarize</code></pre>
-<pre><code>## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter</code></pre>
+<pre class="r"><code>#library(tidylog)
+library(naniar) # to evaluate missing data</code></pre>
+<pre><code>## Warning: package &#39;naniar&#39; was built under R version 4.1.1</code></pre>
 </div>
 </div>
 </div>
@@ -2482,7 +2459,6 @@ library(kableExtra)</code></pre>
 ## $ gender2                    &lt;fct&gt; female, female, female, female, female, fem~</code></pre>
 <p>A few notes about variables: - Person is a unique lab identifier (identifies PI) - lab_id is a not a unique lab identifier, but rather identifies the undergraduate PI (and some of these undergraduate PIs were students with the same lab PI) - lab_country is the variable we are using to identify country/region - UN_Region groups lab country into larger regions - source identifies the method of data collection - id uniquely identifies each participant by concatenating the source (qualtrics vs socscisurvey), undergraduate PI (lab_id), and the unique identifier (case, which was of a different format depending on source) - variables ending in valid are logical and identify valid cases (in the “final_long” dataset, there will not be variance) - variables ending in order indicate the order in which vignettes or condition were presented (varies by participant), or the order in which binary DVs were presented (for socscisurvey, this varies by person within lab such that people were presented with “normal” (<em>not sure what direction this is</em>) or “swapped”, but for Qualtrics, this was randomized within person and so is coded as “mixed” and and we do not have more detailed information about order in the final dataset. also one lab didn’t properly randomize.) - 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.</p>
 <pre class="r"><code>full_long %&gt;% filter(is.na(UN_Region)) %&gt;% tabyl(lab_id)</code></pre>
-<pre><code>## filter: removed 25,308 rows (93%), 1,977 rows remaining</code></pre>
 <pre><code>##  lab_id    n   percent
 ##  666a8e    0 0.0000000
 ##  82ce7b    0 0.0000000
@@ -2559,13 +2535,6 @@ teams_per_site &lt;- final_long %&gt;%
   rename(n_student_teams = n) %&gt;% 
   ungroup() %&gt;% 
   glimpse()</code></pre>
-<pre><code>## group_by: 2 grouping variables (Person, lab_id)
-## group_by: 2 grouping variables (Person, lab_id)</code></pre>
-<pre><code>## count: now 41 rows and 3 columns, 2 group variables remaining (Person, lab_id)</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
-<pre><code>## count: now 35 rows and 2 columns, one group variable remaining (Person)</code></pre>
-<pre><code>## rename: renamed one variable (n_student_teams)</code></pre>
-<pre><code>## ungroup: no grouping variables</code></pre>
 <pre><code>## Rows: 35
 ## Columns: 2
 ## $ Person          &lt;chr&gt; &quot;04aec6c128a6d0c7b156124a782a2e17&quot;, &quot;053921f0049652387~
@@ -2577,12 +2546,6 @@ full_data_n_per_site &lt;- full_long %&gt;%
   rename(full_data_n = n) %&gt;% 
   ungroup() %&gt;% 
   glimpse()</code></pre>
-<pre><code>## group_by: 2 grouping variables (Person, id)</code></pre>
-<pre><code>## count: now 9,095 rows and 3 columns, 2 group variables remaining (Person, id)</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
-<pre><code>## count: now 41 rows and 2 columns, one group variable remaining (Person)</code></pre>
-<pre><code>## rename: renamed one variable (full_data_n)</code></pre>
-<pre><code>## ungroup: no grouping variables</code></pre>
 <pre><code>## Rows: 41
 ## Columns: 2
 ## $ Person      &lt;chr&gt; &quot;04aec6c128a6d0c7b156124a782a2e17&quot;, &quot;053921f004965238755a0~
@@ -2594,12 +2557,6 @@ final_data_n_per_site &lt;- final_long %&gt;%
   rename(final_data_n = n) %&gt;% 
   ungroup() %&gt;% 
   glimpse()</code></pre>
-<pre><code>## group_by: 2 grouping variables (Person, id)</code></pre>
-<pre><code>## count: now 2,957 rows and 3 columns, 2 group variables remaining (Person, id)</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
-<pre><code>## count: now 35 rows and 2 columns, one group variable remaining (Person)</code></pre>
-<pre><code>## rename: renamed one variable (final_data_n)</code></pre>
-<pre><code>## ungroup: no grouping variables</code></pre>
 <pre><code>## Rows: 35
 ## Columns: 2
 ## $ Person       &lt;chr&gt; &quot;04aec6c128a6d0c7b156124a782a2e17&quot;, &quot;053921f004965238755a~
@@ -2610,21 +2567,14 @@ if (full_long %&gt;%
   group_by(Person, source) %&gt;% count() %&gt;% 
   group_by(Person) %&gt;% count() %&gt;% 
   filter(n &gt; 1) %&gt;% 
-  nrow() %&gt;% .[1] != 0) STOP</code></pre>
-<pre><code>## group_by: 2 grouping variables (Person, source)</code></pre>
-<pre><code>## count: now 41 rows and 3 columns, 2 group variables remaining (Person, source)</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
-<pre><code>## count: now 41 rows and 2 columns, one group variable remaining (Person)</code></pre>
-<pre><code>## filter (grouped): removed all rows (100%)</code></pre>
-<pre class="r"><code>#save survey platform info
+  nrow() %&gt;% .[1] != 0) STOP
+
+#save survey platform info
 platform &lt;- full_long %&gt;% 
   group_by(Person) %&gt;% 
   summarize(survey_platform = first(source)) %&gt;%
   ungroup() %&gt;% 
   glimpse()</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
-<pre><code>## summarize: now 41 rows and 2 columns, ungrouped</code></pre>
-<pre><code>## ungroup: no grouping variables</code></pre>
 <pre><code>## Rows: 41
 ## Columns: 2
 ## $ Person          &lt;chr&gt; &quot;04aec6c128a6d0c7b156124a782a2e17&quot;, &quot;053921f0049652387~
@@ -2632,7 +2582,6 @@ platform &lt;- full_long %&gt;%
 <pre class="r"><code>#save world region info
 full_long %&gt;% 
   group_by(Person)</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
 <pre><code>## # A tibble: 27,285 x 96
 ## # Groups:   Person [41]
 ##    id         lab_id source  case    dge_valid j_valid vignette_order cond_order
@@ -2673,20 +2622,16 @@ full_long %&gt;%
 ## #   lang_exclusion &lt;lgl&gt;, total_exclusion &lt;int&gt;</code></pre>
 <pre class="r"><code>#check assumption that each site had one compensation type...
 #something is fishy
+#FIX: Need to check all information in lab_sheet and it&#39;s source gsheet
 multiple_compensation &lt;- lab_sheet %&gt;% 
    group_by(Person, Compensation) %&gt;% count() %&gt;% 
    group_by(Person) %&gt;% count() %&gt;% 
-   filter(n &gt; 1) %&gt;% pull(Person)</code></pre>
-<pre><code>## group_by: 2 grouping variables (Person, Compensation)</code></pre>
-<pre><code>## count: now 52 rows and 3 columns, 2 group variables remaining (Person, Compensation)</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
-<pre><code>## count: now 47 rows and 2 columns, one group variable remaining (Person)</code></pre>
-<pre><code>## filter (grouped): removed 44 rows (94%), 3 rows remaining</code></pre>
-<pre class="r"><code>lab_sheet %&gt;% 
+   filter(n &gt; 1) %&gt;% pull(Person)
+
+#exporting summary of issue
+lab_sheet %&gt;% 
   filter(Person %in% multiple_compensation) %&gt;% 
   select(lab_code, Person, Compensation, comp) </code></pre>
-<pre><code>## filter: removed 54 rows (82%), 12 rows remaining</code></pre>
-<pre><code>## select: dropped 2 variables (Use, UN_Region)</code></pre>
 <pre><code>##    lab_code                           Person  Compensation    comp
 ## 1    a6aefd bfe85dfa8a47470e2600b4bae1dfe4c1        sweets     Yes
 ## 2    086a2b bfe85dfa8a47470e2600b4bae1dfe4c1        sweets     Yes
@@ -2701,16 +2646,12 @@ multiple_compensation &lt;- lab_sheet %&gt;%
 ## 11   612ed8 bfe85dfa8a47470e2600b4bae1dfe4c1       Lottery     Yes
 ## 12   c13d3a bfe85dfa8a47470e2600b4bae1dfe4c1          &lt;NA&gt; Unclear</code></pre>
 <pre class="r"><code>  #write.csv(&quot;compensation_discrepancies.csv&quot;)
-#hmm looking into this
 
 #save compensation information 
 lab_sheet %&gt;% 
   select(Person, Compensation) %&gt;% 
   group_by(Person) %&gt;% 
   count()</code></pre>
-<pre><code>## select: dropped 4 variables (lab_code, Use, UN_Region, comp)</code></pre>
-<pre><code>## group_by: one grouping variable (Person)</code></pre>
-<pre><code>## count: now 47 rows and 2 columns, one group variable remaining (Person)</code></pre>
 <pre><code>## # A tibble: 47 x 2
 ## # Groups:   Person [47]
 ##    Person                               n
@@ -2734,26 +2675,6 @@ arrange(-final_data_n) %&gt;%
   select(site_id, everything()) %&gt;% 
   kable(caption = &quot;data collection sites&quot;) %&gt;% 
   kable_styling()</code></pre>
-<pre><code>## left_join: added one column (full_data_n)</code></pre>
-<pre><code>##            &gt; rows only in x    0</code></pre>
-<pre><code>##            &gt; rows only in y  ( 6)</code></pre>
-<pre><code>##            &gt; matched rows     35</code></pre>
-<pre><code>##            &gt;                 ====</code></pre>
-<pre><code>##            &gt; rows total       35</code></pre>
-<pre><code>## left_join: added one column (final_data_n)</code></pre>
-<pre><code>##            &gt; rows only in x    0</code></pre>
-<pre><code>##            &gt; rows only in y  ( 0)</code></pre>
-<pre><code>##            &gt; matched rows     35</code></pre>
-<pre><code>##            &gt;                 ====</code></pre>
-<pre><code>##            &gt; rows total       35</code></pre>
-<pre><code>## left_join: added one column (survey_platform)</code></pre>
-<pre><code>##            &gt; rows only in x    0</code></pre>
-<pre><code>##            &gt; rows only in y  ( 6)</code></pre>
-<pre><code>##            &gt; matched rows     35</code></pre>
-<pre><code>##            &gt;                 ====</code></pre>
-<pre><code>##            &gt; rows total       35</code></pre>
-<pre><code>## mutate: new variable &#39;site_id&#39; (integer) with 35 unique values and 0% NA</code></pre>
-<pre><code>## select: columns reordered (site_id, Person, n_student_teams, full_data_n, final_data_n, …)</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 data collection sites
@@ -3486,11 +3407,8 @@ Qualtrics
 <p>In the approved protocol, sections of the manuscript relevant to understanding the study method included detailed descriptions of the study’s logistics, including the recruitment and approval of collaborators who would collect data. This section has been restructured to more closely resemble a typical study method description, including relevant information about the study’s logisitics. The text from the approved protocol has been updated and moved to Appendix X.</p>
 <div id="participants" class="section level2">
 <h2>Participants</h2>
-<p>This project was designed to be a training and learning experience for undergraduate students. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., cite) in concert with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the undergraduate students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independetly designing an analysis plan, completing a preregistration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository. Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved (for more information about this process, see Supplement X).</p>
-<p>For the present article and analyses, data are structured such that observations are nested within data collection sites. At some sites, there were multiple student-led teams who completed the project. Because observations collected by different teams are organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unsuable for analyses (e.g., vignettes were not appropriately randomized). For a summary of student-led team and data collection site information, see Supplement X.</p>
-<p><em>Student-led teams</em></p>
-<p>In total, 69 teams led by undergraduate students signed up to collect data for this project. Of the teams that originally signed up, 32 either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, 22 teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. See Table X for a summary.</p>
-<p><em>Data collection sites</em></p>
+<p>This project was designed to be a training and learning experience for undergraduate students. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., cite) in concert with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the undergraduate students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independetly designing an analysis plan, completing a preregistration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository. Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved (for more information about this process, see Appendix X).</p>
+<p>For the present article and analyses, data are structured such that observations are nested within data collection sites. At some sites, there were multiple student-led teams who completed the project. Because observations collected by different teams are organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unsuable for analyses (e.g., vignettes were not appropriately randomized). For a summary of student-led team and data collection site information, see Appendix X.</p>
 <pre class="r"><code>#create dataset for demographics 
 final_demographics &lt;- final_long %&gt;% 
   group_by(id) %&gt;%
@@ -3499,6 +3417,9 @@ final_demographics &lt;- final_long %&gt;%
   select(id, 
          source,
          contains(&quot;exclusion&quot;),
+         contains(&quot;nonsense&quot;),
+         purpose,
+         previous,
          survey_lang,
          turk,
          language,
@@ -3515,18 +3436,18 @@ final_demographics &lt;- final_long %&gt;%
          starts_with(&quot;comp&quot;),
          birth_country,
          case,
-         age)</code></pre>
-<pre><code>## group_by: one grouping variable (id)</code></pre>
-<pre><code>## slice (grouped): removed 5,914 rows (67%), 2,957 rows remaining</code></pre>
-<pre><code>## ungroup: no grouping variables</code></pre>
-<pre><code>## select: dropped 60 variables (dge_valid, j_valid, vignette_order, cond_order, bin_order, …)</code></pre>
-<pre class="r"><code>full_demographics &lt;- full_long %&gt;% 
+         age)
+
+full_demographics &lt;- full_long %&gt;% 
   group_by(id) %&gt;%
   slice(1) %&gt;% 
   ungroup() %&gt;% 
   select(id, 
          source,
          contains(&quot;exclusion&quot;),
+         contains(&quot;nonsense&quot;),
+         purpose,
+         previous,
          survey_lang,
          turk,
          language,
@@ -3543,27 +3464,796 @@ final_demographics &lt;- final_long %&gt;%
          starts_with(&quot;comp&quot;),
          birth_country,
          case,
-         age)</code></pre>
-<pre><code>## group_by: one grouping variable (id)</code></pre>
-<pre><code>## slice (grouped): removed 18,190 rows (67%), 9,095 rows remaining</code></pre>
-<pre><code>## ungroup: no grouping variables</code></pre>
-<pre><code>## select: dropped 50 variables (dge_valid, j_valid, vignette_order, cond_order, bin_order, …)</code></pre>
-<pre class="r"><code>#error out if count doesn&#39;t match
+         age)
+
+#error out if count doesn&#39;t match
 if (length(unique(final_long$id)) != nrow(final_demographics)) STOP</code></pre>
-<p>Prior to exclusions, 41 unique data collection sites contributed data to the project. Data collection sites were located in 20 countries spanning world regions (i.e., Northern America, Eastern Europe, Western Europe, Northern Europe, Eastern Asia, Western Asia, Australia and New Zealand, Southeastern Asia).</p>
-<p><em>Participant information</em></p>
-<p>The deidentified raw data without any exclusions is available at osf.io/XXXX. Of the 9095 participants who completed the survey, data from 6138% (<em>n</em> = <code>r</code>) of people were excluded.</p>
-<p>Specifically, data were excluded for the following pre-registered reasons: (1) the participant was not the majority age of their country or older (<em>n</em> = 2162); operationalized as at least 18 in all countries except Slovakia (where the age of consent is 19) and United Arab Emirates (where the age of consent is 21)); (2) the participant had taken part in a previous version of this study or in another contributors’ replication of the same study (<em>n</em> = 244;as evaluated by three human coders, as described in Supplement X, Section X); (3) the participant failed to answer all comprehension questions correctly (<em>n</em> = 2800; e.g., did not correctly identify what Darrel was looking at in the vignette); (4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (<em>n</em> = 211; as evaluated by three human coders, as described in Supplement X, Section X); (5) the participant reported their understanding of the language the survey was written in as “not well” or “not well at all” (<em>n</em> = 2162; see Vickstrom, Shin, Collazo, &amp; Bauman, 2015).</p>
-<p>No additional exclusions were described in our approved protocol. However, after pre-registered exclusion criteria, there appeared to be invalid test responses in the data (e.g., the word “test” was written in response to open-ended questions). No clear method was devised to identify test responses, but, at many data collection sites, the students and other researchers executing the study tested their survey link multiple times, resulting in invalid survey observations. The following exclusions were designed to remove these invalid test observations using consistent, reliable criteria that related to a covariate: Data were excluded if the participant did not provide an age (<em>n</em> = 2104) or listed an age greater than or equal to 100 (<em>n</em> = 18).</p>
+<p>In total, 69 teams led by undergraduate students signed up to collect data for this project. Of the teams that originally signed up, 32 either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, 22 teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. Prior to exclusions, 41 unique data collection sites contributed data to the project. Data collection sites were located in 20 countries spanning world regions (i.e., Northern America, Eastern Europe, Western Europe, Northern Europe, Eastern Asia, Western Asia, Australia and New Zealand, Southeastern Asia). See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.</p>
+<p>Of the 9095 participants who completed the survey, data from 6138% (<em>n</em> = <code>r</code>) of people were excluded.</p>
+<p>Data were excluded for the following reasons (applied in the order listed): (1) the participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older, operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (<em>n</em> = 2162); (2) the participant had taken part in a previous version of this study or in another contributors’ replication of the same study (<em>n</em> = 244); (3) the participant failed to answer all three of the vignette comprehension questions correctly (<em>n</em> = 2800; e.g., did not correctly identify what Darrel was looking at); (4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (<em>n</em> = 211); (5) the participant reported their understanding of the language the survey was written in as “not well” or “not well at all” (<em>n</em> = 2162); see Vickstrom, Shin, Collazo, &amp; Bauman, 2015).</p>
+<p>Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age.</p>
+<pre class="r"><code>exclusions %&gt;% 
+  kable(caption = &quot;Multiway Table of All Exclusions&quot;) %&gt;% 
+  kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Multiway Table of All Exclusions
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Age
+</th>
+<th style="text-align:left;">
+Language
+</th>
+<th style="text-align:left;">
+Previous
+</th>
+<th style="text-align:left;">
+Purpose
+</th>
+<th style="text-align:left;">
+Comprehension
+</th>
+<th style="text-align:right;">
+Frequency
+</th>
+<th style="text-align:right;">
+Num_Participants
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+8871
+</td>
+<td style="text-align:right;">
+2957
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+108
+</td>
+<td style="text-align:right;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+3840
+</td>
+<td style="text-align:right;">
+1280
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:right;">
+22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+81
+</td>
+<td style="text-align:right;">
+27
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FALSE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:left;">
+TRUE
+</td>
+<td style="text-align:right;">
+303
+</td>
+<td style="text-align:right;">
+101
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#Note: There are many NA in exclusion criteria because we didn&#39;t evaluate folks that were excluded for previous criteria</code></pre>
+<p>Evaluating criteria 2 and 4 required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the langauge. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at osf.io/gs29c. Responses marked as identified test cases (e.g., “TEST”) were excluded. Responses that were not coherent were labeled, but not excluded, and some observations in the final data were not coherent (<em>n</em> study purpose = 5; <em>n</em> previously participated = 3). Responses that were missing were not evaluated by raters, but no observations in the final dataset were missing evalutions (<em>n</em> study purpose = 0; <em>n</em> previously participated = 0).</p>
+<p>All of these exclusions were preregistered with one exception. We did not pregister the exclusion of people over the age of 100, which resulted in the excusion of data from 18 people. The age exclusion was made first, and captured many observations in the data that appeared to be invalid test responses. Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked “test”). The exclusion of people over the age of 100 likely captured many invalid test responses.</p>
 <p>In the analysis sample (i.e., following exclusions), participants were 2957 adults recruited to participate by student researchers at 35 data collection sites in 19 countries spanning world regions (i.e., Northern America, Eastern Europe, Western Europe, Northern Europe, Australia and New Zealand, Western Asia, Southeastern Asia, Eastern Asia). Data collection sites contributed an average of 84.49 participants to the anlaysis sample (min = 11, max = 356). See Table X for a summary of participants’ age, years of education, and ethnic/racial identity.</p>
-<p>Participation details, like compensation and recruitment approach, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. However, some used Qualtrics surveys that student researchers programmed themselves. Most data collection sites used the central SocSciSurvey survey.</p>
+<p>Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. However, some used Qualtrics surveys that student researchers programmed themselves. Most data collection sites used the central SocSciSurvey survey.</p>
 <pre class="r"><code>final_demographics %&gt;% 
   select(age, education) %&gt;% 
   describe() %&gt;% 
   .[1:2,c(2,3,4,8,9)] %&gt;% 
   kable(digits = 2) %&gt;% 
   kable_styling()</code></pre>
-<pre><code>## select: dropped 44 variables (id, source, age_exclusion, previous_exclusion, studyans_exclusion, …)</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -3629,7 +4319,7 @@ education
 </tr>
 </tbody>
 </table>
-<p>In the approved proposal, we planned to measure participants’ racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Supplemental Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either “White/European”, “White / European descent”, or “European descent”). In the final sample, 70.34% (<em>n</em> = 2080) identified as White.</p>
+<p>In the approved proposal, we planned to measure participants’ racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Appendixal Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either “White/European”, “White / European descent”, or “European descent”). In the final sample, 70.34% (<em>n</em> = 2080) identified as White.</p>
 <pre class="r"><code>final_demographics %&gt;% 
   select(comp, turk, source) %&gt;% 
   mutate(source = as.factor(source)) %&gt;% 
@@ -3646,18 +4336,6 @@ education
   select(count, percent) %&gt;% 
   kable(digits = 2, caption = &quot;Number and Percent of Participants by Data Collection Context Variables (Total N = 2957)&quot;) %&gt;% 
   kable_styling()</code></pre>
-<pre><code>## select: dropped 43 variables (id, age_exclusion, previous_exclusion, studyans_exclusion, purpose_exclusion, …)</code></pre>
-<pre><code>## mutate: converted &#39;source&#39; from character to factor (0 new NA)</code></pre>
-<pre><code>## mutate: converted &#39;comp&#39; from factor to double (0 new NA)</code></pre>
-<pre><code>##         converted &#39;turk&#39; from logical to double (0 new NA)</code></pre>
-<pre><code>##         converted &#39;source&#39; from factor to double (0 new NA)</code></pre>
-<pre><code>## mutate: changed 2,956 values (&gt;99%) of &#39;comp&#39; (0 new NA)</code></pre>
-<pre><code>##         new variable &#39;Took the centralized survey&#39; (double) with 2 unique values and 0% NA</code></pre>
-<pre><code>## select: dropped one variable (source)</code></pre>
-<pre><code>## rename: renamed 2 variables (Compensated for participation, Recruited through Mturk)</code></pre>
-<pre><code>## mutate: new variable &#39;count&#39; (double) with 3 unique values and 0% NA</code></pre>
-<pre><code>##         new variable &#39;percent&#39; (double) with 3 unique values and 0% NA</code></pre>
-<pre><code>## select: dropped 5 variables (n, mean, sd, min, max)</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 Number and Percent of Participants by Data Collection Context Variables (Total N = 2957)
@@ -3716,7 +4394,6 @@ Took the centralized survey
   arrange(-n) %&gt;% 
   kable(digits = 2, caption = &quot;Number and Percent of Participants by Country&quot;) %&gt;% 
   kable_styling()</code></pre>
-<pre><code>## mutate: new variable &#39;lab_country_full&#39; (character) with 19 unique values and 0% NA</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 Number and Percent of Participants by Country
@@ -3950,9 +4627,9 @@ Portugal
   mutate(survey_lang = str_replace_all(survey_lang, &quot;prt&quot;, &quot;por&quot;),
          survey_lang = str_replace_all(survey_lang, &quot;zho&quot;, &quot;chi&quot;)) %&gt;% 
   tabyl(survey_lang) %&gt;% 
-  arrange(-n)</code></pre>
-<pre><code>## mutate: changed 35 values (1%) of &#39;survey_lang&#39; (0 new NA)</code></pre>
-<pre class="r"><code>for (i in 1:length(survey_lang_table$survey_lang)) {
+  arrange(-n)
+
+for (i in 1:length(survey_lang_table$survey_lang)) {
   
   survey_lang_table$survey_lang[i] &lt;- ISO_639_2$Name[ISO_639_2$Alpha_3_B == survey_lang_table$survey_lang[i]]
   
@@ -3963,7 +4640,6 @@ survey_lang_table %&gt;%
          survey_lang = str_replace_all(survey_lang, &quot;Romanian; Moldavian; Moldovan&quot;, &quot;Romanian&quot;)) %&gt;% 
   kable(digits = 2, caption = &quot;Number and Percent of Participants by Survey Language&quot;) %&gt;% 
   kable_styling()</code></pre>
-<pre><code>## mutate: changed 2 values (15%) of &#39;survey_lang&#39; (0 new NA)</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
 Number and Percent of Participants by Survey Language
@@ -4128,16 +4804,23 @@ Portuguese
 </tbody>
 </table>
 </div>
+<div id="materials" class="section level2">
+<h2>Materials</h2>
+<p>Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X.</p>
+<p>Vignette content varied by subject and identification target. There were three vignette scenarios that were randomly presented to participants: the “Squirrel/Darrel” vignette from Turri et al. (2015), the “Fake Barn/Gerald” vignette from Colaca et al. (2014; altered to include matched knowledge and ignorance control conditions), and the “Diamond/Emma” vignette from Nagel, San Juan, &amp; Mar (2013). The vigenettes are reported in full in Appendix X. Vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix B). Some labs tested an additional vignette that was not described in the approved protocol (for more information, see [LINK TO MORE INFORMATION]).</p>
+<p>For each vignette, there were three conditions: a Gettier case condition in which subjects correctly identified the target, but not due to their knowledge; a knowledge control condition in which subjects correctly identified the target due to their knowledge; an ignorance control condition in which subjects incorrectly identified the taraget, but not due to their knowledge. Vignette content and condition were randomly assigned. Each participant read and evaluated three vignettes (one of each subject/identification target type and one of each condition).</p>
+<p>For each of the three vignettes they read, participants evaluated the subject’s knowledge on a series of questions. Student-led teams varied in the exact questions they asked. The percentage of observations that have each question among all vignettes for all participants in the final data is listed in parentheses after each question description. After each vignette, participants were asked: 1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 (86.29% complete) or as a binary choice (13.7% complete); 2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options (100% complete); 3) the extent to which the subject’s belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or (86.3% complete) as a binary choice (13.7% complete); 4a) whether or the subject identified the target correctly or incorrectly (100% complete) and then, 4b) whether this was due to ability/inability versus good luck/ bad luck, measured either on a continuous scale from 0 to 100 (86.3% complete) or as a binary choice (13.7% complete); 4) an alternative knowledge probe in which participants were asked whether the subject knew or only thought they knew what the identification target was (100% complete).</p>
+<p>In the original protocol, 4a and 4b were described as being one question, but further piloting revealed that the question confused participants.</p>
+<p>After reading three vignettes and answering three sets of questions, participants answered questions related to exclusion criteria and demographics. They described the purpose of the study (used for exclusions), their impression of study materials (not used in any analyses), whether they had participated in a similar study (used for exclusions), their language comprehension of the survey language (used for exclusions), and their age, gender, country, birth country, the number of years they had attended school, and their ethnicity. Participants described their perceptions of their compensation (“Will you receive any kind of compensation or reward for taking part in this study?”), before describing the compensation in more detail (e.g., the number of course credits, the amount of money). Participants also completed a 12-question study experience questionnaire that was not used in analyses.</p>
+<p>All materials used in this replication, including the details of these vignettes and related pretests, are available at osf.io/n5b3w.</p>
+</div>
 <div id="procedure" class="section level2">
 <h2>Procedure</h2>
-<p>Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X.</p>
-<p>Vignette content varied by subject and identification target. In one scenario, Darrel identified prarie dogs vs red speckled ground squirrels (cite original). In another scenario, …. In a third scenario, …. Some student researchers opted to include a fourth scenario that was not included in the present analyses but can be found in Appendix X.</p>
-<p>After each vignette, participants evaluated: 1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 or as a binary choice; 2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options; 3) the extent to which the subject’s belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or as a binary choice; 4) whether or not the subject correctly identified the target.</p>
 </div>
 </div>
 <div id="disclosures" class="section level1">
 <h1>Disclosures</h1>
-<p><em>Data, materials, and online resources:</em> All data are posted publicly on our master OSF page (<a href="https://osf.io/n5b3w/" class="uri">https://osf.io/n5b3w/</a>), and each contributing site has posted their data on an OSF page linked to our master OSF page.</p>
+<p><em>Data, materials, and online resources:</em> Deidentified raw data and deidentified data with exclusions are are posted publicly on our master OSF page (<a href="https://osf.io/n5b3w/" class="uri">https://osf.io/n5b3w/</a>), and each contributing site has posted their data on an OSF page linked to our master OSF page.</p>
 <p><em>Reporting:</em></p>
 <p>“We report how we determined our sample size, all data exclusions, all manipulations, and all measures in the study” (see Simmons, Nelson, &amp; Simonsohn, 2011).</p>
 <p><em>Ethical approval:</em></p>
@@ -4153,8 +4836,85 @@ Portuguese
 <p><em>Prior versions:</em></p>
 <p>If part or all of a submitted manuscript was previously posted to a blog or to a preprint archive, the authors should provide a link to that source and briefly indicate what aspects of the submitted manuscript are shared with that prior version.</p>
 </div>
-<div id="supplement" class="section level1">
-<h1>Supplement</h1>
+<div id="appendix" class="section level1">
+<h1>Appendix</h1>
+<div id="vignettes" class="section level3">
+<h3>Vignettes</h3>
+<p><em>For the Gerald vignette, all participants read:</em></p>
+<p>“Gerald is driving through the countryside with his young son Andrew. Along the way he sees numerous objects and points them out to his son. ‘That’s a cow, Andrew,’ Gerald says, ‘and that over there is a house where farmers live.’ Gerald has no doubt about what the objects are.</p>
+<p>What Gerald and Andrew do not realize is the area they are driving through was recently hit by a very serious tornado. This tornado did not harm any of the animals, but did destroy most buildings. In an effort to maintain the rural area’s tourist industry, local townspeople built new houses in the place of the destroyed houses. These new houses were rebuilt with all the materials necessary for them to look exactly like the original houses from the road, and they are also fully furnished and can now be used as actual housing.”</p>
+<p>In the knowledge condition, participants read:</p>
+<p>“Having just entered the tornado-ravaged area, Gerald notices the many houses lining the roads. When he tells Andrew ‘That’s a house,’ the object he sees and points at is a real house that has survived the tornado and not one of the new houses.”</p>
+<p>In the ignorance condition, participants read:</p>
+<p>“Having driven through the tornado-ravaged area, Gerald has encountered many of these fake houses. When he tells Andrew ‘That’s a house,’ the object he sees and points at is a fake house that was built after the tornado and is not actually a house.”</p>
+<p>In the gettier condition, participants read:</p>
+<p>“Having just entered the tornado-ravaged area, Gerald has not yet encountered any fake houses. When he tells Andrew ‘That’s a house,’ the object he sees and points at is a real house that has survived the tornado and not one of the fake houses.”</p>
+<p><em>For the Emma vignette, all participants read:</em></p>
+<p>“Emma is shopping for jewelry. She goes into a nice-looking store and selects a necklace from a tray marked”Diamond Earrings and Pendants.&quot; “What a lovely diamond!” she says as she tries it on. Emma could not tell the difference between a real diamond and a cubic zirconium fake just by looking or touching.”</p>
+<p>In the knowledge condition, participants read:</p>
+<p>“However, this particular store has very honest employees who have a really positive reputation for their guaranteed real diamonds; in the tray Emma chose, all of the pendants had real diamonds rather than fake cubic zirconium stones (and the one she chose was really nice).”</p>
+<p>In the ignorance condition, participants read:</p>
+<p>“Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose, almost all of the pendants had cubic zirconium stones rather than diamonds (and the one she chose was in fact fake).”</p>
+<p>In the gettier condition, participants read:</p>
+<p>“Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose, almost all of the pendants had cubic zirconium stones rather than diamonds (but the one she chose happened to be real).”</p>
+<p><em>For the Darrel vignette, all participants read:</em></p>
+<p>“Darrel is an ecologist collecting data on red speckled ground squirrels in Canyon Falls national park. The park is divided into ten zones and today Darrel is working Zone 3. While scanning the river valley with his binoculars, Darrel sees a small, bushy-tailed creature with distinctive red markings on its chest and belly. The red speckled ground squirrel is the only native species with such markings. Darrel records in his journal, ‘At least one red speckled ground squirrel in Zone 3 today.’</p>
+<p>In the knowledge condition, participants read:</p>
+<p>“Ecologists are unaware that a complex network of aquifers recently began drying up in the park. These aquifers carry vital nutrients to the trees and other forms of plant life that support the squirrels. And the aquifers in the river valley running through Zone 3 are no exception. The animal Darrel is looking at is indeed a thirsty red speckled ground squirrel.”</p>
+<p>In the ignorance condition, participants read:</p>
+<p>“Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. And, the animal Darrel is looking at is indeed one of the prairie dogs.”</p>
+<p>In the gettier condition, participants read:</p>
+<p>“Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. Still, the animal Darrel is looking at is a red speckled ground squirrel.”</p>
+</div>
+<div id="exclusion-ratings" class="section level3">
+<h3>Exclusion ratings</h3>
+<p><strong>How exclusions were made</strong></p>
+<p>No or NA gets 0 points Maybe gets 1 point Yes/test gets 2 points Participants are marked as “excluded” if they get 4 total points across three coders</p>
+<p>Participants are also marked as “nonsense” if they did not write a legible answer or simply typed gibberish. These data points are not excluded but marked.</p>
+<p><strong>Instructions Given to Raters</strong></p>
+<p>Note: These instructions were adapted from instructions written by William McAuliffe and Hannah Moshontz for an unrelated project</p>
+<p>We need help coding open-ended responses that will inform our pre-registered exclusion criteria for this project. Specifically, we will exclude data on the basis of a suspicion check (whether people guess the study hypothesis) and previous study participation (whether people describe having participated in similar studies before).</p>
+<p>All participants were asked two questions (with some labs asking slight variations): What is, in your opinion, the purpose of this study? (purpose) Have you ever participated in a similar study? If yes, please describe the study. (previous)</p>
+<p>Your task is to evaluate people’s answers to these questions. We will have 2 people evaluate every response and then we will exclude people based on the average.</p>
+<p>For each question this is how we would like you to evaluate answers. If you are coding from a language other than English, please directly assess the question (rather than translating it) and provide a code/label in English (yes, maybe, no, test, as described below).</p>
+<p><strong>purpose</strong></p>
+<p><em>yes</em></p>
+<p>The participant identified that we are studying justified true belief and gettier cases.</p>
+<p>Example “yes” coding cases: “To test exceptions to the Justified True Belief theory”</p>
+<p><em>maybe</em></p>
+<p>The participant describes something similar to the true study hypothesis (true knowledge is different from a lucky or incidentally correct belief).</p>
+<p>Example “maybe” coding cases: “To see if a story can change ones perception of knowledge based on luck or ability”</p>
+<p><em>no</em></p>
+<p>The participant did not identify the study hypothesis or offer a very vague description, which might include the words belief or knowledge.</p>
+<p>Example “no” coding cases: “I think the purpose was to see how do people classify if someone knows something or if they just strongly agree with it”; OR “understand how people view scenarios based on the words used to describe them”</p>
+<p><em>test</em></p>
+<p>The response indicates that it is a test case</p>
+<p>Example “test” coding case: “TEST”; OR “test”; OR “this is a test”</p>
+<p><em>NA</em></p>
+<p>If you are unsure how to code a response, you can write NA.</p>
+<p>Example “NA” coding case: “nnnnnnnnnnn”</p>
+<p><strong>Previous</strong></p>
+<p><em>yes</em></p>
+<p>The participant has participated in this exact study before, or an exact replication of it.</p>
+<p>Example “yes” coding cases: “Yes, I completed this study before.”</p>
+<p><em>maybe</em></p>
+<p>The participant has participated in a similar study before, or may have based on their description.</p>
+<p>Example “maybe” coding cases: “Yes another study that was very similar.”; “Yes, I have participated in a study that asked similar questions but had slightly different scenarios”</p>
+<p><em>no</em></p>
+<p>The participant has not participated in this study or a similar study before based on their description.</p>
+<p>Example “no” coding cases: “nope”; “Yes, I have participated in a study for course credit before.”’; “Yes, I have done studies where I read scenarios and answered questions about them.”</p>
+<p><em>test</em></p>
+<p>The response indicates that it is a test case</p>
+<p>Example “test” coding case: “TEST”; OR “test”; OR “this is a test”</p>
+<p><em>NA</em></p>
+<p>If you are unsure how to code a response, you can write NA.</p>
+<p>Example “NA” coding case: “nnnnnnnnnnn”</p>
+<p><strong>Do’s and Don’ts</strong> Take breaks! This work is hopefully interesting, but it can be cognitively exhausting. If you are having trouble paying attention while you are doing this or if you feel tired of it, please take a break.</p>
+<p>After you label a response, do not go back and change it later. This may be tempting to do after mentally comparing how you rated different responses, but just carefully work through each response and know that your initial rating is final.</p>
+<p>Don’t discuss your ratings with other raters—this will invalidate everyone’s work. Do assign labels for every response in your assigned sheet(s). If you would like to contribute more, please email the person listed at the top of this sheet.</p>
+<p><strong>To summarize, for each set of answers</strong> Read the answer to the question and assign a label that describes either whether people intuited the study hypothesis (for purpose) or whether people participated in a similar study previously (for previous)</p>
+<p><strong>Coding form includes</strong> [id] A subject id number [survey_lang] [purpose/previous] The answer people gave to the question [code] The code/label that you are assigning to the answer (yes, no, maybe, test)</p>
+</div>
 <div id="demographics" class="section level3">
 <h3>Demographics</h3>
 <p><em>One version in SSS had these response options:</em> White / European descent Black / African descent Latino*a / Latin American descent Australian descent Asian Southeast Asian descent Native American Hawaiian descent / Pacific Islands Other</p>
