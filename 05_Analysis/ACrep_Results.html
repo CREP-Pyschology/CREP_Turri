@@ -2622,13 +2622,15 @@ full_long %&gt;%
 ## #   lang_exclusion &lt;lgl&gt;, total_exclusion &lt;int&gt;</code></pre>
 <pre class="r"><code>#check assumption that each site had one compensation type...
 #something is fishy
-#FIX: Need to check all information in lab_sheet and it&#39;s source gsheet
+#FIX: Need to check all comp information in lab_sheet and it&#39;s source gsheet -- people in the same data site have different values
+#these values should reflect the compensation that was in people&#39;s
+#IRB approvals
 multiple_compensation &lt;- lab_sheet %&gt;% 
    group_by(Person, Compensation) %&gt;% count() %&gt;% 
    group_by(Person) %&gt;% count() %&gt;% 
    filter(n &gt; 1) %&gt;% pull(Person)
 
-#exporting summary of issue
+#FIX:exporting summary of issue
 lab_sheet %&gt;% 
   filter(Person %in% multiple_compensation) %&gt;% 
   select(lab_code, Person, Compensation, comp) </code></pre>
@@ -2667,7 +2669,14 @@ lab_sheet %&gt;%
 ##  9 31087218cc44017311d2507def2c028d     1
 ## 10 3b4e9381f4aafb032e37c0d5fa732aba     1
 ## # ... with 37 more rows</code></pre>
-<pre class="r"><code>left_join(teams_per_site, full_data_n_per_site, by = &quot;Person&quot;) %&gt;% 
+<pre class="r"><code>#FIX: Need to do the same for the remaining columns:
+# UN_Region
+# Method variations or extension notes
+# Whether any data were collected in groups
+# Whether any data were collected in person
+# Whether community samples were used / what the sampled population is
+
+left_join(teams_per_site, full_data_n_per_site, by = &quot;Person&quot;) %&gt;% 
   left_join(final_data_n_per_site, by = &quot;Person&quot;) %&gt;% 
   left_join(platform, by = &quot;Person&quot;) %&gt;% 
 arrange(-final_data_n) %&gt;% 
