@@ -166,6 +166,9 @@ final_demographics <- final_long %>%
   select(id, 
          source,
          contains("exclusion"),
+         contains("nonsense"),
+         purpose,
+         previous,
          survey_lang,
          turk,
          language,
@@ -191,6 +194,9 @@ full_demographics <- full_long %>%
   select(id, 
          source,
          contains("exclusion"),
+         contains("nonsense"),
+         purpose,
+         previous,
          survey_lang,
          turk,
          language,
@@ -216,35 +222,34 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 
 
 
-Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded. 
+Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded.
 
-Specifically, data were excluded for the following pre-registered reasons:
-(1) the participant was not the majority age of their country or older (_n_ = `r nrow(filter(full_demographics, age_exclusion))`); operationalized as at least 18 in all countries except Slovakia (where the age of consent is 19) and United Arab Emirates (where the age of consent is 21));
-(2) the participant had taken part in a previous version of this study or in another contributors' replication of the same study (_n_ = `r nrow(filter(full_demographics, previous_exclusion))`;as evaluated by three human coders, as described in Supplement X, Section X);
-(3) the participant failed to answer all comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion))`; e.g., did not correctly identify what Darrel was looking at in the vignette);
-(4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose_exclusion))`; as evaluated by three human coders, as described in Supplement X, Section X);
-(5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion))`; see Vickstrom, Shin, Collazo, & Bauman, 2015). 
-
-No additional exclusions were described in our approved protocol. However, after pre-registered exclusion criteria, there appeared to be invalid test responses in the data (e.g., responses to open-ended questions were incomprehensible). Data collection sites were not given instructions about avoiding or clearly identifying test responses, but at many data collection sites, the students and other researchers executing the study tested their survey link multiple times. The following exclusions were designed to remove invalid observations using objective criteria. Data were excluded if:
-(1) the participant did not provide coherent responses to the question about the study purpose (_n_ = `r nrow(filter(full_demographics, purpose_nonsense))`; as evaluated by three human coders, as described in Supplement X, Section X);
-(2) the participant did not provide coherent responses to the question about whether they had previously participated in the study (_n_ = `r nrow(filter(full_demographics, previous_nonsense))`; as evaluated by three human coders, as described in Supplement X, Section X);
-(3) the participant did not provide an age (_n_ = `r nrow(filter(full_demographics, is.na(age)))`);
-(4) the participant listed an age greater than or equal to 100 (_n_ = `r nrow(filter(full_demographics, !(age < 100)))`).
+Data were excluded for the following reasons (applied in the order listed):
+(1) the participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older,  operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (_n_ = `r nrow(filter(full_demographics, age_exclusion))`);
+(2) the participant had taken part in a previous version of this study or in another contributors' replication of the same study (_n_ = `r nrow(filter(full_demographics, previous_exclusion))`);
+(3) the participant failed to answer all three of the vignette comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion)))`; e.g., did not correctly identify what Darrel was looking at);
+(4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose_exclusion))`);
+(5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion))`); see Vickstrom, Shin, Collazo, & Bauman, 2015).
 
 Many excluded observations met multiple criteria.
 
 ```{r}
-full_demographics %>% tabyl(total_exclusion) %>% 
-  kable() %>% 
+exclusions %>% 
+  kable(caption = "Multiway Table of All Exclusions") %>% 
   kable_styling()
 
-#FIX: Figure out why there are so many NA
+#Note: There are many NA in exclusion criteria because we didn't evaluate folks that were excluded for previous criteria
 ```
+
+
+Evaluating criteria 2 and 4 required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the langauge. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Supplement for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at osf.io/gs29c. Responses marked as identified test cases (e.g., "TEST") were excluded. Responses that were not coherent were labeled, but not excluded, and some observations in the final data were not coherent (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). Responses that were missing were not evaluated by raters, but no observations in the final dataset were missing evalutions (_n_ study purpose = `r nrow(filter(final_demographics, is.na(purpose_exclusion)))`; _n_ previously participated = `r nrow(filter(final_demographics, is.na(previous_exclusion)))`). 
+
+All of these exclusions were preregistered with one exception. We did not pregister the exclusion of people over the age of 100, which resulted in the excusion of data from `r nrow(filter(full_demographics, !(age < 100)))` people. The age exclusion was made first, and captured many observations in the data that appeared to be invalid test responses. Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked "test"). The exclusion of people over the age of 100 likely captured many invalid test responses. 
 
 
 In the analysis sample (i.e., following exclusions), participants were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
 
-Participation details, like compensation and recruitment approach, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. However, some used Qualtrics surveys that student researchers programmed themselves. Most data collection sites used the central SocSciSurvey survey.
+Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. However, some used Qualtrics surveys that student researchers programmed themselves. Most data collection sites used the central SocSciSurvey survey.
 
 ```{r}
 final_demographics %>% 
@@ -358,6 +363,114 @@ If Supplemental Material will be posted on the journal’s Web site, include thi
 If part or all of a submitted manuscript was previously posted to a blog or to a preprint archive, the authors should provide a link to that source and briefly indicate what aspects of the submitted manuscript are shared with that prior version.
 
 # Supplement
+
+### Exclusion ratings
+
+**How exclusions were made**
+
+No or NA gets 0 points 
+Maybe gets 1 point
+Yes/test gets 2 points
+Participants are marked as "excluded" if they get 4 total points across three coders 
+
+Participants are also marked as "nonsense" if they did not write a legible answer or simply typed gibberish. These data points are not excluded but marked.
+
+**Instructions Given to Raters**
+
+Note: These instructions were adapted from instructions written by William McAuliffe and Hannah Moshontz for an unrelated project
+
+We need help coding open-ended responses that will inform our pre-registered exclusion criteria for this project. Specifically, we will exclude data on the basis of a suspicion check (whether people guess the study hypothesis) and previous study participation (whether people describe having participated in similar studies before). 
+
+All participants were asked two questions (with some labs asking slight variations):
+What is, in your opinion, the purpose of this study? (purpose)
+Have you ever participated in a similar study? If yes, please describe the study. (previous)
+
+Your task is to evaluate people’s answers to these questions. We will have 2 people evaluate every response and then we will exclude people based on the average.
+
+For each question this is how we would like you to evaluate answers. If you are coding from a language other than English, please directly assess the question (rather than translating it) and provide a code/label in English (yes, maybe, no, test, as described below).
+
+**purpose**
+
+_yes_
+
+The participant identified that we are studying justified true belief and gettier cases.
+
+Example “yes” coding cases: “To test exceptions to the Justified True Belief theory”
+
+_maybe_
+
+The participant describes something similar to the true study hypothesis (true knowledge is different from a lucky or incidentally correct belief). 
+
+Example “maybe” coding cases: “To see if a story can change ones perception of knowledge based on luck or ability”
+
+_no_
+
+The participant did not identify the study hypothesis or offer a very vague description, which might include the words belief or knowledge. 
+
+Example “no” coding cases: “I think the purpose was to see how do people classify if someone knows something or if they just strongly agree with it”; OR “understand how people view scenarios based on the words used to describe them"
+
+_test_ 
+
+The response indicates that it is a test case    
+
+Example “test” coding case: “TEST”; OR “test”; OR “this is a test”
+
+_NA_ 
+
+If you are unsure how to code a response, you can write NA.
+
+Example “NA” coding case: “nnnnnnnnnnn”
+
+**Previous**
+
+_yes_ 
+
+The participant has participated in this exact study before, or an exact replication of it.
+
+Example “yes” coding cases: “Yes, I completed this study before.” 
+
+_maybe_ 
+
+The participant has participated in a similar study before, or may have based on their description.
+
+Example “maybe” coding cases:  “Yes another study that was very similar.”; “Yes, I have participated in a study that asked similar questions but had slightly different scenarios”
+
+_no_ 
+
+The participant has not participated in this study or a similar study before based on their description.
+
+Example “no” coding cases: “nope”; “Yes, I have participated in a study for course credit before.”’; “Yes, I have done studies where I read scenarios and answered questions about them.”
+
+_test_ 
+
+The response indicates that it is a test case        
+
+Example “test” coding case: “TEST”; OR “test”; OR “this is a test”
+
+_NA_ 
+
+If you are unsure how to code a response, you can write NA.
+
+Example “NA” coding case: “nnnnnnnnnnn”
+
+**Do’s and Don’ts**
+Take breaks! This work is hopefully interesting, but it can be cognitively exhausting. If you are having trouble paying attention while you are doing this or if you feel tired of it, please take a break. 
+
+After you label a response, do not go back and change it later. This may be tempting to do after mentally comparing how you rated different responses, but just carefully work through each response and know that your initial rating is final.
+
+Don’t discuss your ratings with other raters—this will invalidate everyone’s work.
+Do assign labels for every response in your assigned sheet(s). If you would like to contribute more, please email the person listed at the top of this sheet.
+
+**To summarize, for each set of answers**
+Read the answer to the question and assign a label that describes either whether people intuited the study hypothesis (for purpose) or whether people participated in a similar study previously (for previous)
+
+**Coding form includes**
+[id] A subject id number
+[survey_lang]
+[purpose/previous] The answer people gave to the question
+[code] The code/label that you are assigning to the answer (yes, no, maybe, test)
+
+
 
 ### Demographics
 
