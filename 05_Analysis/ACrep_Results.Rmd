@@ -326,7 +326,7 @@ survey_lang_table %>%
 
 ## Procedure
 
-In the approved protocol, we described a plan for data collection whereby each lab pre-registered a target sample size of 50 and stopped collection data on April 1, 2020 or once all contributors reached their pre-registered target sample size. Due to the Covid-19 pandemic, this plan was not feasible. The deadline for data collection was extended to June 1, 2021. Many data collection sites stopped collecting data earlier.
+In the approved protocol, we described a plan for data collection whereby each lab pre-registered a target sample size of 50 after exclusions and stopped collection data on April 1, 2020 or once all contributors reached their pre-registered target sample size. Due to the Covid-19 pandemic, this plan was not feasible. The deadline for data collection was extended to June 1, 2021. Many data collection sites stopped collecting data earlier.
 
 Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
 
@@ -359,6 +359,20 @@ All materials used in this replication, including the details of these vignettes
 [Error on page 34 -- says that the minimum sample size is 40]
 
   Analyses were conducted on all raw data collected in SocSciSurvey, and data collected in Qualtrics by two labs. In the original protocol, we planned to evaluate the quality of each student-led team's data, including the raw data, anlalysis scrips, codebooks, cleaned data sets, and narrative summaries of results, and data would be included in analyses only if these products passed a quality check. the original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent anlayses for this report, all available raw data were used, regardless of the completion or quality of subsequent pedagogical activities.
+  Aggregating data required making imputations and other adjustments to account for erros, unpredicted data issues, and differences in how student-led teams measured items (see Table X for a summary of methods deviations at the data collection site level). We describe these imputations and other adjustments in the following subsections.
+  
+*Compensation*
+
+  Participants were asked to report whether and how they were compensated for their participation. Some student-led teams opted to skip this question because all participants were compensated the same way. The documented method of compensation (e.g., as described in the IRB protocol), was imputed for those missing responses to compensation due to survey programming. Among participants who were asked about their compensation, responses were sometimes missing or discrepant with the documented method of compensation. For student-led teams where fewer than 50% of participants in the final dataset agreed on a method of compensation, the documented method of compensated was imputed for all participants (if a single method of compensation was documented).
+
+*Data collection sites*
+
+  In the approved protocol, data collection was described as taking place in labs. Labs were described as uniquely identifying data collection sites. However, at some data collection sites, multiple student-led teams joined this project (e.g., under the mentorship of the same PI, multiple students joined the project as "labs"). Observations were labeled as belonging to both a "lab" (which we describe as a "student-led team") and a data collection site. For analyses, the data collection site was used in place of the "lab" variable described in the approved protocol. 
+  
+*Education level*
+
+  All participants were asked a question about their education. Participants who completed the survey in SocSciSurvey were asked about the number of years they had been in school (truncated at 18). Participants who completed the survey in Qualtrics were asked about their educational attainment. Years of education was imputed for participants who reported their educational attainment according to the following scheme, which was designed with input from PIs who oversaw data collection in each country. For participants from the United States, less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college or a 2-year college degree was translated as 14 years, a 4-year college degree was translated as 16 years, a master's was translated as 18 years, and a doctorate or professional degree was translated as 20 years. For participants from Portugal, the labels were the same except that a 4-year college degree was translated as 15 years, a doctorate or professional degree was translated to 21 years., less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college was translated as 16 years, a masters was translated as 18 years, and a graduate degree was translated as 20 years. These translated values were imputed, but with truncation to match how this item was measured in SocSciSurvey. Any value above 17 was imputed as 18.
+  Participants were asked to report their gender, and were given three response options. The vast majority of participants selected "male" or "female" (_n_ identified as neither = `r final_demographics`)
 
 [Need to either collect information about the analyses people did or report that this is a deviation from the original protocol]
 
@@ -374,11 +388,19 @@ All materials used in this replication, including the details of these vignettes
 
 # Results
 
+```{r}
+final_long %>% 
+  group_by(Person) %>% 
+  count()
+```
 
+  There were `r length(unique(final_long$Person))` data collection sites in the final dataset. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(Person, id) %>% count() %>% group_by(Person) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
+  The approved protocol described testing assumptions before conducting analyses (for full results of the following assumption checks, see Appendix X). Assumptions of and related to linearity are primarily relevant for the anlayses of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal when examined unconditionally and by vignette and condition.
 
+A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
 
-
-
+It is generally not recommended to transform continuous varibles in to discreet variables (cite). For the present analyses, however, splitting the continuously measured versions of these dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly fit models and also test whether the method of measurement (continous or binary) affects judgments. So, this was the approach taken.
+  Following the transformation of continuously measured knowledge attribution, 
 
 
 # Disclosures
