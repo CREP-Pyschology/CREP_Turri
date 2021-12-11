@@ -350,8 +350,13 @@ All materials used in this replication, including the details of these vignettes
 
 ## Analysis Plan
 
+  Multilevel models will be used to evaluate hypotheses. The unit of anlaysis will be the trial. Random intercepts for the vignette, participant, and data collection site will be included to account for the nesting of trials within these groups. 
 
+## Power Anlaysis
 
+  The approved protocol described power analyses that estimated the number of participants required to estimate an effect of knowledge condition on participants knowledge attributions at 90% power with an alpha of .05, and effect size estimates based on the pilot test and Experiment 1 of Turri et al. (2015) (see Appendix X for an updated version). [I honestly didn't follow the last paragraph on p 29 of the approved protocol relevant to this paragraph.]
+    
+  
 
 # Results
 
