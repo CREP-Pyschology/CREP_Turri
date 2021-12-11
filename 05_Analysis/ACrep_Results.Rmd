@@ -372,7 +372,7 @@ All materials used in this replication, including the details of these vignettes
 *Education level*
 
   All participants were asked a question about their education. Participants who completed the survey in SocSciSurvey were asked about the number of years they had been in school (truncated at 18). Participants who completed the survey in Qualtrics were asked about their educational attainment. Years of education was imputed for participants who reported their educational attainment according to the following scheme, which was designed with input from PIs who oversaw data collection in each country. For participants from the United States, less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college or a 2-year college degree was translated as 14 years, a 4-year college degree was translated as 16 years, a master's was translated as 18 years, and a doctorate or professional degree was translated as 20 years. For participants from Portugal, the labels were the same except that a 4-year college degree was translated as 15 years, a doctorate or professional degree was translated to 21 years., less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college was translated as 16 years, a masters was translated as 18 years, and a graduate degree was translated as 20 years. These translated values were imputed, but with truncation to match how this item was measured in SocSciSurvey. Any value above 17 was imputed as 18.
-  Participants were asked to report their gender, and were given three response options. The vast majority of participants selected "male" or "female" (_n_ identified as neither = `r final_demographics`)
+  Participants were asked to report their gender, and were given three response options. The vast majority of participants selected "male" or "female" (_n_ identified as neither = `r`)
 
 [Need to either collect information about the analyses people did or report that this is a deviation from the original protocol]
 
@@ -651,8 +651,4 @@ East or Southeast Asian / Pacific Islander (e.g. from Japan, China, Korea, Vietn
 South Asian (e.g. from India, Pakistan)
 I prefer not to answer this question
 Other
-
-```{r}
-
-```
 
