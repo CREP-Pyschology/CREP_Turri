@@ -256,7 +256,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ACrep_Results.Rmd</h1>
 <h4 class="author">Hannah Moshontz</h4>
-<h4 class="date">Last Updated 2021-12-10</h4>
+<h4 class="date">Last Updated 2021-12-11</h4>
 
 </div>
 
@@ -1199,34 +1199,66 @@ lab_sheet %&gt;%
 left_join(teams_per_site, full_data_n_per_site, by = &quot;Person&quot;) %&gt;% 
   left_join(final_data_n_per_site, by = &quot;Person&quot;) %&gt;% 
   left_join(platform, by = &quot;Person&quot;) %&gt;% 
+  #FIX: join checked UN region
+  #FIX: join checked compensation method in the IRB
+  #FIX: join checked methods variations or extension notes
+  #FIX: join checked sampled population (e.g., community, subject pool)
+  #FIX: join checked grouped data collection info, even if all zeros
+  #FIX: join whether any data were collected in person
 arrange(-final_data_n) %&gt;% 
   mutate(site_id = row_number()) %&gt;% 
   select(site_id, everything()) %&gt;% 
-  kable(caption = &quot;data collection sites&quot;) %&gt;% 
+  clean_names(&quot;sentence&quot;) %&gt;% 
+  #FIX: delete next line once we have the data
+  mutate(`UN Region` = &#39;check&#39;,
+         `Compensation method` = &#39;check&#39;,
+         `Method variations` = &#39;check&#39;,
+         `Sampled population` = &#39;check&#39;,
+         `Group data collection` = &#39;check&#39;,
+         `In person data collection` = &#39;check&#39;) %&gt;% 
+  kable(caption = &quot;Data Collection Site Information&quot;) %&gt;% 
   kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-data collection sites
+Data Collection Site Information
 </caption>
 <thead>
 <tr>
 <th style="text-align:right;">
-site_id
+Site id
 </th>
 <th style="text-align:left;">
 Person
 </th>
 <th style="text-align:right;">
-n_student_teams
+N student teams
 </th>
 <th style="text-align:right;">
-full_data_n
+Full data n
 </th>
 <th style="text-align:right;">
-final_data_n
+Final data n
 </th>
 <th style="text-align:left;">
-survey_platform
+Survey platform
+</th>
+<th style="text-align:left;">
+UN Region
+</th>
+<th style="text-align:left;">
+Compensation method
+</th>
+<th style="text-align:left;">
+Method variations
+</th>
+<th style="text-align:left;">
+Sampled population
+</th>
+<th style="text-align:left;">
+Group data collection
+</th>
+<th style="text-align:left;">
+In person data collection
 </th>
 </tr>
 </thead>
@@ -1250,6 +1282,24 @@ b6c8ec
 <td style="text-align:left;">
 Qualtrics
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1269,6 +1319,24 @@ Qualtrics
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1290,6 +1358,24 @@ bfe85dfa8a47470e2600b4bae1dfe4c1
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1309,6 +1395,24 @@ de5a43985156a022e44511202ccd5449
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1330,6 +1434,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1349,6 +1471,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1370,6 +1510,24 @@ d547b0fe851b1f8786fce767e3d89f50
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1389,6 +1547,24 @@ ec35cfeaedd64eccef16c265b2ba179f
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1410,6 +1586,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1429,6 +1623,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1450,6 +1662,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1469,6 +1699,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1490,6 +1738,24 @@ c22875ee12b4cdfb8843ead3b8e1ddf8
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1509,6 +1775,24 @@ a5e2ba5c7fcf9a90c4bc1b5ed666f57b
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1530,6 +1814,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1549,6 +1851,24 @@ fd5a38067cf64a3e10ae8e92f015be4e
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1570,6 +1890,24 @@ c6e892a926333f0840a81af6fa74a6c6
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1589,6 +1927,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1610,6 +1966,24 @@ f19f790831cbe3722ccd98fd63d3d902
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1629,6 +2003,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1650,6 +2042,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1669,6 +2079,24 @@ ccc20a00466f0c4077f924733e9a3789
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1690,6 +2118,24 @@ bc3266a9a2dc0de236029a38f1e0d4b9
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1709,6 +2155,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1730,6 +2194,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1749,6 +2231,24 @@ d4c4b2302987480f7ce2084927489e4e
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1770,6 +2270,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1789,6 +2307,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1810,6 +2346,24 @@ ecb1153cd73ee30290a753fb74358c19
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1829,6 +2383,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1850,6 +2422,24 @@ d5450db323eeab9cf7bd57ecc95d3454
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1869,6 +2459,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 SoSciSurvey
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 <tr>
@@ -1890,6 +2498,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1910,6 +2536,24 @@ SoSciSurvey
 <td style="text-align:left;">
 SoSciSurvey
 </td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
 </tr>
 <tr>
 <td style="text-align:right;">
@@ -1929,6 +2573,24 @@ SoSciSurvey
 </td>
 <td style="text-align:left;">
 Qualtrics
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
+</td>
+<td style="text-align:left;">
+check
 </td>
 </tr>
 </tbody>
@@ -1998,7 +2660,7 @@ full_demographics &lt;- full_long %&gt;%
 #error out if count doesn&#39;t match
 if (length(unique(final_long$id)) != nrow(final_demographics)) STOP</code></pre>
 <p>In total, 69 teams led by undergraduate students signed up to collect data for this project. Of the teams that originally signed up, 32 either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, 22 teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. Prior to exclusions, 41 unique data collection sites contributed data to the project. Data collection sites were located in 20 countries spanning world regions (i.e., Northern America, Eastern Europe, Western Europe, Northern Europe, Eastern Asia, Western Asia, Australia and New Zealand, Southeastern Asia). See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.</p>
-<p>Of the 9095 participants who completed the survey, data from 6138% (<em>n</em> = <code>r</code>) of people were excluded.</p>
+<p>Of the 9095 participants who completed the survey, data from 67.5% (<em>n</em> = 6138) of people were excluded.</p>
 <p>Data were excluded for the following reasons (applied in the order listed): (1) the participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older, operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (<em>n</em> = 2162); (2) the participant had taken part in a previous version of this study or in another contributors’ replication of the same study (<em>n</em> = 244); (3) the participant failed to answer all three of the vignette comprehension questions correctly (<em>n</em> = 2800; e.g., did not correctly identify what Darrel was looking at); (4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (<em>n</em> = 211); (5) the participant reported their understanding of the language the survey was written in as “not well” or “not well at all” (<em>n</em> = 2162); see Vickstrom, Shin, Collazo, &amp; Bauman, 2015).</p>
 <p>Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age.</p>
 <pre class="r"><code>exclusions %&gt;% 
@@ -2863,11 +3525,11 @@ education
   mutate(count = n*mean,
          percent = count/n*100) %&gt;% 
   select(count, percent) %&gt;% 
-  kable(digits = 2, caption = &quot;Number and Percent of Participants by Data Collection Context Variables (Total N = 2957)&quot;) %&gt;% 
+  kable(digits = 2, caption = &quot;Number and Percent of Participants by Data Collection Context Variables in Analysis Data (Total N = 2957)&quot;) %&gt;% 
   kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-Number and Percent of Participants by Data Collection Context Variables (Total N = 2957)
+Number and Percent of Participants by Data Collection Context Variables in Analysis Data (Total N = 2957)
 </caption>
 <thead>
 <tr>
@@ -2921,11 +3583,11 @@ Took the centralized survey
   mutate(lab_country_full = countrycode(lab_country, &quot;iso3c&quot;, &quot;country.name.en&quot;)) %&gt;% 
   tabyl(lab_country_full) %&gt;% 
   arrange(-n) %&gt;% 
-  kable(digits = 2, caption = &quot;Number and Percent of Participants by Country&quot;) %&gt;% 
+  kable(digits = 2, caption = &quot;Number and Percent of Participants by Country in Analysis Data&quot;) %&gt;% 
   kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-Number and Percent of Participants by Country
+Number and Percent of Participants by Country in Analysis Data
 </caption>
 <thead>
 <tr>
@@ -3167,11 +3829,11 @@ for (i in 1:length(survey_lang_table$survey_lang)) {
 survey_lang_table %&gt;% 
   mutate(survey_lang = str_replace_all(survey_lang, &quot;Greek, Modern \\(1453\\-\\)&quot;, &quot;Greek&quot;),
          survey_lang = str_replace_all(survey_lang, &quot;Romanian; Moldavian; Moldovan&quot;, &quot;Romanian&quot;)) %&gt;% 
-  kable(digits = 2, caption = &quot;Number and Percent of Participants by Survey Language&quot;) %&gt;% 
+  kable(digits = 2, caption = &quot;Number and Percent of Participants by Survey Language in Analysis Data&quot;) %&gt;% 
   kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <caption>
-Number and Percent of Participants by Survey Language
+Number and Percent of Participants by Survey Language in Analysis Data
 </caption>
 <thead>
 <tr>

@@ -1,0 +1,538 @@
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>table output</title>
+<script src="lib1a8874675dbb/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="lib1a8874675dbb/bootstrap-3.3.5/css/simplex.min.css" rel="stylesheet" />
+<script src="lib1a8874675dbb/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="lib1a8874675dbb/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="lib1a8874675dbb/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<link href="lib1a8874675dbb/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="lib1a8874675dbb/kePrint-0.0.1/kePrint.js"></script>
+
+</head>
+<body>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>data collection sites</caption>
+ <thead>
+  <tr>
+   <th style="text-align:right;"> Site id </th>
+   <th style="text-align:left;"> Person </th>
+   <th style="text-align:right;"> N student teams </th>
+   <th style="text-align:right;"> Full data n </th>
+   <th style="text-align:right;"> Final data n </th>
+   <th style="text-align:left;"> Survey platform </th>
+   <th style="text-align:left;"> UN Region </th>
+   <th style="text-align:left;"> Compensation method </th>
+   <th style="text-align:left;"> Method variations </th>
+   <th style="text-align:left;"> Sampled population </th>
+   <th style="text-align:left;"> Group data collection </th>
+   <th style="text-align:left;"> In person data collection </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:left;"> b6c8ec </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 510 </td>
+   <td style="text-align:right;"> 356 </td>
+   <td style="text-align:left;"> Qualtrics </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:left;"> 2c70764140dc2267dc65e463842c75dd </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 658 </td>
+   <td style="text-align:right;"> 278 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 3 </td>
+   <td style="text-align:left;"> bfe85dfa8a47470e2600b4bae1dfe4c1 </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 995 </td>
+   <td style="text-align:right;"> 225 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 4 </td>
+   <td style="text-align:left;"> de5a43985156a022e44511202ccd5449 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 661 </td>
+   <td style="text-align:right;"> 218 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:left;"> 04aec6c128a6d0c7b156124a782a2e17 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 387 </td>
+   <td style="text-align:right;"> 167 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 6 </td>
+   <td style="text-align:left;"> 053921f004965238755a0b08414ad61f </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 565 </td>
+   <td style="text-align:right;"> 160 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:left;"> d547b0fe851b1f8786fce767e3d89f50 </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 402 </td>
+   <td style="text-align:right;"> 150 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 8 </td>
+   <td style="text-align:left;"> ec35cfeaedd64eccef16c265b2ba179f </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 332 </td>
+   <td style="text-align:right;"> 133 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 9 </td>
+   <td style="text-align:left;"> 8ceb72b59172af0d6a8d657e76ec4ce8 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 215 </td>
+   <td style="text-align:right;"> 92 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:left;"> 7898bca2938d7b6d8a82093ddffb15dc </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 213 </td>
+   <td style="text-align:right;"> 81 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:left;"> 71289e5ce6b2abe28c0d25bdce7c14a0 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 162 </td>
+   <td style="text-align:right;"> 74 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 12 </td>
+   <td style="text-align:left;"> 82d647ec9366dd067a092145d7d8ee7b </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 340 </td>
+   <td style="text-align:right;"> 74 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 13 </td>
+   <td style="text-align:left;"> c22875ee12b4cdfb8843ead3b8e1ddf8 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 164 </td>
+   <td style="text-align:right;"> 72 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:left;"> a5e2ba5c7fcf9a90c4bc1b5ed666f57b </td>
+   <td style="text-align:right;"> 2 </td>
+   <td style="text-align:right;"> 254 </td>
+   <td style="text-align:right;"> 70 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:left;"> 8ee3ca908c989e3f6342994da802c3bd </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 233 </td>
+   <td style="text-align:right;"> 66 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:left;"> fd5a38067cf64a3e10ae8e92f015be4e </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 189 </td>
+   <td style="text-align:right;"> 53 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:left;"> c6e892a926333f0840a81af6fa74a6c6 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 229 </td>
+   <td style="text-align:right;"> 49 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:left;"> 5f4f444af13a37ac3598f3f4f613f560 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 129 </td>
+   <td style="text-align:right;"> 47 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 19 </td>
+   <td style="text-align:left;"> f19f790831cbe3722ccd98fd63d3d902 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 135 </td>
+   <td style="text-align:right;"> 46 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:left;"> 20e15d6f0eb0520239a9f7921b1ee905 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 304 </td>
+   <td style="text-align:right;"> 45 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 21 </td>
+   <td style="text-align:left;"> 25c0099bdeb9900e64b3f1e17ea9cf32 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 179 </td>
+   <td style="text-align:right;"> 45 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 22 </td>
+   <td style="text-align:left;"> ccc20a00466f0c4077f924733e9a3789 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 152 </td>
+   <td style="text-align:right;"> 45 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 23 </td>
+   <td style="text-align:left;"> bc3266a9a2dc0de236029a38f1e0d4b9 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 95 </td>
+   <td style="text-align:right;"> 42 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:left;"> 3b4e9381f4aafb032e37c0d5fa732aba </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 78 </td>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 25 </td>
+   <td style="text-align:left;"> 64ba90ce7822b9c898df033ebb8c2c18 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 143 </td>
+   <td style="text-align:right;"> 40 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:left;"> d4c4b2302987480f7ce2084927489e4e </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 64 </td>
+   <td style="text-align:right;"> 38 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 27 </td>
+   <td style="text-align:left;"> 1300dd2a365669443e58645538040b7e </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 98 </td>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 28 </td>
+   <td style="text-align:left;"> 6109cf70459f0edc57ccb89cf26d66ef </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 159 </td>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:left;"> ecb1153cd73ee30290a753fb74358c19 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 91 </td>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 30 </td>
+   <td style="text-align:left;"> 3e1f2a5e94450c8371562c74671ace76 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 58 </td>
+   <td style="text-align:right;"> 34 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 31 </td>
+   <td style="text-align:left;"> d5450db323eeab9cf7bd57ecc95d3454 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 112 </td>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 32 </td>
+   <td style="text-align:left;"> 63947e8c9e47bc0056f78f402f3898f1 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 103 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 33 </td>
+   <td style="text-align:left;"> 10fe64c77bdcdd1f63c4f6f6767bd834 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 452 </td>
+   <td style="text-align:right;"> 24 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 34 </td>
+   <td style="text-align:left;"> 4f86a6d4b553a44559cde3ceba92b330 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 58 </td>
+   <td style="text-align:right;"> 18 </td>
+   <td style="text-align:left;"> SoSciSurvey </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+  <tr>
+   <td style="text-align:right;"> 35 </td>
+   <td style="text-align:left;"> 87d100 </td>
+   <td style="text-align:right;"> 1 </td>
+   <td style="text-align:right;"> 149 </td>
+   <td style="text-align:right;"> 11 </td>
+   <td style="text-align:left;"> Qualtrics </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+   <td style="text-align:left;"> check </td>
+  </tr>
+</tbody>
+</table>
+</body>
+</html>

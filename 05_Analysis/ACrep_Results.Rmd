@@ -31,11 +31,6 @@ library(naniar) # to evaluate missing data
 
 # EDA on the analysis set
 
-```{r}
-final_long %>% 
-  glimpse()
-```
-
 
 A few notes about variables:
 - Person is a unique lab identifier (identifies PI)
@@ -53,11 +48,17 @@ were presented with "normal" (*not sure what direction this is*) or "swapped", b
 within person and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
 - 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.
 
-```{r}
+```{r UN_Region}
 full_long %>% filter(is.na(UN_Region)) %>% tabyl(lab_id)
 ```
 Information that came from lab_sheet (ultimately the source was a google doc) is not accurate and doesn't contain information about qualtrics labs. This is a problem.
 
+```{r years of education}
+final_long$education[which(final_long$education <10)] %>% 
+  hist()
+```
+
+`r length(final_long$education[which(final_long$education <10)])` people report what amounts to less than a high school diploma. `r final_long$education[which(final_long$education <2)]` people said they had one year of education. This warrants observation in the manuscript.
 
 # Method
 
@@ -150,10 +151,24 @@ lab_sheet %>%
 left_join(teams_per_site, full_data_n_per_site, by = "Person") %>% 
   left_join(final_data_n_per_site, by = "Person") %>% 
   left_join(platform, by = "Person") %>% 
+  #FIX: join checked UN region
+  #FIX: join checked compensation method in the IRB
+  #FIX: join checked methods variations or extension notes
+  #FIX: join checked sampled population (e.g., community, subject pool)
+  #FIX: join checked grouped data collection info, even if all zeros
+  #FIX: join whether any data were collected in person
 arrange(-final_data_n) %>% 
   mutate(site_id = row_number()) %>% 
   select(site_id, everything()) %>% 
-  kable(caption = "data collection sites") %>% 
+  clean_names("sentence") %>% 
+  #FIX: delete next line once we have the data
+  mutate(`UN Region` = 'check',
+         `Compensation method` = 'check',
+         `Method variations` = 'check',
+         `Sampled population` = 'check',
+         `Group data collection` = 'check',
+         `In person data collection` = 'check') %>% 
+  kable(caption = "Data Collection Site Information") %>% 
   kable_styling()
 ```
 
@@ -233,7 +248,7 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 
 In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Data collection sites were located in `r length(unique(full_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.
 
-Of the `r nrow(full_demographics)` participants who completed the survey, data from `r nrow(full_demographics) - nrow(final_demographics)`% (_n_ = `r`) of people were excluded.
+Of the `r nrow(full_demographics)` participants who completed the survey, data from `r round((nrow(full_demographics) - nrow(final_demographics))/nrow(full_demographics), 3)*100`% (_n_ = `r (nrow(full_demographics) - nrow(final_demographics))`) of people were excluded.
 
 Data were excluded for the following reasons (applied in the order listed):
 (1) the participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older,  operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (_n_ = `r nrow(filter(full_demographics, age_exclusion))`);
@@ -288,7 +303,7 @@ final_demographics %>%
   mutate(count = n*mean,
          percent = count/n*100) %>% 
   select(count, percent) %>% 
-  kable(digits = 2, caption = "Number and Percent of Participants by Data Collection Context Variables (Total N = 2957)") %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants by Data Collection Context Variables in Analysis Data (Total N = 2957)") %>% 
   kable_styling()
 
 ```
@@ -299,7 +314,7 @@ final_demographics %>%
   mutate(lab_country_full = countrycode(lab_country, "iso3c", "country.name.en")) %>% 
   tabyl(lab_country_full) %>% 
   arrange(-n) %>% 
-  kable(digits = 2, caption = "Number and Percent of Participants by Country") %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants by Country in Analysis Data") %>% 
   kable_styling()
 ```
 
@@ -319,7 +334,7 @@ for (i in 1:length(survey_lang_table$survey_lang)) {
 survey_lang_table %>% 
   mutate(survey_lang = str_replace_all(survey_lang, "Greek, Modern \\(1453\\-\\)", "Greek"),
          survey_lang = str_replace_all(survey_lang, "Romanian; Moldavian; Moldovan", "Romanian")) %>% 
-  kable(digits = 2, caption = "Number and Percent of Participants by Survey Language") %>% 
+  kable(digits = 2, caption = "Number and Percent of Participants by Survey Language in Analysis Data") %>% 
   kable_styling()
 ```
 
@@ -372,7 +387,7 @@ All materials used in this replication, including the details of these vignettes
 *Education level*
 
   All participants were asked a question about their education. Participants who completed the survey in SocSciSurvey were asked about the number of years they had been in school (truncated at 18). Participants who completed the survey in Qualtrics were asked about their educational attainment. Years of education was imputed for participants who reported their educational attainment according to the following scheme, which was designed with input from PIs who oversaw data collection in each country. For participants from the United States, less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college or a 2-year college degree was translated as 14 years, a 4-year college degree was translated as 16 years, a master's was translated as 18 years, and a doctorate or professional degree was translated as 20 years. For participants from Portugal, the labels were the same except that a 4-year college degree was translated as 15 years, a doctorate or professional degree was translated to 21 years., less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college was translated as 16 years, a masters was translated as 18 years, and a graduate degree was translated as 20 years. These translated values were imputed, but with truncation to match how this item was measured in SocSciSurvey. Any value above 17 was imputed as 18.
-  Participants were asked to report their gender, and were given three response options. The vast majority of participants selected "male" or "female" (_n_ identified as neither = `r`)
+  Participants were asked to report their gender, and were given three response options. The vast majority of participants selected "male" or "female" (_n_ identified as neither = `r final_demographics %>% filter(gender == "other") %>% nrow()`)
 
 [Need to either collect information about the analyses people did or report that this is a deviation from the original protocol]
 
