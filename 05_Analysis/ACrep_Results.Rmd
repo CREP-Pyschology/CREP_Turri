@@ -399,7 +399,10 @@ final_long %>%
 
 A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
 
-It is generally not recommended to transform continuous varibles in to discreet variables (cite). For the present analyses, however, splitting the continuously measured versions of these dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly fit models and also test whether the method of measurement (continous or binary) affects judgments. So, this was the approach taken.
+  It is generally not recommended to transform continuous varibles in to discreet variables for anlayses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continous or binary) affects judgments. So, this was the approach taken.
+  To determine whether participants made different attributions about vignette subject's knowledge as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions. Listwise deletion was used to handle missing data. First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially. Compared to the baseline model (`r AIC(model.1)`), a model with a random intercept vignette 
+  
+  
   Following the transformation of continuously measured knowledge attribution, 
 
 
