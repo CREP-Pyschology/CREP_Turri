@@ -400,11 +400,26 @@ final_long %>%
 A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
 
   It is generally not recommended to transform continuous varibles in to discreet variables for anlayses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continous or binary) affects judgments. So, this was the approach taken.
-  To determine whether participants made different attributions about vignette subject's knowledge as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions. Listwise deletion was used to handle missing data. First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially. Compared to the baseline model (`r AIC(model.1)`), a model with a random intercept vignette 
-  
-  
-  Following the transformation of continuously measured knowledge attribution, 
 
+*Knoweldge attributions*
+
+  To determine whether participants made different attributions about vignette subject's knowledge as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together. Listwise deletion was used to handle missing data. 
+  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially. 
+  Compared to the baseline model (AIC = `r AIC(model.1)`), a model with a random intercept for vignette (AIC = `r AIC(model.2)`) explained more variance. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(model.2)[1,2]*100, 1)`% of the random variance in knowledge attributions. People tended to attribute knowledge differently in each vignette. People attributed Darrel's identification to his knowledge and his belief with roughly equal frequency, but slightly favored attributing his knowledge. People tended to attribute Emma's identification to her belief much more often than to her knowledge. People tended to attribute Gerald's identification to his belief slightly more often than to his knowledge. 
+  
+```{r}
+#pretty results go here? If not, we need to enhance in-text reporting.
+```
+
+  A model with a random intercept for vignette nested within participant (AIC = `r AIC(model.3)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(model.4)`). The addition of data collection site was not useful relative to the previous model. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, covariates were added to the model as fixed effects to account for the effects of participant age, compensation, gender, and education on their knowledge attributions (AIC = `r AIC(model.5)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. However, no covariates predicted knowledge attributions accounting for all others.
+  
+```{r}
+#need to show more results...
+```
+
+  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r AIC(model.6)`). This model performed better than the previous model.
 
 # Disclosures
 
