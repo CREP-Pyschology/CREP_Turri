@@ -324,7 +324,9 @@ survey_lang_table %>%
 ```
 
 
-## Materials
+## Procedure
+
+In the approved protocol, we described a plan for data collection whereby each lab pre-registered a target sample size of 50 and stopped collection data on April 1, 2020 or once all contributors reached their pre-registered target sample size. Due to the Covid-19 pandemic, this plan was not feasible. The deadline for data collection was extended to June 1, 2021. Many data collection sites stopped collecting data earlier.
 
 Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
 
@@ -346,8 +348,13 @@ After reading three vignettes and answering three sets of questions, participant
 
 All materials used in this replication, including the details of these vignettes and related pretests, are available at osf.io/n5b3w.
 
+## Analysis Plan
 
-## Procedure
+
+
+
+# Results
+
 
 
 # Disclosures
