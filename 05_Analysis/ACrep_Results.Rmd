@@ -330,7 +330,10 @@ In the approved protocol, we described a plan for data collection whereby each l
 
 Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
 
-Vignette content varied by subject and identification target. There were three vignette scenarios that were randomly presented to participants: the "Squirrel/Darrel" vignette from Turri et al. (2015), the “Fake Barn/Gerald” vignette from Colaca et al. (2014; altered to include matched knowledge and ignorance control conditions), and the “Diamond/Emma” vignette from Nagel, San Juan, & Mar (2013). The vigenettes are reported in full in Appendix X. Vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix B). Some labs tested an additional vignette that was not described in the approved protocol (for more information, see [LINK TO MORE INFORMATION]).
+Vignette content varied by subject and identification target. There were three vignette scenarios that were randomly presented to participants: the "Squirrel/Darrel" vignette from Turri et al. (2015), the “Fake Barn/Gerald” vignette from Colaca et al. (2014; altered to include matched knowledge and ignorance control conditions), and the “Diamond/Emma” vignette from Nagel, San Juan, & Mar (2013). The vigenettes are reported in full in Appendix X.
+  These vignettes all describe counterfiet object Gettier cases. The primary research aim for this project was to replicate Experiment 1 from Turri et al., (2015), which used a counterfeit object Gettier case ("Squirrel/Darrel"). The two vignettes that were not used in Experiment 1 of Turri et al. (2015) were selected on the basis of their similarity to the original vignette, their quality, and their prevalence in the literature. [Note that on page 33, it says that these vignettes were selected because they had matched controls. But elsewhere, we say that the Gerald vignette didn't have matched controls.]
+
+  Vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix X). Some labs tested an additional vignette that was not described in the approved protocol (for more information, see [LINK TO MORE INFORMATION]).
 
 For each vignette, there were three conditions: a Gettier case condition in which subjects correctly identified the target, but not due to their knowledge; a knowledge control condition in which subjects correctly identified the target due to their knowledge; an ignorance control condition in which subjects incorrectly identified the taraget, but not due to their knowledge. Vignette content and condition were randomly assigned. Each participant read and evaluated three vignettes (one of each subject/identification target type and one of each condition).
 
@@ -348,17 +351,33 @@ After reading three vignettes and answering three sets of questions, participant
 
 All materials used in this replication, including the details of these vignettes and related pretests, are available at osf.io/n5b3w.
 
-## Analysis Plan
+## Analytic Approach
 
-  Multilevel models will be used to evaluate hypotheses. The unit of anlaysis will be the trial. Random intercepts for the vignette, participant, and data collection site will be included to account for the nesting of trials within these groups. 
+  All raw data collected for this study were aggregated and analyzed as a single dataset. Multilevel models were used to evaluate hypotheses. The unit of anlaysis was the trial and random intercepts for the vignette, participant, and data collection site were be included to account for the nesting of trials within these groups. 
+  The approved protocol did not detail criteria that would be used for testing assumptions or approaches to handling convergence issues. We describe the approach taken to test assumptions and to handling convergence issues in the results section where relevant.
+
+[Error on page 34 -- says that the minimum sample size is 40]
+
+  Analyses were conducted on all raw data collected in SocSciSurvey, and data collected in Qualtrics by two labs. In the original protocol, we planned to evaluate the quality of each student-led team's data, including the raw data, anlalysis scrips, codebooks, cleaned data sets, and narrative summaries of results, and data would be included in analyses only if these products passed a quality check. the original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent anlayses for this report, all available raw data were used, regardless of the completion or quality of subsequent pedagogical activities.
+
+[Need to either collect information about the analyses people did or report that this is a deviation from the original protocol]
 
 ## Power Anlaysis
 
-  The approved protocol described power analyses that estimated the number of participants required to estimate an effect of knowledge condition on participants knowledge attributions at 90% power with an alpha of .05, and effect size estimates based on the pilot test and Experiment 1 of Turri et al. (2015) (see Appendix X for an updated version). [I honestly didn't follow the last paragraph on p 29 of the approved protocol relevant to this paragraph.]
-    
+  The approved protocol described power analyses. The text from the original protocol is reproduced in full in Appendix X, and is summarized here. 
+  Power analyses were conducted to estimate the number of participants required to estimate an effect of knowledge condition on participants knowledge attributions at 90% power with an alpha of .05, and effect sizes based on the pilot test, Experiment 1 of Turri et al. (2015), and simulations of different model specifications and samples based on the pilot data. The effect sizes used were as follows: For the difference between the Gettier condition and the ignorance condition, we estimated the sample size required to detect a standardized fixed effect of .3. For the difference between the Gettier condition and the knowledge control condition, we estimated the sample size required to detect a standardized fixed effect of .1. 
+  Power anlyses suggested that, given 3 vignettes per participant and 9 labs, at least 32 participants per lab (288 total participants; 864 total observations), would be required to achieve a power of at least .90 with an alpha of .05.
+  Considering the high potential for attrition and heterogeneity at the data collection site level, a target sample size of 50 participants per lab was set. 
+  
+  [ Erin -- can you check / correct this section? I don't really understand what the original report describes in this section.]
   
 
 # Results
+
+
+
+
+
 
 
 
