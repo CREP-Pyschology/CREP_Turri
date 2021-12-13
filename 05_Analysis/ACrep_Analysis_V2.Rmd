@@ -1260,7 +1260,7 @@ r.model.5 <- glmer(reason_vas_combined ~ (1|vignette/id/Person) +
                       nAGQ = 0)
 summary(r.model.5)
 
-table(r.model.5@frame$comp, model.5@frame$reason_vas_combined)
+table(r.model.5@frame$comp, r.model.5@frame$reason_vas_combined)
 
 r.squaredGLMM(r.model.5)
 ```
