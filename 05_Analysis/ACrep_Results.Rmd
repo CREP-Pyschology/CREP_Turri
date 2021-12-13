@@ -637,7 +637,9 @@ Read the answer to the question and assign a label that describes either whether
 
 ### Demographics
 
-*One version in SSS had these response options:*
+*Version A*
+Used by the following data collection sites in SSS: [List sites that used this option here]
+
 White / European descent
 Black / African descent
 Latino*a / Latin American descent
@@ -648,7 +650,9 @@ Native American
 Hawaiian descent / Pacific Islands
 Other
 
-*The other version in SSS had these response options:*
+*Version B*
+Used by the following data collection sites in SSS: [List sites that used this option here]
+
 European descent
 African descent
 Latino*a / Latin American descent
@@ -658,7 +662,8 @@ South Asian descent
 Pacific Island descent
 Native American descent
 
-*In Qualtrics these were the response options:*
+*Version C*
+Used by the following data collectoin sites in Qualtrics: [List sites that used this option here]
 White/European
 Black/African American
 Hispanic Latino
