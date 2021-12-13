@@ -1286,7 +1286,7 @@ r.model.6 <- glmer(reason_vas_combined ~ (1|vignette/id/Person) +
                       nAGQ = 0)
 summary(r.model.6)
 
-table(r.model.6@frame$cond, model.6@frame$reason_vas_combined)
+table(r.model.6@frame$cond, r.model.6@frame$reason_vas_combined)
 
 r.squaredGLMM(r.model.6)
 ```
@@ -1315,7 +1315,7 @@ summary(r.model.6A)
 
 r.squaredGLMM(r.model.6A)
 
-r.data_graph <- model.6A@frame
+r.data_graph <- r.model.6A@frame
 r.data_graph$reason_vas_combined <- factor(r.data_graph$reason_vas_combined,
                                           levels = c(0,1),
                                           labels = c("Reasonable", "Unreasonable"))
@@ -1345,7 +1345,7 @@ To analyze this interaction, we will use chi-square analysis and proportion test
 ```{r}
 # overall darrel
 chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Darrel"], 
-           r.data_graph$cond[data_graph$vignette == "Darrel"])
+           r.data_graph$cond[r.data_graph$vignette == "Darrel"])
 d_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Darrel"], 
            r.data_graph$cond[r.data_graph$vignette == "Darrel"])
 d_table
@@ -1515,18 +1515,18 @@ r.squaredGLMM(l.model.2)
 Vignette nested in participants random intercept:
 
 ```{r}
-l.model.2 <- glmer(luck_vas_combined ~ (1|vignette/id),
+l.model.3 <- glmer(luck_vas_combined ~ (1|vignette/id),
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
-summary(l.model.2)
-r.squaredGLMM(l.model.2)
+summary(l.model.3)
+r.squaredGLMM(l.model.3)
 ```
 
 
   - Model 2 AIC: `r AIC(l.model.2)`
-  - Model 3 AIC: `r AIC(l.model.2)`
+  - Model 3 AIC: `r AIC(l.model.3)`
   - Interpretation: the inclusion of participant ID isn't really useful, as the AIC is higher for this model. The variance between participants is very small after accounting for vignettes.
   - This model accounts for approximately the same random variance. 
   
