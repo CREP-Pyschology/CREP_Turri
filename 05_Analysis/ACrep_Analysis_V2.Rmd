@@ -983,7 +983,7 @@ k.model.6 <- glmer(know_vas_combined ~ (1|vignette/id/Person) +
                       nAGQ = 0)
 summary(k.model.6)
 
-table(k.model.6@frame$cond, model.6@frame$know_vas_combined)
+table(k.model.6@frame$cond, k.model.6@frame$know_vas_combined)
 
 r.squaredGLMM(k.model.6)
 ```
