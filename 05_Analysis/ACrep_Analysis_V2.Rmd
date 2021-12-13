@@ -1594,8 +1594,8 @@ table(l.model.6@frame$cond, l.model.6@frame$luck_vas_combined)
 r.squaredGLMM(l.model.6)
 ```
 
-  - Model 5 AIC: `r AIC(model.5)`
-  - Model 6 AIC: `r AIC(model.6)`
+  - Model 5 AIC: `r AIC(l.model.5)`
+  - Model 6 AIC: `r AIC(l.model.6)`
   - Interpretation: this model is better than the model with the covariates. 
   - Both knowledge and ignorance are different than the Gettier condition.
   - In Gettier, people are more likely to chose luck.
@@ -1608,18 +1608,18 @@ r.squaredGLMM(l.model.6)
 Does the vignette interact with the condition?
 
 ```{r}
-model.6A <- glmer(luck_vas_combined ~ (1 | vignette/id/Person) + 
+l.model.6A <- glmer(luck_vas_combined ~ (1 | vignette/id/Person) + 
                    comp + age + gender2 + education + 
                    cond*vignette,
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
-summary(model.6A)
+summary(l.model.6A)
 
-r.squaredGLMM(model.6A)
+r.squaredGLMM(l.model.6A)
 
-l.data_graph <- model.6A@frame
+l.data_graph <- l.model.6A@frame
 l.data_graph$luck_vas_combined <- factor(l.data_graph$luck_vas_combined,
                                           levels = c(0,1),
                                           labels = c("Luck", "Ability"))
@@ -1637,8 +1637,8 @@ ggplot(l.data_graph) +
   ylab("Condition")
 ```
 
-  - Model 6 AIC: `r AIC(model.6)`
-  - Model 6A AIC: `r AIC(model.6A)`
+  - Model 6 AIC: `r AIC(l.model.6)`
+  - Model 6A AIC: `r AIC(l.model.6A)`
   - Interpretation: This model is better than a model without the interaction. 
   - There is an interaction between vignette and condition for choice. 
   - In looking at the graph, we can see that each vignette produces a different pattern of results. 
@@ -1987,7 +1987,7 @@ r.squaredGLMM(k.model.6G)
   - There do appear to be order effects for both predictors. 
 
 ```{r}
-data_graph <- model.6G@frame
+data_graph <- k.model.6G@frame
 
 data_graph$know_vas_combined <- factor(data_graph$know_vas_combined, 
                                        levels = c(0,1),
