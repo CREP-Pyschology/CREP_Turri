@@ -1044,21 +1044,21 @@ To analyze this interaction, we will use chi-square analysis and proportion test
 # overall darrel
 chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
            data_graph$cond[data_graph$vignette == "Darrel"])
-d_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+k.d_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
            data_graph$cond[data_graph$vignette == "Darrel"])
-d_table
+k.d_table
 
 # prop tests
-prop1 <- prop.test(t(d_table[1:2, 1:2]))
+prop1 <- prop.test(t(k.d_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(d_table[1:2, 1:2])),
+         n = sum(t(k.d_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(d_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(k.d_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(d_table[1:2, c(1,3)])),
+         n = sum(t(k.d_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1070,21 +1070,21 @@ v.chi.sq(x2 = prop2$statistic,
 # overall emma
 chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
            data_graph$cond[data_graph$vignette == "Emma"])
-e_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
+k.e_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
            data_graph$cond[data_graph$vignette == "Emma"])
-e_table
+k.e_table
 
 # prop tests
-prop1 <- prop.test(t(e_table[1:2, 1:2]))
+prop1 <- prop.test(t(k.e_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(e_table[1:2, 1:2])),
+         n = sum(t(k.e_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(e_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(k.e_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(e_table[1:2, c(1,3)])),
+         n = sum(t(k.e_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1095,21 +1095,21 @@ v.chi.sq(x2 = prop2$statistic,
 # overall gerald
 chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
            data_graph$cond[data_graph$vignette == "Gerald"])
-g_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+k.g_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
            data_graph$cond[data_graph$vignette == "Gerald"])
-g_table
+k.g_table
 
 # prop tests
-prop1 <- prop.test(t(g_table[1:2, 1:2]))
+prop1 <- prop.test(t(k.g_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(g_table[1:2, 1:2])),
+         n = sum(t(k.g_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(g_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(k.g_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(g_table[1:2, c(1,3)])),
+         n = sum(t(k.g_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1346,21 +1346,21 @@ To analyze this interaction, we will use chi-square analysis and proportion test
 # overall darrel
 chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Darrel"], 
            r.data_graph$cond[r.data_graph$vignette == "Darrel"])
-d_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Darrel"], 
+r.d_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Darrel"], 
            r.data_graph$cond[r.data_graph$vignette == "Darrel"])
-d_table
+r.d_table
 
 # prop tests
-prop1 <- prop.test(t(d_table[1:2, 1:2]))
+prop1 <- prop.test(t(r.d_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(d_table[1:2, 1:2])),
+         n = sum(t(r.d_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(d_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(r.d_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(d_table[1:2, c(1,3)])),
+         n = sum(t(r.d_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1372,21 +1372,21 @@ v.chi.sq(x2 = prop2$statistic,
 # overall emma
 chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Emma"], 
            r.data_graph$cond[r.data_graph$vignette == "Emma"])
-e_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Emma"], 
+r.e_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Emma"], 
            r.data_graph$cond[r.data_graph$vignette == "Emma"])
-e_table
+r.e_table
 
 # prop tests
-prop1 <- prop.test(t(e_table[1:2, 1:2]))
+prop1 <- prop.test(t(r.e_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(e_table[1:2, 1:2])),
+         n = sum(t(r.e_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(e_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(r.e_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(e_table[1:2, c(1,3)])),
+         n = sum(t(r.e_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1397,21 +1397,21 @@ v.chi.sq(x2 = prop2$statistic,
 # overall gerald
 chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Gerald"], 
            r.data_graph$cond[r.data_graph$vignette == "Gerald"])
-g_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Gerald"], 
+r.g_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Gerald"], 
            r.data_graph$cond[r.data_graph$vignette == "Gerald"])
-g_table
+r.g_table
 
 # prop tests
-prop1 <- prop.test(t(g_table[1:2, 1:2]))
+prop1 <- prop.test(t(r.g_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(g_table[1:2, 1:2])),
+         n = sum(t(r.g_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(g_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(r.g_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(g_table[1:2, c(1,3)])),
+         n = sum(t(r.g_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1650,21 +1650,21 @@ To analyze this interaction, we will use chi-square analysis and proportion test
 # overall darrel
 chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
            l.data_graph$cond[l.data_graph$vignette == "Darrel"])
-d_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
+l.d_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
            l.data_graph$cond[l.data_graph$vignette == "Darrel"])
-d_table
+l.d_table
 
 # prop tests
-prop1 <- prop.test(t(d_table[1:2, 1:2]))
+prop1 <- prop.test(t(l.d_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(d_table[1:2, 1:2])),
+         n = sum(t(l.d_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(d_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(l.d_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(d_table[1:2, c(1,3)])),
+         n = sum(t(l.d_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1676,21 +1676,21 @@ v.chi.sq(x2 = prop2$statistic,
 # overall emma
 chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Emma"], 
            l.data_graph$cond[l.data_graph$vignette == "Emma"])
-e_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Emma"], 
+l.e_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Emma"], 
            l.data_graph$cond[l.data_graph$vignette == "Emma"])
-e_table
+l.e_table
 
 # prop tests
-prop1 <- prop.test(t(e_table[1:2, 1:2]))
+prop1 <- prop.test(t(l.e_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(e_table[1:2, 1:2])),
+         n = sum(t(l.e_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(e_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(l.e_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(e_table[1:2, c(1,3)])),
+         n = sum(t(l.e_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
@@ -1701,21 +1701,21 @@ v.chi.sq(x2 = prop2$statistic,
 # overall gerald
 chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Gerald"], 
            l.data_graph$cond[l.data_graph$vignette == "Gerald"])
-g_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Gerald"], 
+l.g_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Gerald"], 
            l.data_graph$cond[l.data_graph$vignette == "Gerald"])
-g_table
+l.g_table
 
 # prop tests
-prop1 <- prop.test(t(g_table[1:2, 1:2]))
+prop1 <- prop.test(t(l.g_table[1:2, 1:2]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(g_table[1:2, 1:2])),
+         n = sum(t(l.g_table[1:2, 1:2])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(g_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(l.g_table[1:2, c(1,3)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(g_table[1:2, c(1,3)])),
+         n = sum(t(l.g_table[1:2, c(1,3)])),
          r = 2, c = 2)
 ```
 
