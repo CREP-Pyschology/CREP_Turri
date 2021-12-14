@@ -410,28 +410,19 @@ All materials used in this replication, including the details of these vignettes
 
 [Need to either collect information about the analyses people did or report that this is a deviation from the original protocol]
 
-## Power Anlaysis
+## Sample Size Determination
 
-  The approved protocol described power analyses. The text from the original protocol is reproduced in full in Appendix X, and is summarized here. 
-  Power analyses were conducted to estimate the number of participants required to estimate an effect of knowledge condition on participants knowledge attributions at 90% power with an alpha of .05, and effect sizes based on the pilot test, Experiment 1 of Turri et al. (2015), and simulations of different model specifications and samples based on the pilot data. The effect sizes used were as follows: For the difference between the Gettier condition and the ignorance condition, we estimated the sample size required to detect a standardized fixed effect of .3. For the difference between the Gettier condition and the knowledge control condition, we estimated the sample size required to detect a standardized fixed effect of .1. 
-  Power anlyses suggested that, given 3 vignettes per participant and 9 labs, at least 32 participants per lab (288 total participants; 864 total observations), would be required to achieve a power of at least .90 with an alpha of .05.
+  The approved protocol described power analyses. The text from the original protocol is reproduced in full in Appendix X, and is summarized here. Power anlyses suggested that, given 3 vignettes per participant and 9 labs, at least 32 participants per lab (288 total participants; 864 total observations), would be required to detect an effect of X size at a power of at least .90 with an alpha of .05.
   Considering the high potential for attrition and heterogeneity at the data collection site level, a target sample size of 50 participants per lab was set. 
-  
-  [ Erin -- can you check / correct this section? I don't really understand what the original report describes in this section.]
-  
+
 
 # Results
 
-```{r}
-final_long %>% 
-  group_by(Person) %>% 
-  count()
-```
-
+  In the approved protocol, the results section focused heavily on the project's logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks.
   There were `r length(unique(final_long$Person))` data collection sites in the final dataset. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(Person, id) %>% count() %>% group_by(Person) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
   The approved protocol described testing assumptions before conducting analyses (for full results of the following assumption checks, see Appendix X). Assumptions of and related to linearity are primarily relevant for the anlayses of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal when examined unconditionally and by vignette and condition.
 
-A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
+  A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
 
   It is generally not recommended to transform continuous varibles in to discreet variables for anlayses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continous or binary) affects judgments. So, this was the approach taken.
 
@@ -476,12 +467,11 @@ table(k.model.6@frame$cond,
         "1", "Believes")) 
 ```
 
+*Does the effect of knowledge condition differ by vignette?*
+
   To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(k.model.6A), 2)`). This model explained more variance than the model without th einteraction between condition and vignette. As shown in Figure X, although the general pattern is the same for all vignettes, when making attirbutions about the Emma vignette, people were more likely to attribute belief in every condition than they were for the other vignettes. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(k.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
   
-```{r}
-#FIX -- Erin in the interpretation, you write that the interaction accounts for 7-9%... but I am not seeing where those numbres came from. 
-```
-  
+
 
 ```{r}
 tidy(k.model.6A) %>% 
@@ -505,13 +495,93 @@ ggplot(data_graph) +
   ggtitle("Figure X. Rates of Knowledge Attribution by Condition and Vignette")
 ```
 
-Probing this interaction with chi-square analysis and proportion tests. With the Darrel vignette, people made different attributions in the different conditions X^2(2) = 482.47, p <.0001.
+```{r Darrel knowledge effect}
+k.dcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+           data_graph$cond[data_graph$vignette == "Darrel"]) %>% 
+  tidy()
+
+k.dcond_GI <- prop.test(t(k.d_table[1:2, 1:2])) %>% 
+  tidy()
+
+k.dcond_GI_v <- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, 1:2]))$statistic, 
+         n = sum(t(k.d_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+k.dcond_GK <- prop.test(t(k.d_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+k.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(k.d_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+In the Darrel vignette, people made different attributions in the different conditions X^2(`r k.dcond_effect$parameter[[1]]`) = `r round(k.dcond_effect$statistic[[1]], 2)`, p `r if(round(k.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Darrel's identification to his knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (`r round(k.dcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(k.dcond_GI$estimate2, 2)`; Cramer's `r k.dcond_GI_v$estimate`, `r k.dcond_GI_v$statistic`). The likelihood that people attributed Darrel's identification to his knowledge also differed in the knowledge and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (`r round(k.dcond_GK$estimate2, 2)`than in the Gettier condition (`r round(k.dcond_GK$estimate1, 2)`; Cramer's `r k.dcond_GK_v$estimate`, `r k.dcond_GK_v$statistic`). 
+
+```{r Emma knowledge effect}
+k.econd_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
+           data_graph$cond[data_graph$vignette == "Emma"]) %>% 
+  tidy()
+
+k.econd_GI <- prop.test(t(k.e_table[1:2, 1:2])) %>% 
+  tidy()
+
+k.econd_GI_v <- v.chi.sq(x2 = prop.test(t(k.e_table[1:2, 1:2]))$statistic, 
+         n = sum(t(k.e_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+k.econd_GK <- prop.test(t(k.e_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+k.econd_GK_v <- v.chi.sq(x2 = prop.test(t(k.e_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(k.e_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+In the Emma vignette, the pattern was similar. People made different attributions in the different conditions X^2(`r k.econd_effect$parameter[[1]]`) = `r round(k.econd_effect$statistic[[1]], 2)`, p `r if(round(k.econd_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Emma's identification to her knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (`r round(k.econd_GI$estimate1, 2)`) than in the ignorance condition (`r round(k.econd_GI$estimate2, 2)`; Cramer's `r k.econd_GI_v$estimate`, `r k.econd_GI_v$statistic`). The likelihood of knowledge attribution also differed in the knowledge and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (`r round(k.econd_GK$estimate2, 2)`) than in the Gettier condition (`r round(k.econd_GK$estimate1, 2)`; Cramer's`r k.econd_GK_v$estimate`, `r k.econd_GK_v$statistic`). 
+
+```{r Gerald knowledge effect}
+k.gcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+           data_graph$cond[data_graph$vignette == "Gerald"]) %>% 
+  tidy()
+
+k.gcond_GI <- prop.test(t(k.e_table[1:2, 1:2])) %>% 
+  tidy()
+
+k.gcond_GI_v <- v.chi.sq(x2 = prop.test(t(k.g_table[1:2, 1:2]))$statistic, 
+         n = sum(t(k.e_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+k.gcond_GK <- prop.test(t(k.e_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+k.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.g_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(k.e_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+
+In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(`r k.gcond_effect$parameter[[1]]`) = `r round(k.gcond_effect$statistic[[1]], 2)`, p `r if(round(k.gcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. As with Darrel and Emma, the likelihood that people attributed Gerald's identification to his knowledge differed such that people were more likely to attribute knowledge in the Gettier condition (`r round(k.gcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(k.gcond_GI$estimate2, 2)`; Cramer's `r k.gcond_GI_v$estimate`, `r k.gcond_GI_v$statistic`). In addition, people were more likely to attribute knowledge to Gerald in the knowledge condition (`r round(k.gcond_GK$estimate2, 2)`) than in the Gettier condition (`r round(k.gcond_GK$estimate1, 2)`; Cramer's `r k.gcond_GK_v$estimate`, `r k.gcond_GK_v$statistic`). 
+
+Although the pattern of results was the same for all three vignettes, Cramer's V shows that the likelihood differences varied by vignette. For example, the likelihood difference between the Gettier condition and ignorance condition was much smaller in the Emma vignette than in the Darrel and Gerald vignettes. The likelihood difference between the Gettier and knowledge conditions was much smaller in the Darrel vignette than in the Emma and Gerald vignettes.
+
+*Does the effect of knowledge condition differ in participants recruited through Mturk?*
+
+Most data in the analysis sample came from participants recruited through university or community subjects pools or social media posts by university researchers. Some data came from participants recruited through Amazon Mturk. To test whether the effects of condition differed as a function of how participants were recruited, we estimated a model that included an interaction between condition and a variable that indicated whether or not an observation came from an Mturk participant (recruitment type; AIC = `r round(AIC(k.model.6B), 2)`). This model performed better than a model without the condition by recruitment type interaction. However, the interaction between condition and recruitment type was not significant, and there was no evidence that the effect of condition differed as a function of how participants were recruited.
 
 ```{r}
-k.d_table %>% 
-  kable("Knowledge Attributions in the Darrel Vignette") %>% 
+tidy(k.model.6B) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Interaction of Condition and Participant Recruitment Type") %>% 
   kable_styling()
 ```
+
+
+*Does the effect of knowledge condition differ as a function of how attributions were measured?*
+
+In the approved protocol, we planned to replicate analyses using different types of attribution measurement: continuously measured attributions on a scale from 0 to 100 and attributions measured as a choice between two binary options. Continously measured attirbutions were strongly bimodally distributed, and did not support linear modeling. Data were therefore combined. However to test whether the effect of condition on knowledge attributions differed as a function of measurement type, we estimated a model that included an interaction between condition and measurement type (continuous or binary; AIC = `r round(AIC(k.model.6C), 2)`). This model did not perform better than a model without the condition by measurement type and there was no evidence that the effect of condition differed depending on how knowledge attributions were measured.
 
 
 # Disclosures
