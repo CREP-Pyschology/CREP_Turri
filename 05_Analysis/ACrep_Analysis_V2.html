@@ -2303,20 +2303,20 @@ chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot
 ## 
 ## data:  data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;] and data_graph$cond[data_graph$vignette == &quot;Darrel&quot;]
 ## X-squared = 482.47, df = 2, p-value &lt; 0.00000000000000022</code></pre>
-<pre class="r"><code>d_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;], 
+<pre class="r"><code>k.d_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;], 
            data_graph$cond[data_graph$vignette == &quot;Darrel&quot;])
-d_table</code></pre>
+k.d_table</code></pre>
 <pre><code>##           
 ##            Gettier Ignorance Knowledge
 ##   Knows        588       214       663
 ##   Believes     362       730       287</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(d_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(k.d_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(d_table[1:2, 1:2])
+## data:  t(k.d_table[1:2, 1:2])
 ## X-squared = 296.8, df = 1, p-value &lt; 0.00000000000000022
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -2325,7 +2325,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.6189474 0.2266949</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(d_table[1:2, 1:2])),
+         n = sum(t(k.d_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -2356,12 +2356,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 296.80, $p$ &lt; .001&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(d_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(k.d_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(d_table[1:2, c(1, 3)])
+## data:  t(k.d_table[1:2, c(1, 3)])
 ## X-squared = 12.815, df = 1, p-value = 0.0003439
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -2370,7 +2370,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.6189474 0.6978947</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(d_table[1:2, c(1,3)])),
+         n = sum(t(k.d_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ##  X-squared 
@@ -2414,20 +2414,20 @@ chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;]
 ## 
 ## data:  data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;] and data_graph$cond[data_graph$vignette == &quot;Emma&quot;]
 ## X-squared = 186.16, df = 2, p-value &lt; 0.00000000000000022</code></pre>
-<pre class="r"><code>e_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;], 
+<pre class="r"><code>k.e_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;], 
            data_graph$cond[data_graph$vignette == &quot;Emma&quot;])
-e_table</code></pre>
+k.e_table</code></pre>
 <pre><code>##           
 ##            Gettier Ignorance Knowledge
 ##   Knows        163        92       326
 ##   Believes     773       866       626</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(e_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(k.e_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(e_table[1:2, 1:2])
+## data:  t(k.e_table[1:2, 1:2])
 ## X-squared = 24.128, df = 1, p-value = 0.0000009016
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -2436,7 +2436,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.1741453 0.0960334</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(e_table[1:2, 1:2])),
+         n = sum(t(k.e_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -2467,12 +2467,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 24.13, $p$ &lt; .001&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(e_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(k.e_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(e_table[1:2, c(1, 3)])
+## data:  t(k.e_table[1:2, c(1, 3)])
 ## X-squared = 68.775, df = 1, p-value &lt; 0.00000000000000022
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -2481,7 +2481,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.1741453 0.3424370</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(e_table[1:2, c(1,3)])),
+         n = sum(t(k.e_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -2524,20 +2524,20 @@ chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot
 ## 
 ## data:  data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;] and data_graph$cond[data_graph$vignette == &quot;Gerald&quot;]
 ## X-squared = 382.75, df = 2, p-value &lt; 0.00000000000000022</code></pre>
-<pre class="r"><code>g_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;], 
+<pre class="r"><code>k.g_table &lt;- table(data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;], 
            data_graph$cond[data_graph$vignette == &quot;Gerald&quot;])
-g_table</code></pre>
+k.g_table</code></pre>
 <pre><code>##           
 ##            Gettier Ignorance Knowledge
 ##   Knows        464       192       588
 ##   Believes     480       776       338</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(g_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(k.g_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(g_table[1:2, 1:2])
+## data:  t(k.g_table[1:2, 1:2])
 ## X-squared = 180.97, df = 1, p-value &lt; 0.00000000000000022
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -2546,7 +2546,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.4915254 0.1983471</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(g_table[1:2, 1:2])),
+         n = sum(t(k.g_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -2577,12 +2577,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 180.97, $p$ &lt; .001&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(g_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(k.g_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(g_table[1:2, c(1, 3)])
+## data:  t(k.g_table[1:2, c(1, 3)])
 ## X-squared = 38.516, df = 1, p-value = 0.0000000005431
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -2591,7 +2591,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.4915254 0.6349892</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(g_table[1:2, c(1,3)])),
+         n = sum(t(k.g_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -3251,20 +3251,20 @@ chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Darre
 ## 
 ## data:  r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Darrel&quot;] and r.data_graph$cond[r.data_graph$vignette == &quot;Darrel&quot;]
 ## X-squared = 47.732, df = 2, p-value = 0.00000000004316</code></pre>
-<pre class="r"><code>d_table &lt;- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Darrel&quot;], 
+<pre class="r"><code>r.d_table &lt;- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Darrel&quot;], 
            r.data_graph$cond[r.data_graph$vignette == &quot;Darrel&quot;])
-d_table</code></pre>
+r.d_table</code></pre>
 <pre><code>##               
 ##                Gettier Ignorance Knowledge
 ##   Reasonable       926       852       935
 ##   Unreasonable      31        87        30</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(d_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(r.d_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(d_table[1:2, 1:2])
+## data:  t(r.d_table[1:2, 1:2])
 ## X-squared = 28.464, df = 1, p-value = 0.00000009543
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -3273,7 +3273,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.9676071 0.9073482</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(d_table[1:2, 1:2])),
+         n = sum(t(r.d_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -3304,12 +3304,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 28.46, $p$ &lt; .001&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(d_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(r.d_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(d_table[1:2, c(1, 3)])
+## data:  t(r.d_table[1:2, c(1, 3)])
 ## X-squared = 0.0010915, df = 1, p-value = 0.9736
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -3318,7 +3318,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.9676071 0.9689119</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(d_table[1:2, c(1,3)])),
+         n = sum(t(r.d_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## Warning: The size of the effect combined with the degrees of freedom is too
 ## small to determine a lower confidence limit for the &#39;alpha.lower&#39; (or the (1/2)
@@ -3365,20 +3365,20 @@ chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Emma&
 ## 
 ## data:  r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Emma&quot;] and r.data_graph$cond[r.data_graph$vignette == &quot;Emma&quot;]
 ## X-squared = 18.183, df = 2, p-value = 0.0001126</code></pre>
-<pre class="r"><code>e_table &lt;- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Emma&quot;], 
+<pre class="r"><code>r.e_table &lt;- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Emma&quot;], 
            r.data_graph$cond[r.data_graph$vignette == &quot;Emma&quot;])
-e_table</code></pre>
+r.e_table</code></pre>
 <pre><code>##               
 ##                Gettier Ignorance Knowledge
 ##   Reasonable       842       848       918
 ##   Unreasonable      97        97        54</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(e_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(r.e_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(e_table[1:2, 1:2])
+## data:  t(r.e_table[1:2, 1:2])
 ## X-squared = 3.1384e-29, df = 1, p-value = 1
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -3387,7 +3387,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.8966986 0.8973545</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(e_table[1:2, 1:2])),
+         n = sum(t(r.e_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## Warning: The size of the effect combined with the degrees of freedom is too
 ## small to determine a lower confidence limit for the &#39;alpha.lower&#39; (or the (1/2)
@@ -3424,12 +3424,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 0.00, $p$ = 1.000&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(e_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(r.e_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(e_table[1:2, c(1, 3)])
+## data:  t(r.e_table[1:2, c(1, 3)])
 ## X-squared = 14.313, df = 1, p-value = 0.0001548
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -3438,7 +3438,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.8966986 0.9444444</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(e_table[1:2, c(1,3)])),
+         n = sum(t(r.e_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ##  X-squared 
@@ -3481,20 +3481,20 @@ chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Geral
 ## 
 ## data:  r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Gerald&quot;] and r.data_graph$cond[r.data_graph$vignette == &quot;Gerald&quot;]
 ## X-squared = 10.157, df = 2, p-value = 0.006229</code></pre>
-<pre class="r"><code>g_table &lt;- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Gerald&quot;], 
+<pre class="r"><code>r.g_table &lt;- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Gerald&quot;], 
            r.data_graph$cond[r.data_graph$vignette == &quot;Gerald&quot;])
-g_table</code></pre>
+r.g_table</code></pre>
 <pre><code>##               
 ##                Gettier Ignorance Knowledge
 ##   Reasonable       909       887       890
 ##   Unreasonable      54        83        50</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(g_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(r.g_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(g_table[1:2, 1:2])
+## data:  t(r.g_table[1:2, 1:2])
 ## X-squared = 5.9429, df = 1, p-value = 0.01478
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -3503,7 +3503,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.9439252 0.9144330</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(g_table[1:2, 1:2])),
+         n = sum(t(r.g_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ##  X-squared 
@@ -3534,12 +3534,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 5.94, $p$ = .015&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(g_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(r.g_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(g_table[1:2, c(1, 3)])
+## data:  t(r.g_table[1:2, c(1, 3)])
 ## X-squared = 0.030907, df = 1, p-value = 0.8604
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -3548,7 +3548,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.9439252 0.9468085</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(g_table[1:2, c(1,3)])),
+         n = sum(t(r.g_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## Warning: The size of the effect combined with the degrees of freedom is too
 ## small to determine a lower confidence limit for the &#39;alpha.lower&#39; (or the (1/2)
@@ -4207,20 +4207,20 @@ chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Darrel&
 ## 
 ## data:  l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Darrel&quot;] and l.data_graph$cond[l.data_graph$vignette == &quot;Darrel&quot;]
 ## X-squared = 62.989, df = 2, p-value = 0.00000000000002099</code></pre>
-<pre class="r"><code>d_table &lt;- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Darrel&quot;], 
+<pre class="r"><code>l.d_table &lt;- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Darrel&quot;], 
            l.data_graph$cond[l.data_graph$vignette == &quot;Darrel&quot;])
-d_table</code></pre>
+l.d_table</code></pre>
 <pre><code>##          
 ##           Gettier Ignorance Knowledge
 ##   Luck        361       350       224
 ##   Ability     558       547       709</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(d_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(l.d_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(d_table[1:2, 1:2])
+## data:  t(l.d_table[1:2, 1:2])
 ## X-squared = 0.0044445, df = 1, p-value = 0.9468
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -4229,7 +4229,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.3928183 0.3901895</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(d_table[1:2, 1:2])),
+         n = sum(t(l.d_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## Warning: The size of the effect combined with the degrees of freedom is too
 ## small to determine a lower confidence limit for the &#39;alpha.lower&#39; (or the (1/2)
@@ -4263,12 +4263,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 0.00, $p$ = .947&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(d_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(l.d_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(d_table[1:2, c(1, 3)])
+## data:  t(l.d_table[1:2, c(1, 3)])
 ## X-squared = 49.273, df = 1, p-value = 0.000000000002228
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -4277,7 +4277,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.3928183 0.2400857</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(d_table[1:2, c(1,3)])),
+         n = sum(t(l.d_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -4321,20 +4321,20 @@ chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Emma&qu
 ## 
 ## data:  l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Emma&quot;] and l.data_graph$cond[l.data_graph$vignette == &quot;Emma&quot;]
 ## X-squared = 431.92, df = 2, p-value &lt; 0.00000000000000022</code></pre>
-<pre class="r"><code>e_table &lt;- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Emma&quot;], 
+<pre class="r"><code>l.e_table &lt;- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Emma&quot;], 
            l.data_graph$cond[l.data_graph$vignette == &quot;Emma&quot;])
-e_table</code></pre>
+l.e_table</code></pre>
 <pre><code>##          
 ##           Gettier Ignorance Knowledge
 ##   Luck        862       416       604
 ##   Ability      79       475       312</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(e_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(l.e_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(e_table[1:2, 1:2])
+## data:  t(l.e_table[1:2, 1:2])
 ## X-squared = 435.54, df = 1, p-value &lt; 0.00000000000000022
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -4343,7 +4343,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.9160468 0.4668911</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(e_table[1:2, 1:2])),
+         n = sum(t(l.e_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -4374,12 +4374,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 435.54, $p$ &lt; .001&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(e_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(l.e_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(e_table[1:2, c(1, 3)])
+## data:  t(l.e_table[1:2, c(1, 3)])
 ## X-squared = 182.41, df = 1, p-value &lt; 0.00000000000000022
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -4388,7 +4388,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.9160468 0.6593886</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(e_table[1:2, c(1,3)])),
+         n = sum(t(l.e_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -4431,20 +4431,20 @@ chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Gerald&
 ## 
 ## data:  l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Gerald&quot;] and l.data_graph$cond[l.data_graph$vignette == &quot;Gerald&quot;]
 ## X-squared = 82.748, df = 2, p-value &lt; 0.00000000000000022</code></pre>
-<pre class="r"><code>g_table &lt;- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Gerald&quot;], 
+<pre class="r"><code>l.g_table &lt;- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == &quot;Gerald&quot;], 
            l.data_graph$cond[l.data_graph$vignette == &quot;Gerald&quot;])
-g_table</code></pre>
+l.g_table</code></pre>
 <pre><code>##          
 ##           Gettier Ignorance Knowledge
 ##   Luck        589       444       408
 ##   Ability     327       504       496</code></pre>
 <pre class="r"><code># prop tests
-prop1 &lt;- prop.test(t(g_table[1:2, 1:2]))
+prop1 &lt;- prop.test(t(l.g_table[1:2, 1:2]))
 prop1</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(g_table[1:2, 1:2])
+## data:  t(l.g_table[1:2, 1:2])
 ## X-squared = 56.817, df = 1, p-value = 0.00000000000004784
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -4453,7 +4453,7 @@ prop1</code></pre>
 ##    prop 1    prop 2 
 ## 0.6430131 0.4683544</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(g_table[1:2, 1:2])),
+         n = sum(t(l.g_table[1:2, 1:2])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
@@ -4484,12 +4484,12 @@ prop1</code></pre>
 ## 
 ## $statistic
 ## [1] &quot;$\\chi^2$(1) = 56.82, $p$ &lt; .001&quot;</code></pre>
-<pre class="r"><code>prop2 &lt;- prop.test(t(g_table[1:2, c(1,3)]))
+<pre class="r"><code>prop2 &lt;- prop.test(t(l.g_table[1:2, c(1,3)]))
 prop2</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
-## data:  t(g_table[1:2, c(1, 3)])
+## data:  t(l.g_table[1:2, c(1, 3)])
 ## X-squared = 66.715, df = 1, p-value = 0.0000000000000003137
 ## alternative hypothesis: two.sided
 ## 95 percent confidence interval:
@@ -4498,7 +4498,7 @@ prop2</code></pre>
 ##    prop 1    prop 2 
 ## 0.6430131 0.4513274</code></pre>
 <pre class="r"><code>v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(g_table[1:2, c(1,3)])),
+         n = sum(t(l.g_table[1:2, c(1,3)])),
          r = 2, c = 2)</code></pre>
 <pre><code>## $v
 ## X-squared 
