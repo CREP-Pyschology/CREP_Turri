@@ -418,7 +418,7 @@ All materials used in this replication, including the details of these vignettes
 
 # Results
 
-  In the approved protocol, the results section focused heavily on the project's logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks.
+  In the approved protocol, the results section focused heavily on the project's logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks. Further, some model specification details in the approved protocol conflicted with stated research questions. We have implemented models that test the stated research questions. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in the Appendix.
   There were `r length(unique(final_long$Person))` data collection sites in the final dataset. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(Person, id) %>% count() %>% group_by(Person) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
   The approved protocol described testing assumptions before conducting analyses (for full results of the following assumption checks, see Appendix X). Assumptions of and related to linearity are primarily relevant for the anlayses of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal when examined unconditionally and by vignette and condition.
 
@@ -426,16 +426,23 @@ All materials used in this replication, including the details of these vignettes
 
   It is generally not recommended to transform continuous varibles in to discreet variables for anlayses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continous or binary) affects judgments. So, this was the approach taken.
 
-*Knoweldge attributions*
+*Knowledge attributions*
 
-  To determine whether participants made different attributions about vignette subject's knowledge as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together. Listwise deletion was used to handle missing data. 
-  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially. 
+To determine whether participants made different attributions about vignette subject's knowledge as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their knowledge ("knows") and 1 means the subject's identification was not ("belief"). Listwise deletion was used to handle missing data. 
+  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially, before models with different interaction terms were estimated.
   Compared to the baseline model (AIC = `r round(AIC(k.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(k.model.2), 2)`) explained more variance. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(k.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.2)[1,2]*100, 1)`% of the random variance in knowledge attributions. People tended to attribute knowledge differently in each vignette. People attributed Darrel's identification to his knowledge and his belief with roughly equal frequency, but slightly favored attributing his knowledge. People tended to attribute Emma's identification to her belief much more often than to her knowledge. People tended to attribute Gerald's identification to his belief slightly more often than to his knowledge. 
   
-```{r}
+```{r random vignette}
 tidy(k.model.2) %>% 
   clean_variable_names() %>% 
   kable(caption = "Explaining Variance in Knowledge Attributions with a Random Intercept for Vignette") %>% 
+  kable_styling()
+```
+
+```{r random vignette table}
+table(data_graph$know_vas_combined, 
+           data_graph$vignette) %>% 
+  kable(caption = "Knowledge Attributions by Vignette") %>% 
   kable_styling()
 ```
 
@@ -443,7 +450,7 @@ tidy(k.model.2) %>%
   Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(k.model.4)`). The addition of data collection site was not useful relative to the previous model. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(k.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
   Next, covariates were added to the model as fixed effects to account for the effects of participant age, perceived compensation (a binary variable, with 0 = no perceived compensation and 1 = perceived compensation), gender (a binary variable, with 0 = female and 1 = male), and education (in years) on their knowledge attributions (AIC = `r round(AIC(k.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. However, no covariates predicted knowledge attributions accounting for all others.
   
-```{r}
+```{r all random intercepts on knowledge}
 tidy(k.model.5) %>% 
   clean_variable_names() %>% 
   kable(caption = "Explaining Variance in Knowledge Attributions with Random Intercepts for Vignette/Participant/Site and Covariates") %>% 
@@ -452,7 +459,7 @@ tidy(k.model.5) %>%
 
   Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(k.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on people's knowledge attributions. Both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the knowledge condition, people were much more likely to attribute subject's identification to their knowledge rather than their belief. In the Gettier condition, people were slighltly more likely to attribute belief than knowledge and in the ignorance condition, people were much more likely to attribute belief than knowledge. Psuedo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(k.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
 
-```{r}
+```{r knowledge condition on knowledge}
 tidy(k.model.6) %>% 
   clean_variable_names() %>% 
   kable(caption = "Effect of Condition on Knowledge Attributions") %>% 
@@ -460,7 +467,7 @@ tidy(k.model.6) %>%
 ```
 
 
-```{r}
+```{r table of knowledge condition on knowledge}
 table(k.model.6@frame$cond, 
       str_replace(
         str_replace(k.model.6@frame$know_vas_combined, "0", "Knows"),
@@ -472,15 +479,14 @@ table(k.model.6@frame$cond,
   To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(k.model.6A), 2)`). This model explained more variance than the model without th einteraction between condition and vignette. As shown in Figure X, although the general pattern is the same for all vignettes, when making attirbutions about the Emma vignette, people were more likely to attribute belief in every condition than they were for the other vignettes. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(k.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
   
 
-
-```{r}
+```{r interaction of cond vignette on knowledge}
 tidy(k.model.6A) %>% 
   clean_variable_names() %>% 
-  kable(caption = "Interaction of Condition and Vignette on Knoweldge Attributions") %>% 
+  kable(caption = "Interaction of Condition and Vignette on Reasonableness Attributions") %>% 
   kable_styling()
 ```
 
-```{r}
+```{r graph of con vignette on knowledge}
 #graph the three way binary 
 ggplot(data_graph) +
   geom_mosaic(aes(x = product(know_vas_combined, cond, vignette), 
@@ -495,7 +501,7 @@ ggplot(data_graph) +
   ggtitle("Figure X. Rates of Knowledge Attribution by Condition and Vignette")
 ```
 
-```{r Darrel knowledge effect}
+```{r Darrel Knowledge effect}
 k.dcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
            data_graph$cond[data_graph$vignette == "Darrel"]) %>% 
   tidy()
@@ -516,7 +522,7 @@ k.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, c(1,3)]))$statistic,
 
 ```
 
-In the Darrel vignette, people made different attributions in the different conditions X^2(`r k.dcond_effect$parameter[[1]]`) = `r round(k.dcond_effect$statistic[[1]], 2)`, p `r if(round(k.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Darrel's identification to his knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (`r round(k.dcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(k.dcond_GI$estimate2, 2)`; Cramer's `r k.dcond_GI_v$estimate`, `r k.dcond_GI_v$statistic`). The likelihood that people attributed Darrel's identification to his knowledge also differed in the knowledge and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (`r round(k.dcond_GK$estimate2, 2)`than in the Gettier condition (`r round(k.dcond_GK$estimate1, 2)`; Cramer's `r k.dcond_GK_v$estimate`, `r k.dcond_GK_v$statistic`). 
+In the Darrel vignette, people made different attributions in the different conditions X^2(`r k.dcond_effect$parameter[[1]]`) = `r round(k.dcond_effect$statistic[[1]], 2)`, p `r if(round(k.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Darrel's identification to his knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (`r round(k.dcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(k.dcond_GI$estimate2, 2)`; Cramer's `r k.dcond_GI_v$estimate`, `r k.dcond_GI_v$statistic`). The likelihood that people attributed Darrel's identification to his knowledge also differed in the reasonableness and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (`r round(k.dcond_GK$estimate2, 2)`than in the Gettier condition (`r round(k.dcond_GK$estimate1, 2)`; Cramer's `r k.dcond_GK_v$estimate`, `r k.dcond_GK_v$statistic`). 
 
 ```{r Emma knowledge effect}
 k.econd_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
@@ -567,21 +573,366 @@ In the Gerald vignette,the overall pattern was the same. People made different a
 
 Although the pattern of results was the same for all three vignettes, Cramer's V shows that the likelihood differences varied by vignette. For example, the likelihood difference between the Gettier condition and ignorance condition was much smaller in the Emma vignette than in the Darrel and Gerald vignettes. The likelihood difference between the Gettier and knowledge conditions was much smaller in the Darrel vignette than in the Emma and Gerald vignettes.
 
+
+*Reasonableness attributions*
+
+  To determine whether participants made different judgments about vignette subjects' reasonableness as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions, just as with the previous analyses that focused on knowledge attribution as a dependent variable. Like with those analyses, we analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject was rated as reasonable and 1 means the subject was rated as unreasonable.  Listwise deletion was used to handle missing data. 
+  A baseline intercept-only model was estimated initially and models with random intercepts for vignette, person, and data collection site were added sequentially, followed by a model with coviariates, and then a model with knowledge condition. Then, models with interactions were estimated to better understand whether the effect of condition on reasonableness differed as a function of vignette, sampling type, and measurement type.
+  Compared to the baseline model (AIC = `r round(AIC(r.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(r.model.2), 2)`) explained more variance. For all vignettes, the great majority of people rated subjects as reasonable. However, the rates differed slighltly by vignette. Collapsing across conditions, more people rated Emma unreasonable than Gerald, and more people rated Gerald as unreasonable than Darrel. Psuedo Rsqaured values suggest that vignette accounts for a small portion of the random variance in reasonableness attributions (between `r round(r.squaredGLMM(r.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.2)[1,2]*100, 1)`%).
+  
+```{r reasonableness by vignette}
+table(r.data_graph$reason_vas_combined, 
+           r.data_graph$vignette) %>% 
+  kable(caption = "Reasonableness by Vignette") %>% 
+  kable_styling()
+```
+  
+```{r random intercept for vignette, reasonableness}
+tidy(r.model.2) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Explaining Variance in Reasonableness with a Random Intercept for Vignette") %>% 
+  kable_styling()
+```
+
+  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(r.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(r.model.4)`). The addition of data collection site was not useful relative to the previous model. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  
+  Next, covariates were added to the model as fixed effects (AIC = `r round(AIC(r.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. Compensation was associated with reasonableness; participants who were compensated were more likely to judge the subject as reasonable. Education was also associated with reasonableness. The fewer years of education people had the more likely they were to judge the subject as reasonable.
+  
+```{r reasonableness by random intercepts}
+tidy(r.model.5) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Explaining Variance in Reasonableness with Random Intercepts for Vignette/Participant/Site and Covariates") %>% 
+  kable_styling()
+```
+
+  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(r.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on reasonableness. Although in all conditions, most people rated the subject as reasonable, both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the ignorance condition, people were more likely to rate the subject reasonable than in the Gettier condition. In the knowledge condition, people were less likely to rate the subject reasonable than in the Gettier condition. Psuedo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(r.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(r.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
+
+```{r reasonableness by knowledge condition}
+tidy(r.model.6) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Effect of Condition on Knowledge Attributions") %>% 
+  kable_styling()
+```
+
+
+```{r table of reasonableness by cond}
+r.d_table %>% 
+  kable(cpation = "Reasonableness by Condition") %>% 
+  kable_styling()
+```
+
+*Does the effect of knowledge condition differ by vignette?*
+
+  To test whether the effect of condition varied by vignette, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(r.model.6A), 2)`). This model explained more variance than the model without the interaction term. As shown in Figure X, although the general pattern is the same for all vignettes, the magnitudes of differences varied by vignette. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(r.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(r.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
+  
+
+```{r int cond and vig on reasonableness}
+tidy(r.model.6A) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Interaction of Condition and Vignette on Reasonableness") %>% 
+  kable_styling()
+```
+
+```{r showing the vignette interaction reasonabless}
+#graph the three way binary 
+ggplot(r.data_graph) +
+  geom_mosaic(aes(x = product(reason_vas_combined, cond, vignette), 
+                  fill = reason_vas_combined)) + 
+  scale_fill_manual(name = "Reasonableness",
+                    values = c("gray", "black")) + 
+  scale_x_productlist(breaks = c(0.13,.5,.87),
+    labels = c("Darrel", "Emma", "Gerald")) + 
+  theme_classic() + 
+  xlab("Vignette") + 
+  ylab("Condition") +
+  ggtitle("Figure X. Reasonablenss Judgments by Condition and Vignette")
+```
+
+```{r Darrel reason effect}
+r.dcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+           data_graph$cond[data_graph$vignette == "Darrel"]) %>% 
+  tidy()
+
+r.dcond_GI <- prop.test(t(r.d_table[1:2, 1:2])) %>% 
+  tidy()
+
+r.dcond_GI_v <- v.chi.sq(x2 = prop.test(t(r.d_table[1:2, 1:2]))$statistic, 
+         n = sum(t(r.d_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+r.dcond_GK <- prop.test(t(r.d_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+r.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(r.d_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(r.d_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+In the Darrel vignette, people made different attributions in the different conditions X^2(`r r.dcond_effect$parameter[[1]]`) = `r round(k.dcond_effect$statistic[[1]], 2)`, p `r if(round(r.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people rated Darrel reasonable differed in the ignorance and Gettier conditions such that people were more likely to rate Darrel reasonable in the Gettier condition (`r round(r.dcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(r.dcond_GI$estimate2, 2)`; Cramer's `r r.dcond_GI_v$estimate`, `r r.dcond_GI_v$statistic`). The likelihood that people rated Darrel reasonable did not differ in the knowledge and Gettier conditions (Cramer's `r r.dcond_GK_v$estimate`, `r r.dcond_GK_v$statistic`). 
+
+```{r Emma reasonableness effect}
+r.econd_effect <- chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Emma"], 
+           r.data_graph$cond[r.data_graph$vignette == "Emma"]) %>% 
+  tidy()
+
+r.econd_GI <- prop.test(t(r.e_table[1:2, 1:2])) %>% 
+  tidy()
+
+r.econd_GI_v <- v.chi.sq(x2 = prop.test(t(r.e_table[1:2, 1:2]))$statistic, 
+         n = sum(t(r.e_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+r.econd_GK <- prop.test(t(r.e_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+r.econd_GK_v <- v.chi.sq(x2 = prop.test(t(r.e_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(r.e_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+In the Emma vignette, people rated Emma's reasonableness differently across conditions X^2(`r r.econd_effect$parameter[[1]]`) = `r round(r.econd_effect$statistic[[1]], 2)`, p = `r round(r.econd_effect$p.value[[1]], 4)`. The likelihood that people rated Emma reasonable did not differ in the ignorance and Gettier conditions (Cramer's `r r.econd_GI_v$estimate`, `r r.econd_GI_v$statistic`). The likelihood that people rated Emma reasonable differed in the the knowledge and Gettier conditions such that people were more likely to rate Emma reasonable in the knowledge in the knowledge condition (`r round(r.econd_GK$estimate2, 2)`) than in the Gettier condition (`r round(r.econd_GK$estimate1, 2)`; Cramer's`r r.econd_GK_v$estimate`, `r r.econd_GK_v$statistic`). 
+
+```{r Gerald reasonableness effect}
+r.gcond_effect <- chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Gerald"], 
+           r.data_graph$cond[r.data_graph$vignette == "Gerald"]) %>% 
+  tidy()
+
+r.gcond_GI <- prop.test(t(r.g_table[1:2, 1:2])) %>% 
+  tidy()
+
+r.gcond_GI_v <- v.chi.sq(x2 = prop.test(t(r.g_table[1:2, 1:2]))$statistic, 
+         n = sum(t(r.g_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+r.gcond_GK <- prop.test(t(r.g_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+r.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(r.g_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(r.g_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+
+In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(`r r.gcond_effect$parameter[[1]]`) = `r round(r.gcond_effect$statistic[[1]], 2)`, p = `r round(r.gcond_effect$p.value[[1]], 3)`. People were more likely to rate Gerald reasonable in the Gettier condition (`r round(r.gcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(r.gcond_GI$estimate2, 2)`; Cramer's `r r.gcond_GI_v$estimate`, `r r.gcond_GI_v$statistic`). There was no difference between the knowledge and Gettier conditions (`r round(r.gcond_GK$estimate1, 2)`; Cramer's `r r.gcond_GK_v$estimate`, `r r.gcond_GK_v$statistic`). 
+
 *Does the effect of knowledge condition differ in participants recruited through Mturk?*
 
-Most data in the analysis sample came from participants recruited through university or community subjects pools or social media posts by university researchers. Some data came from participants recruited through Amazon Mturk. To test whether the effects of condition differed as a function of how participants were recruited, we estimated a model that included an interaction between condition and a variable that indicated whether or not an observation came from an Mturk participant (recruitment type; AIC = `r round(AIC(k.model.6B), 2)`). This model performed better than a model without the condition by recruitment type interaction. However, the interaction between condition and recruitment type was not significant, and there was no evidence that the effect of condition differed as a function of how participants were recruited.
+To test whether the effect of condition on reasonableness differed as a function of how participants were recruited, we estimated a model that included an interaction between condition and recruitment type (AIC = `r round(AIC(r.model.6B), 2)`). As with knowledge attributions, this model performed better than a model without the condition by recruitment type interaction, but the interaction between condition and recruitment type was not significant. There was no evidence that the effect of condition differed as a function of how participants were recruited.
 
-```{r}
-tidy(k.model.6B) %>% 
+```{r reasonableness mturk interaction}
+tidy(r.model.6B) %>% 
   clean_variable_names() %>% 
-  kable(caption = "Interaction of Condition and Participant Recruitment Type") %>% 
+  kable(caption = "Interaction of Condition and Participant Recruitment Type on Reasonableness") %>% 
   kable_styling()
 ```
 
 
 *Does the effect of knowledge condition differ as a function of how attributions were measured?*
 
-In the approved protocol, we planned to replicate analyses using different types of attribution measurement: continuously measured attributions on a scale from 0 to 100 and attributions measured as a choice between two binary options. Continously measured attirbutions were strongly bimodally distributed, and did not support linear modeling. Data were therefore combined. However to test whether the effect of condition on knowledge attributions differed as a function of measurement type, we estimated a model that included an interaction between condition and measurement type (continuous or binary; AIC = `r round(AIC(k.model.6C), 2)`). This model did not perform better than a model without the condition by measurement type and there was no evidence that the effect of condition differed depending on how knowledge attributions were measured.
+To test whether the effect of condition on reasonableness differed as a function of measurement type, we estimated a model that included an interaction between condition and measurement type (AIC = `r round(AIC(r.model.6C), 2)`). As with knowledge attributions, this model did not perform better than a model without the interaction. There was no evidence that the effect of condition differed depending on how reasonableness was measured.
+
+*Luck*
+
+  We estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their luck and 1 means the subject's identification was attributed to their ability. Listwise deletion was used to handle missing data. 
+  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially. 
+  Compared to the baseline model (AIC = `r round(AIC(l.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(l.model.2), 2)`) explained more variance. People tended to attribute luck differently in each vignette. For Darrel, people were more likley to attribute ability over luck. For Emma, people were more likely to attribute luck over ability. For Gerald, people showed a slight tendency to attribute luck over ability. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(l.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.2)[1,2]*100, 1)`% of the random variance in luck attributions. 
+  
+```{r luck model vignette}
+tidy(l.model.2) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Explaining Variance in Luck Attributions with a Random Intercept for Vignette") %>% 
+  kable_styling()
+```
+
+  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(l.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(l.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(l.model.4)`). The addition of data collection site was not useful relative to the previous model. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(l.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, covariates were added to the model as fixed effects (AIC = `r round(AIC(l.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. There was an association between years of education and luck attributions. People who had fewer years of education were more likely to attribute luck rather than ability.
+  
+```{r intercepts and cov model}
+tidy(l.model.5) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Explaining Variance in Luck Attributions with Random Intercepts for Vignette/Participant/Site and Covariates") %>% 
+  kable_styling()
+```
+
+  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(l.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on people's luck attributions. Both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the knowledge condition and the ignorance condition, people were more likely to attribute subject's identification to their ability. In the Gettier condition, people were more likely to attribute luck. Psuedo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(l.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(l.model.6)[1,1]*100, 1)`% of the fixed effect variance in luck attributions.
+
+```{r condition luck model}
+tidy(l.model.6) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Effect of Condition on Luck Attributions") %>% 
+  kable_styling()
+```
+
+
+```{r condition luck}
+table(l.model.6@frame$cond, 
+      str_replace(
+        str_replace(l.model.6@frame$luck_vas_combined, "0", "Luck"),
+        "1", "Ability")) 
+```
+
+*Does the effect of knowledge condition differ by vignette?*
+
+  To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(l.model.6A), 2)`). This model explained more variance than the model without the interaction between condition and vignette. As shown in Figure X, each vignette shows a different pattern of condition effects. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(l.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(l.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
+  
+
+```{r luck interaction table}
+tidy(l.model.6A) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Interaction of Condition and Vignette on Luck Attributions") %>% 
+  kable_styling()
+```
+
+```{r luck interaction graph}
+#graph the three way binary 
+ggplot(l.data_graph) +
+  geom_mosaic(aes(x = product(luck_vas_combined, cond, vignette), 
+                  fill = luck_vas_combined)) + 
+  scale_fill_manual(name = "Luck Choice",
+                    values = c("gray", "black")) + 
+  scale_x_productlist(breaks = c(0.13,.5,.87),
+    labels = c("Darrel", "Emma", "Gerald")) + 
+  theme_classic() + 
+  xlab("Vignette") + 
+  ylab("Condition") +
+  ggtitle("Figure X. Rates of Luck Attribution by Condition and Vignette")
+```
+
+```{r Darrel luck effect}
+l.dcond_effect <- chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
+           l.data_graph$cond[l.data_graph$vignette == "Darrel"]) %>% 
+  tidy()
+
+l.dcond_GI <- prop.test(t(l.d_table[1:2, 1:2])) %>% 
+  tidy()
+
+l.dcond_GI_v <- v.chi.sq(x2 = prop.test(t(l.d_table[1:2, 1:2]))$statistic, 
+         n = sum(t(l.d_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+l.dcond_GK <- prop.test(t(l.d_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+l.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(l.d_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(l.d_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+In the Darrel vignette, people made different attributions in the different conditions X^2(`r l.dcond_effect$parameter[[1]]`) = `r round(l.dcond_effect$statistic[[1]], 2)`, p `r if(round(l.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Darrel's identification to his luck did not differ in the ignorance and Gettier conditions (Cramer's `r l.dcond_GI_v$estimate`, `r l.dcond_GI_v$statistic`). The likelihood that people attributed Darrel's identification to his luck differed in the reasonableness and Gettier conditions. People were less likely to attribute reasonableness over luck in the knowledge condition (`r round(l.dcond_GK$estimate2, 2)`than in the Gettier condition (`r round(l.dcond_GK$estimate1, 2)`; Cramer's `r l.dcond_GK_v$estimate`, `r l.dcond_GK_v$statistic`). 
+
+```{r Emma luck effect}
+l.econd_effect <- chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Emma"], 
+           l.data_graph$cond[l.data_graph$vignette == "Emma"]) %>% 
+  tidy()
+
+l.econd_GI <- prop.test(t(l.e_table[1:2, 1:2])) %>% 
+  tidy()
+
+l.econd_GI_v <- v.chi.sq(x2 = prop.test(t(l.e_table[1:2, 1:2]))$statistic, 
+         n = sum(t(l.e_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+l.econd_GK <- prop.test(t(l.e_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+l.econd_GK_v <- v.chi.sq(x2 = prop.test(t(l.e_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(l.e_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+In the Emma vignette, people also made different attributions in the different conditions X^2(`r l.econd_effect$parameter[[1]]`) = `r round(l.econd_effect$statistic[[1]], 2)`, p `r if(round(l.econd_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Emma's identification to her ability versus her luck differed in the ignorance and Gettier conditions such that people were more likely to attribute luck in the Gettier condition (`r round(l.econd_GI$estimate1, 2)`) than in the ignorance condition (`r round(l.econd_GI$estimate2, 2)`; Cramer's `r l.econd_GI_v$estimate`, `r l.econd_GI_v$statistic`). The likelihood of luck attribution also differed in the knowledge and Gettier conditions such that people were less likely to attribute luck in the knowledge condition (`r round(l.econd_GK$estimate2, 2)`) than in the Gettier condition (`r round(l.econd_GK$estimate1, 2)`; Cramer's`r l.econd_GK_v$estimate`, `r l.econd_GK_v$statistic`). 
+
+```{r Gerald luck effect}
+l.gcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+           data_graph$cond[data_graph$vignette == "Gerald"]) %>% 
+  tidy()
+
+l.gcond_GI <- prop.test(t(l.e_table[1:2, 1:2])) %>% 
+  tidy()
+
+l.gcond_GI_v <- v.chi.sq(x2 = prop.test(t(l.g_table[1:2, 1:2]))$statistic, 
+         n = sum(t(l.e_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+l.gcond_GK <- prop.test(t(l.e_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+l.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(l.g_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(l.e_table[1:2, c(1,3)])),
+         r = 2, c = 2) 
+
+```
+
+
+In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(`r l.gcond_effect$parameter[[1]]`) = `r round(l.gcond_effect$statistic[[1]], 2)`, p `r if(round(l.gcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. As with Darrel and Emma, the likelihood that people attributed Gerald's identification to his lcuk differed such that people were more likely to attribute luck in the Gettier condition (`r round(l.gcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(l.gcond_GI$estimate2, 2)`; Cramer's `r l.gcond_GI_v$estimate`, `r l.gcond_GI_v$statistic`). In addition, people were less likely to attribute lcuk to Gerald in the knowledge condition (`r round(l.gcond_GK$estimate2, 2)`) than in the Gettier condition (`r round(l.gcond_GK$estimate1, 2)`; Cramer's `r l.gcond_GK_v$estimate`, `r l.gcond_GK_v$statistic`). 
+
+*Does the effect of knowledge condition differ in participants recruited through Mturk?*
+
+We estimated a model that included an interaction between condition and recruitment type (AIC = `r round(AIC(l.model.6B), 2)`). This model performed better than a model without the condition by recruitment type interaction. However, as with models predicting knowledge attributions and reasonableness, the interaction between condition and recruitment type was not significant. There was no evidence that the effect of condition differed as a function of how participants were recruited.
+
+```{r luck mturk interaction}
+tidy(l.model.6B) %>% 
+  clean_variable_names() %>% 
+  kable(caption = "Interaction of Condition and Participant Recruitment Type on Luck") %>% 
+  kable_styling()
+```
+
+
+*Does the effect of knowledge condition differ as a function of how attributions were measured?*
+
+We estimated a model that included an interaction between condition and measurement type (AIC = `r round(AIC(l.model.6C), 2)`). This model performed better than a model without the condition by measurement type interaction. As shown in Figure X, the effect was consistent across mesaurement type, suggesting a slight difference in magnitude between the two measurement types for one or more conditions.
+
+```{r}
+#graph the three way binary 
+ggplot(l.data_graph) +
+  geom_mosaic(aes(x = product(luck_vas_combined, cond, luck_vas_combined_source), 
+                  fill = luck_vas_combined)) + 
+  scale_fill_manual(name = "Luck Choice",
+                    values = c("gray", "black")) + 
+  scale_x_productlist(breaks = c(0.13,.87),
+    labels = c("Binary", "VAS")) + 
+  theme_classic() + 
+  xlab("Source") + 
+  ylab("Condition") +
+  ggtitle("Figure X. Interaction Between Measurement Type and Condition on Luck")
+```
+
+
+```{r}
+
+bin_cond <- chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
+           l.data_graph$cond[l.data_graph$vignette == "Darrel"])%>% 
+  tidy() #this is broken for some reason
+
+
+b_table <- table(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "Binary"],
+           l.data_graph$cond[l.data_graph$luck_vas_combined_source == "Binary"])
+
+bin_cond_GI <- prop.test(t(b_table[1:2, 1:2])) %>% 
+  tidy()
+
+bin_cond_GI_v <- v.chi.sq(x2 = prop.test(t(b_table[1:2, 1:2]))$statistic, 
+         n = sum(t(b_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+bin_cond_GK<- prop.test(t(b_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+bin_cond_GK_v <- v.chi.sq(x2 = prop.test(t(b_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(b_table[1:2, c(1,3)])),
+         r = 2, c = 2)
+```
+
+
+For the binary measurement type, there was an effect of condition on luck attributions  X^2(`r bin_cond$parameter[[1]]`) = `r round(bin_cond$statistic[[1]], 2)`, p `r if(round(bin_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likley to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(bin_cond_GI$estimate2, 2)`; Cramer's `r bin_cond_GI_v$estimate`, `r bin_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(bin_cond_GK$estimate2, 2)`; Cramer's `r bin_cond_GK_v$estimate`, `r bin_cond_GK_v$statistic`). 
+
 
 
 # Disclosures
