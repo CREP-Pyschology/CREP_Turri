@@ -502,7 +502,7 @@ ggplot(data_graph) +
 ```
 
 ```{r Darrel Knowledge effect}
-k.dcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+k.dcond_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
            data_graph$cond[data_graph$vignette == "Darrel"]) %>% 
   tidy()
 
@@ -525,7 +525,7 @@ k.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, c(1,3)]))$statistic,
 In the Darrel vignette, people made different attributions in the different conditions X^2(`r k.dcond_effect$parameter[[1]]`) = `r round(k.dcond_effect$statistic[[1]], 2)`, p `r if(round(k.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Darrel's identification to his knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (`r round(k.dcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(k.dcond_GI$estimate2, 2)`; Cramer's `r k.dcond_GI_v$estimate`, `r k.dcond_GI_v$statistic`). The likelihood that people attributed Darrel's identification to his knowledge also differed in the reasonableness and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (`r round(k.dcond_GK$estimate2, 2)`than in the Gettier condition (`r round(k.dcond_GK$estimate1, 2)`; Cramer's `r k.dcond_GK_v$estimate`, `r k.dcond_GK_v$statistic`). 
 
 ```{r Emma knowledge effect}
-k.econd_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
+k.econd_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
            data_graph$cond[data_graph$vignette == "Emma"]) %>% 
   tidy()
 
@@ -548,7 +548,7 @@ k.econd_GK_v <- v.chi.sq(x2 = prop.test(t(k.e_table[1:2, c(1,3)]))$statistic,
 In the Emma vignette, the pattern was similar. People made different attributions in the different conditions X^2(`r k.econd_effect$parameter[[1]]`) = `r round(k.econd_effect$statistic[[1]], 2)`, p `r if(round(k.econd_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Emma's identification to her knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (`r round(k.econd_GI$estimate1, 2)`) than in the ignorance condition (`r round(k.econd_GI$estimate2, 2)`; Cramer's `r k.econd_GI_v$estimate`, `r k.econd_GI_v$statistic`). The likelihood of knowledge attribution also differed in the knowledge and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (`r round(k.econd_GK$estimate2, 2)`) than in the Gettier condition (`r round(k.econd_GK$estimate1, 2)`; Cramer's`r k.econd_GK_v$estimate`, `r k.econd_GK_v$statistic`). 
 
 ```{r Gerald knowledge effect}
-k.gcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+k.gcond_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
            data_graph$cond[data_graph$vignette == "Gerald"]) %>% 
   tidy()
 
@@ -650,7 +650,7 @@ ggplot(r.data_graph) +
 ```
 
 ```{r Darrel reason effect}
-r.dcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+r.dcond_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
            data_graph$cond[data_graph$vignette == "Darrel"]) %>% 
   tidy()
 
@@ -673,7 +673,7 @@ r.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(r.d_table[1:2, c(1,3)]))$statistic,
 In the Darrel vignette, people made different attributions in the different conditions X^2(`r r.dcond_effect$parameter[[1]]`) = `r round(k.dcond_effect$statistic[[1]], 2)`, p `r if(round(r.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people rated Darrel reasonable differed in the ignorance and Gettier conditions such that people were more likely to rate Darrel reasonable in the Gettier condition (`r round(r.dcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(r.dcond_GI$estimate2, 2)`; Cramer's `r r.dcond_GI_v$estimate`, `r r.dcond_GI_v$statistic`). The likelihood that people rated Darrel reasonable did not differ in the knowledge and Gettier conditions (Cramer's `r r.dcond_GK_v$estimate`, `r r.dcond_GK_v$statistic`). 
 
 ```{r Emma reasonableness effect}
-r.econd_effect <- chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Emma"], 
+r.econd_effect <- stats::chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Emma"], 
            r.data_graph$cond[r.data_graph$vignette == "Emma"]) %>% 
   tidy()
 
@@ -696,7 +696,7 @@ r.econd_GK_v <- v.chi.sq(x2 = prop.test(t(r.e_table[1:2, c(1,3)]))$statistic,
 In the Emma vignette, people rated Emma's reasonableness differently across conditions X^2(`r r.econd_effect$parameter[[1]]`) = `r round(r.econd_effect$statistic[[1]], 2)`, p = `r round(r.econd_effect$p.value[[1]], 4)`. The likelihood that people rated Emma reasonable did not differ in the ignorance and Gettier conditions (Cramer's `r r.econd_GI_v$estimate`, `r r.econd_GI_v$statistic`). The likelihood that people rated Emma reasonable differed in the the knowledge and Gettier conditions such that people were more likely to rate Emma reasonable in the knowledge in the knowledge condition (`r round(r.econd_GK$estimate2, 2)`) than in the Gettier condition (`r round(r.econd_GK$estimate1, 2)`; Cramer's`r r.econd_GK_v$estimate`, `r r.econd_GK_v$statistic`). 
 
 ```{r Gerald reasonableness effect}
-r.gcond_effect <- chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Gerald"], 
+r.gcond_effect <- stats::chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Gerald"], 
            r.data_graph$cond[r.data_graph$vignette == "Gerald"]) %>% 
   tidy()
 
@@ -804,7 +804,7 @@ ggplot(l.data_graph) +
 ```
 
 ```{r Darrel luck effect}
-l.dcond_effect <- chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
+l.dcond_effect <- stats::chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
            l.data_graph$cond[l.data_graph$vignette == "Darrel"]) %>% 
   tidy()
 
@@ -827,7 +827,7 @@ l.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(l.d_table[1:2, c(1,3)]))$statistic,
 In the Darrel vignette, people made different attributions in the different conditions X^2(`r l.dcond_effect$parameter[[1]]`) = `r round(l.dcond_effect$statistic[[1]], 2)`, p `r if(round(l.dcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Darrel's identification to his luck did not differ in the ignorance and Gettier conditions (Cramer's `r l.dcond_GI_v$estimate`, `r l.dcond_GI_v$statistic`). The likelihood that people attributed Darrel's identification to his luck differed in the reasonableness and Gettier conditions. People were less likely to attribute reasonableness over luck in the knowledge condition (`r round(l.dcond_GK$estimate2, 2)`than in the Gettier condition (`r round(l.dcond_GK$estimate1, 2)`; Cramer's `r l.dcond_GK_v$estimate`, `r l.dcond_GK_v$statistic`). 
 
 ```{r Emma luck effect}
-l.econd_effect <- chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Emma"], 
+l.econd_effect <- stats::chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Emma"], 
            l.data_graph$cond[l.data_graph$vignette == "Emma"]) %>% 
   tidy()
 
@@ -850,7 +850,7 @@ l.econd_GK_v <- v.chi.sq(x2 = prop.test(t(l.e_table[1:2, c(1,3)]))$statistic,
 In the Emma vignette, people also made different attributions in the different conditions X^2(`r l.econd_effect$parameter[[1]]`) = `r round(l.econd_effect$statistic[[1]], 2)`, p `r if(round(l.econd_effect$p.value[[1]], 4) == 0)paste("<.0001")`. The likelihood that people attributed Emma's identification to her ability versus her luck differed in the ignorance and Gettier conditions such that people were more likely to attribute luck in the Gettier condition (`r round(l.econd_GI$estimate1, 2)`) than in the ignorance condition (`r round(l.econd_GI$estimate2, 2)`; Cramer's `r l.econd_GI_v$estimate`, `r l.econd_GI_v$statistic`). The likelihood of luck attribution also differed in the knowledge and Gettier conditions such that people were less likely to attribute luck in the knowledge condition (`r round(l.econd_GK$estimate2, 2)`) than in the Gettier condition (`r round(l.econd_GK$estimate1, 2)`; Cramer's`r l.econd_GK_v$estimate`, `r l.econd_GK_v$statistic`). 
 
 ```{r Gerald luck effect}
-l.gcond_effect <- chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+l.gcond_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
            data_graph$cond[data_graph$vignette == "Gerald"]) %>% 
   tidy()
 
@@ -871,7 +871,7 @@ l.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(l.g_table[1:2, c(1,3)]))$statistic,
 ```
 
 
-In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(`r l.gcond_effect$parameter[[1]]`) = `r round(l.gcond_effect$statistic[[1]], 2)`, p `r if(round(l.gcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. As with Darrel and Emma, the likelihood that people attributed Gerald's identification to his lcuk differed such that people were more likely to attribute luck in the Gettier condition (`r round(l.gcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(l.gcond_GI$estimate2, 2)`; Cramer's `r l.gcond_GI_v$estimate`, `r l.gcond_GI_v$statistic`). In addition, people were less likely to attribute lcuk to Gerald in the knowledge condition (`r round(l.gcond_GK$estimate2, 2)`) than in the Gettier condition (`r round(l.gcond_GK$estimate1, 2)`; Cramer's `r l.gcond_GK_v$estimate`, `r l.gcond_GK_v$statistic`). 
+In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(`r l.gcond_effect$parameter[[1]]`) = `r round(l.gcond_effect$statistic[[1]], 2)`, p `r if(round(l.gcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. As with Darrel and Emma, the likelihood that people attributed Gerald's identification to his lcuk differed such that people were more likely to attribute luck in the Gettier condition (`r round(l.gcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(l.gcond_GI$estimate2, 2)`; Cramer's `r l.gcond_GI_v$estimate`, `r l.gcond_GI_v$statistic`). In addition, people were less likely to attribute lcuk to Gerald in the knowledge condition (`r round(l.gcond_GK$estimate2, 2)`) than in the Gettier condition (Cramer's `r l.gcond_GK_v$estimate`, `r l.gcond_GK_v$statistic`). 
 
 *Does the effect of knowledge condition differ in participants recruited through Mturk?*
 
@@ -907,9 +907,9 @@ ggplot(l.data_graph) +
 
 ```{r}
 
-bin_cond <- chisq.test(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
-           l.data_graph$cond[l.data_graph$vignette == "Darrel"])%>% 
-  tidy() #this is broken for some reason
+bin_cond <- stats::chisq.test(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "Binary"],
+           l.data_graph$cond[l.data_graph$luck_vas_combined_source == "Binary"]) %>% 
+  tidy() 
 
 
 b_table <- table(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "Binary"],
@@ -932,6 +932,35 @@ bin_cond_GK_v <- v.chi.sq(x2 = prop.test(t(b_table[1:2, c(1,3)]))$statistic,
 
 
 For the binary measurement type, there was an effect of condition on luck attributions  X^2(`r bin_cond$parameter[[1]]`) = `r round(bin_cond$statistic[[1]], 2)`, p `r if(round(bin_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likley to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(bin_cond_GI$estimate2, 2)`; Cramer's `r bin_cond_GI_v$estimate`, `r bin_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(bin_cond_GK$estimate2, 2)`; Cramer's `r bin_cond_GK_v$estimate`, `r bin_cond_GK_v$statistic`). 
+
+```{r}
+
+vas_cond <- stats::chisq.test(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "VAS"],
+           l.data_graph$cond[l.data_graph$luck_vas_combined_source == "VAS"]) %>% 
+  tidy() 
+
+
+vas_table <- table(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "VAS"],
+           l.data_graph$cond[l.data_graph$luck_vas_combined_source == "VAS"])
+
+vas_cond_GI <- prop.test(t(vas_table[1:2, 1:2])) %>% 
+  tidy()
+
+vas_cond_GI_v <- v.chi.sq(x2 = prop.test(t(vas_table[1:2, 1:2]))$statistic, 
+         n = sum(t(vas_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+vas_cond_GK<- prop.test(t(vas_table[1:2, c(1,3)])) %>% 
+  tidy()
+
+vas_cond_GK_v <- v.chi.sq(x2 = prop.test(t(vas_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(vas_table[1:2, c(1,3)])),
+         r = 2, c = 2)
+```
+
+
+For the continuous measurement type, there was a similar pattern of results. There was an effect of condition on luck attributions  X^2(`r vas_cond$parameter[[1]]`) = `r round(vas_cond$statistic[[1]], 2)`, p `r if(round(vas_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likley to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(vas_cond_GI$estimate2, 2)`; Cramer's `r vas_cond_GI_v$estimate`, `r vas_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(vas_cond_GK$estimate2, 2)`; Cramer's `r vas_cond_GK_v$estimate`, `r vas_cond_GK_v$statistic`). The effect sizes of the effects were smaller when luck was measured continuously, but the confidence intervals of these effect sizes overlapped with the confidence intervals of the effect sizes for the binary measurement type. 
+
 
 
 
