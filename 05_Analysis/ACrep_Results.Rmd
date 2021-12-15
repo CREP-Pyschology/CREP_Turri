@@ -77,7 +77,7 @@ final_long$education[which(final_long$education <10)] %>%
   hist()
 ```
 
-`r length(final_long$education[which(final_long$education <10)])` people report what amounts to less than a high school diploma. `r final_long$education[which(final_long$education <2)]` people said they had one year of education. This warrants observation in the manuscript.
+`r length(final_long$education[which(final_long$education <10)])` people report what amounts to less than a high school diploma. `r length(final_long$education[which(final_long$education <2)])` people said they had one year of education. This warrants observation in the manuscript.
 
 # Method
 
@@ -961,7 +961,9 @@ vas_cond_GK_v <- v.chi.sq(x2 = prop.test(t(vas_table[1:2, c(1,3)]))$statistic,
 
 For the continuous measurement type, there was a similar pattern of results. There was an effect of condition on luck attributions  X^2(`r vas_cond$parameter[[1]]`) = `r round(vas_cond$statistic[[1]], 2)`, p `r if(round(vas_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likley to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(vas_cond_GI$estimate2, 2)`; Cramer's `r vas_cond_GI_v$estimate`, `r vas_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(vas_cond_GK$estimate2, 2)`; Cramer's `r vas_cond_GK_v$estimate`, `r vas_cond_GK_v$statistic`). The effect sizes of the effects were smaller when luck was measured continuously, but the confidence intervals of these effect sizes overlapped with the confidence intervals of the effect sizes for the binary measurement type. 
 
+### Exploratory analyses
 
+[Getting more information about why re ran these]
 
 
 # Disclosures
