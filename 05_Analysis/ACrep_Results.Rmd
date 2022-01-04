@@ -76,11 +76,11 @@ final_long$education[which(final_long$education <10)] %>%
 
 ```{r}
 # number of unique person_code by osf ids (some people had multiple projects) that are not NA
-lab_sheet$unique_project <- paste0(lab_sheet$person_code_code, lab_sheet$link_code)
+lab_sheet$unique_project <- paste0(lab_sheet$person_code, lab_sheet$link_code)
 
 n_labs_applied <- length(unique(lab_sheet$unique_project[lab_sheet$unique_project != "NANA"]))
 
-# number of unique person_code names that have protocol approved
+# number of unique link_person combination that have protocol approved
 n_labs_rejected <- n_labs_applied - length(unique(na.omit(lab_sheet$unique_project[lab_sheet$protocol_approved == "Yes"
 ])))
 
@@ -419,7 +419,6 @@ table(k.model.6@frame$cond,
 *Does the effect of knowledge condition differ by vignette?*
 
   To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(k.model.6A), 2)`). This model explained more variance than the model without th einteraction between condition and vignette. As shown in Figure X, although the general pattern is the same for all vignettes, when making attirbutions about the Emma vignette, people were more likely to attribute belief in every condition than they were for the other vignettes. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(k.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
-  
 
 ```{r interaction of cond vignette on knowledge}
 tidy(k.model.6A) %>% 
@@ -681,7 +680,7 @@ To test whether the effect of condition on reasonableness differed as a function
 
   We estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their luck and 1 means the subject's identification was attributed to their ability. Listwise deletion was used to handle missing data. 
   First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person_code, and data collection site were added sequentially. 
-  Compared to the baseline model (AIC = `r round(AIC(l.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(l.model.2), 2)`) explained more variance. People tended to attribute luck differently in each vignette. For Darrel, people were more likley to attribute ability over luck. For Emma, people were more likely to attribute luck over ability. For Gerald, people showed a slight tendency to attribute luck over ability. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(l.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.2)[1,2]*100, 1)`% of the random variance in luck attributions. 
+  Compared to the baseline model (AIC = `r round(AIC(l.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(l.model.2), 2)`) explained more variance. People tended to attribute luck differently in each vignette. For Darrel, people were more likely to attribute ability over luck. For Emma, people were more likely to attribute luck over ability. For Gerald, people showed a slight tendency to attribute luck over ability. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(l.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.2)[1,2]*100, 1)`% of the random variance in luck attributions. 
   
 ```{r luck model vignette}
 tidy(l.model.2) %>% 

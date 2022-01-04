@@ -526,6 +526,9 @@ exclusions
 
 final_long <- subset(full_long, total_exclusion < 1)
 
+# drop all the levels that no longer exist within the data 
+final_long <- droplevels(final_long)
+
 # total number data points originally
 nrow(full_long) 
 # total number data points now
@@ -686,11 +689,22 @@ fitted <- scale(fitted.values(ds.model))
 ### Luck 
 
 ```{r}
-# check data
-hist(final_long$luck_vas)
+# for luck analyses people should be excluded if they get the answer wrong 
+final_long$luck_correct <- FALSE
+
+final_long$ri_wr <- factor(final_long$ri_wr, 
+                           levels = c(1,2),
+                           labels = c("Right", "Wrong"))
+final_long$luck_correct[final_long$cond == "Ignorance" & final_long$ri_wr == "Wrong"] <- TRUE
+final_long$luck_correct[final_long$cond != "Ignorance" & final_long$ri_wr == "Right"] <- TRUE
+
+table(final_long$luck_correct)
+
+# subset the wrong answers 
+final_luck <- subset(final_long, luck_correct)
 
 # visualize the problem 
-ggplot(final_long, aes(luck_vas)) + 
+ggplot(final_luck, aes(luck_vas)) + 
   geom_histogram() + 
   facet_grid(cond~vignette) +  
   theme_classic() + 
@@ -700,7 +714,7 @@ ggplot(final_long, aes(luck_vas)) +
 ds.model <- lme(luck_vas ~ cond + comp_type + age + 
                   gender + education ,
                 random = list(~1|vignette, ~1|id),
-                data = final_long,
+                data = final_luck,
                 na.action = "na.omit")
 
 # additivity
@@ -750,7 +764,8 @@ final_long$know_vas_combined_source <- ifelse(is.na(final_long$know_vas_binned),
                                      "Binary", 
                                      "VAS")
 
-table(final_long$luck_vas_combined)
+table(final_long$know_vas_combined)
+table(final_long$know_vas_combined_source)
 
 ## reasonable
 table(final_long$reason_bin)
@@ -778,28 +793,29 @@ table(final_long$reason_vas_combined)
 table(final_long$reason_vas_combined_source)
 
 ## luck
-table(final_long$luck_bin)
+table(final_luck$luck_bin)
 
 ## split data 
-final_long$luck_vas_binned <- final_long$luck_vas
-final_long$luck_vas_binned[final_long$luck_vas_binned <= 40] <- 2
-final_long$luck_vas_binned[final_long$luck_vas_binned >= 40 & 
-                             final_long$luck_vas_binned <= 60] <- NA
-final_long$luck_vas_binned[final_long$luck_vas_binned >= 60] <- 1
-table(final_long$luck_vas_binned, useNA = "ifany")
+final_luck$luck_vas_binned <- final_luck$luck_vas
+final_luck$luck_vas_binned[final_luck$luck_vas_binned <= 40] <- 2
+final_luck$luck_vas_binned[final_luck$luck_vas_binned >= 40 & 
+                             final_luck$luck_vas_binned <= 60] <- NA
+final_luck$luck_vas_binned[final_luck$luck_vas_binned >= 60] <- 1
+table(final_luck$luck_vas_binned, useNA = "ifany")
 
 # no overlap
-table(final_long$luck_bin, final_long$luck_vas_binned, useNA = "ifany")
+table(final_luck$luck_bin, final_luck$luck_vas_binned, useNA = "ifany")
 
-final_long$luck_vas_combined <- ifelse(is.na(final_long$luck_vas_binned), 
-                                     final_long$luck_bin, 
-                                     final_long$luck_vas_binned)
+final_luck$luck_vas_combined <- ifelse(is.na(final_luck$luck_vas_binned), 
+                                     final_luck$luck_bin, 
+                                     final_luck$luck_vas_binned)
 
-final_long$luck_vas_combined_source <- ifelse(is.na(final_long$luck_vas_binned), 
+final_luck$luck_vas_combined_source <- ifelse(is.na(final_luck$luck_vas_binned), 
                                      "Binary", 
                                      "VAS")
 
-table(final_long$luck_vas_combined)
+table(final_luck$luck_vas_combined)
+table(final_luck$luck_vas_combined_source)
 ```
 
 ### Gender Other
@@ -808,6 +824,9 @@ Because of the small other category, we will simply compare male to female.
 
 ```{r}
 final_long$gender2 <- factor(final_long$gender,
+                             levels = c("female", "male"))
+
+final_luck$gender2 <- factor(final_luck$gender,
                              levels = c("female", "male"))
 ```
 
@@ -828,7 +847,7 @@ table(final_long$person_code, final_long$know_vas_combined, useNA = "ifany")
 
 table(final_long$person_code, final_long$reason_vas_combined, useNA = "ifany")
 
-table(final_long$person_code, final_long$luck_vas_combined, useNA = "ifany")
+table(final_luck$person_code, final_luck$luck_vas_combined, useNA = "ifany")
 
 table(final_long$person_code, final_long$education)
 
@@ -858,7 +877,7 @@ ggplot(final_long, aes(know_bin)) +
   xlab("Knowledge Attribution Bin Score")
 ```
 
- ## Final Analysis Knowledge
+## Final Analysis Knowledge
 
 ### Model 1 
 
@@ -1471,10 +1490,10 @@ Intercept only model to help determine if the addition of random intercepts are 
 
 ```{r}
 #scores should be 0 and 1 for this analysis 
-final_long$luck_vas_combined <- final_long$luck_vas_combined - 1
+final_luck$luck_vas_combined <- final_luck$luck_vas_combined - 1
 
 l.model.1 <- glm(luck_vas_combined ~ 1,
-               data = final_long,
+               data = final_luck,
                family = binomial,
                na.action = "na.omit")
 
@@ -1487,14 +1506,14 @@ Vignette random intercept model:
 
 ```{r}
 l.model.2 <- glmer(luck_vas_combined ~ (1|vignette),
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
 summary(l.model.2)
 coef(l.model.2) # log odds zero is the center 
 exp(coef(l.model.2)$vignette) # regular odds with 1 at the center 
-table(final_long$vignette, final_long$luck_vas_combined)
+table(final_luck$vignette, final_luck$luck_vas_combined)
 r.squaredGLMM(l.model.2)
 ```
 
@@ -1515,7 +1534,7 @@ Vignette nested in participants random intercept:
 
 ```{r}
 l.model.3 <- glmer(luck_vas_combined ~ (1|vignette/id),
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
@@ -1535,7 +1554,7 @@ Vignette nested in participants which is then nested in labs:
 
 ```{r}
 l.model.4 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code),
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
@@ -1557,7 +1576,7 @@ Addition of the covariates added to the vignette random intercept model.
 ```{r}
 l.model.5 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education,
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
@@ -1582,7 +1601,7 @@ The previous model of covariates plus the variable of focus: condition.
 l.model.6 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond,
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
@@ -1610,7 +1629,7 @@ Does the vignette interact with the condition?
 l.model.6A <- glmer(luck_vas_combined ~ (1 | vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond*vignette,
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
@@ -1729,7 +1748,7 @@ Data was collected from mechanical turk participants. Are there differences in t
 l.model.6B <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*turk,
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
@@ -1753,7 +1772,7 @@ Data was binned because of the distributions of the visual analogue scale - does
 l.model.6C <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*luck_vas_combined_source,
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
@@ -1846,10 +1865,25 @@ v.chi.sq(x2 = prop2$statistic,
 ### Condition by Luck 
 
 ```{r}
+## add to this data
+final_luck$know_vas_binned <- final_luck$know_vas
+final_luck$know_vas_binned[final_luck$know_vas_binned <= 40] <- 2
+final_luck$know_vas_binned[final_luck$know_vas_binned >= 40 & 
+                             final_luck$know_vas_binned <= 60] <- NA
+final_luck$know_vas_binned[final_luck$know_vas_binned >= 60] <- 1
+table(final_luck$know_vas_binned, useNA = "ifany")
+
+
+final_luck$know_vas_combined <- ifelse(is.na(final_luck$know_vas_binned), 
+                                     final_luck$know_bin, 
+                                     final_luck$know_vas_binned)
+
+final_luck$know_vas_combined <- final_luck$know_vas_combined - 1
+
 k.model.6E <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*luck_vas_combined,
-                      data = final_long,
+                      data = final_luck,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
                       nAGQ = 0)
