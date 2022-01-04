@@ -275,6 +275,7 @@ Data were excluded for the following reasons (applied in the order listed):
 (3) the participant failed to answer all three of the vignette comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion))`; e.g., did not correctly identify what Darrel was looking at);
 (4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose_exclusion))`);
 (5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion))`); see Vickstrom, Shin, Collazo, & Bauman, 2015).
+**NOTE** these numbers are not adding up in the manuscript -- check the math here and make sure that lang_exclusion is correct
 
 Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age.
 
