@@ -265,12 +265,12 @@ write.csv(purposeDF_wide_missing, "../04_Data/data/purpose_needs_wide.csv", row.
   - Delete cases that should not be used 
 
 ```{r} 
-lab_sheet <- import("../04_Data/data/lab_sheet.csv")
+lab_sheet <- import("../04_Data/data/lab_sheet.xlsx")
 
 nrow(full_long)
 
 # delete test and do not use cases
-full_long <- subset(full_long, lab_id %in% c(lab_sheet$lab_code[lab_sheet$Use == "Yes"], "87d100", "b6c8ec"))
+full_long <- subset(full_long, lab_id %in% lab_sheet$lab_code[lab_sheet$use == "Yes"])
 
 nrow(full_long)
 
@@ -301,13 +301,11 @@ lab_comp_max <- subset(lab_comp_max, is.na(Var2))
 colnames(lab_comp_max) <- c("lab_code", "comp", "Percent")
 
 # clean up lab codes compensation
-lab_sheet$comp <- "Yes"
-lab_sheet$comp[grepl("-", lab_sheet$Compensation)] <- "Unclear"
-lab_sheet$comp[grepl("Not clear", lab_sheet$Compensation)] <- "Unclear"
-lab_sheet$comp[grepl("Unsure", lab_sheet$Compensation)] <- "Unclear"
-lab_sheet$comp[grepl("In Vivo", lab_sheet$Compensation)] <- "Mixed"
-lab_sheet$comp[grepl("None", lab_sheet$Compensation)] <- "No"
-lab_sheet$comp[is.na(lab_sheet$Compensation)] <- "Unclear"
+table(lab_sheet$compensation, useNA = "ifany")
+lab_sheet$comp <- lab_sheet$compensation
+lab_sheet$comp <- gsub("Course Credit for Students, Nothing for Community", "Mixed", lab_sheet$comp)
+lab_sheet$comp <- gsub("Course Credit|Lottery|Money|Sweets", "Yes", lab_sheet$comp)
+lab_sheet$comp <- gsub("None", "No", lab_sheet$comp)
 
 table(lab_sheet$comp, useNA = "ifany")
 
@@ -324,10 +322,6 @@ full_long$comp[full_long$lab_id %in%
 full_long$comp[full_long$lab_id %in% 
                  lab_comp_max$lab_code[lab_comp_max$comp.y == "No"]] <- "No"
 
-# this is mturk compensation is yes 
-full_long$comp[full_long$lab_id == "b6c8ec"] <- "Yes"
-full_long$turk <- full_long$lab_id == "b6c8ec"
-
 table(full_long$lab_id, full_long$comp, useNA = "ifany") 
 
 # deal with not sures 
@@ -336,6 +330,9 @@ table(full_long$comp, useNA = "ifany")
 full_long$comp[full_long$comp == "Not Sure" & is.na(full_long$comp_type)] <- "No"
 full_long$comp[full_long$comp == "Not Sure" & !is.na(full_long$comp_type)] <- "Yes"
 
+#add turk variable
+full_long$turk <- full_long$lab_id == "b6c8ec"
+
 full_long$comp <- droplevels(full_long$comp)
 ```
 
@@ -343,12 +340,11 @@ full_long$comp <- droplevels(full_long$comp)
 
 ```{r}
 full_long <- merge(full_long, 
-                   lab_sheet[ , c("lab_code", "UN_Region", "Person")],
+                   lab_sheet[ , c("lab_code", "un_region", "person_code")],
                    by.x = "lab_id", by.y = "lab_code", 
                    all.x = T)
-full_long$Person[is.na(full_long$Person)] <- as.character(full_long$lab_id[is.na(full_long$Person)])
 
-table(full_long$Person)
+table(full_long$person_code)
 ```
 
 ### Examine Coding for Covariates 
@@ -405,7 +401,7 @@ nrow(full_long)
 # number of participants
 length(unique(full_long$id))
 # number of data collection spot
-length(unique(full_long$Person))
+length(unique(full_long$person_code))
 ```
 
 ## Study Exclusions
@@ -422,6 +418,7 @@ https://en.wikipedia.org/wiki/Age_of_majority
 
 ```{r}
 # table of lab countries
+full_long$lab_country <- droplevels(full_long$lab_country)
 table(full_long$lab_country, useNA = "ifany")
 
 # age information
@@ -559,10 +556,10 @@ ggplot(final_long, aes(know_vas)) +
 
 ```{r}
 # total lab count
-length(unique(full_long$Person))
+length(unique(full_long$person_code))
 
 # usable data lab count
-length(unique(final_long$Person))
+length(unique(final_long$person_code))
 
 # total countries
 table(full_long$lab_country)
@@ -626,7 +623,7 @@ ggplot(final_long, aes(know_vas)) +
 
 ## knowledge 
 ds.model <- lme(know_vas ~ cond + comp + age + gender + education,
-                random = list(~1|vignette, ~1|id, ~1|Person),
+                random = list(~1|vignette, ~1|id, ~1|person_code),
                 data = final_long,
                 na.action = "na.omit")
 
@@ -664,7 +661,7 @@ ggplot(final_long, aes(reason_vas)) +
 ## reasonable 
 ds.model <- lme(reason_vas ~ cond + comp_type + age + 
                   gender + education,
-                random = list(~1|vignette, ~1|id), #won't converge with Person
+                random = list(~1|vignette, ~1|id), #won't converge with person_code
                 data = final_long,
                 na.action = "na.omit")
 
@@ -819,23 +816,23 @@ final_long$gender2 <- factor(final_long$gender,
 ### Missing Data Information 
 
 ```{r}
-table(final_long$Person, final_long$vignette, useNA = "ifany")
+table(final_long$person_code, final_long$vignette, useNA = "ifany")
 
-table(final_long$Person, final_long$comp, useNA = "ifany") # 6ce754 and f6d5a9
+table(final_long$person_code, final_long$comp, useNA = "ifany") # 6ce754 and f6d5a9
 
-table(final_long$Person, final_long$gender2, useNA = "ifany")
+table(final_long$person_code, final_long$gender2, useNA = "ifany")
 
-table(final_long$Person, final_long$cond, useNA = "ifany")
+table(final_long$person_code, final_long$cond, useNA = "ifany")
 
-table(final_long$Person, final_long$know_vas_combined, useNA = "ifany")
+table(final_long$person_code, final_long$know_vas_combined, useNA = "ifany")
 
-table(final_long$Person, final_long$reason_vas_combined, useNA = "ifany")
+table(final_long$person_code, final_long$reason_vas_combined, useNA = "ifany")
 
-table(final_long$Person, final_long$luck_vas_combined, useNA = "ifany")
+table(final_long$person_code, final_long$luck_vas_combined, useNA = "ifany")
 
-table(final_long$Person, final_long$education)
+table(final_long$person_code, final_long$education)
 
-tapply(final_long$age, final_long$Person, mean, na.rm = T)
+tapply(final_long$age, final_long$person_code, mean, na.rm = T)
 ```
 
 ### Check for Reverse Coding 
@@ -932,7 +929,7 @@ r.squaredGLMM(k.model.3)
 Vignette nested in participants which is then nested in labs:
 
 ```{r}
-k.model.4 <- glmer(know_vas_combined ~ (1|vignette/id/Person),
+k.model.4 <- glmer(know_vas_combined ~ (1|vignette/id/person_code),
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
@@ -953,7 +950,7 @@ r.squaredGLMM(k.model.4)
 Addition of the covariates added to the vignette random intercept model. 
 
 ```{r}
-k.model.5 <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
+k.model.5 <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education,
                       data = final_long,
                       family = binomial,
@@ -974,7 +971,7 @@ r.squaredGLMM(k.model.5)
 The previous model of covariates plus the variable of focus: condition.
 
 ```{r}
-k.model.6 <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
+k.model.6 <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond,
                       data = final_long,
@@ -1002,7 +999,7 @@ r.squaredGLMM(k.model.6)
 Does the vignette interact with the condition?
 
 ```{r}
-k.model.6A <- glmer(know_vas_combined ~ (1 | vignette/id/Person) + 
+k.model.6A <- glmer(know_vas_combined ~ (1 | vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond*vignette,
                       data = final_long,
@@ -1122,7 +1119,9 @@ v.chi.sq(x2 = prop2$statistic,
 Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
 
 ```{r}
-k.model.6B <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
+
+
+k.model.6B <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*turk,
                       data = final_long,
@@ -1146,7 +1145,7 @@ r.squaredGLMM(k.model.6B)
 Data was binned because of the distributions of the visual analogue scale - does the data source make a difference? 
 
 ```{r}
-k.model.6C <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
+k.model.6C <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*know_vas_combined_source,
                       data = final_long,
@@ -1231,7 +1230,7 @@ r.squaredGLMM(r.model.3)
 Vignette nested in participants which is then nested in labs:
 
 ```{r}
-r.model.4 <- glmer(reason_vas_combined ~ (1|vignette/id/Person),
+r.model.4 <- glmer(reason_vas_combined ~ (1|vignette/id/person_code),
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
@@ -1252,7 +1251,7 @@ r.squaredGLMM(r.model.4)
 Addition of the covariates added to the vignette random intercept model. 
 
 ```{r}
-r.model.5 <- glmer(reason_vas_combined ~ (1|vignette/id/Person) + 
+r.model.5 <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education,
                       data = final_long,
                       family = binomial,
@@ -1270,14 +1269,14 @@ r.squaredGLMM(r.model.5)
   - Interpretation: this model is better than the vignette random intercept only model.
   - Coefficients:
     - The compensated participants were more likely to say reasonable (they are also a much larger group).
-    - Education is a negative coefficient indicating that the less educate a person listed, the more likely they were to pick reasonable. 
+    - Education is a negative coefficient indicating that the less educate a person_code listed, the more likely they were to pick reasonable. 
   
 ### Model 6
 
 The previous model of covariates plus the variable of focus: condition.
 
 ```{r}
-r.model.6 <- glmer(reason_vas_combined ~ (1|vignette/id/Person) + 
+r.model.6 <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond,
                       data = final_long,
@@ -1304,7 +1303,7 @@ r.squaredGLMM(r.model.6)
 Does the vignette interact with the condition?
 
 ```{r}
-r.model.6A <- glmer(reason_vas_combined ~ (1 | vignette/id/Person) + 
+r.model.6A <- glmer(reason_vas_combined ~ (1 | vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond*vignette,
                       data = final_long,
@@ -1423,7 +1422,7 @@ v.chi.sq(x2 = prop2$statistic,
 Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
 
 ```{r}
-r.model.6B <- glmer(reason_vas_combined ~ (1|vignette/id/Person) + 
+r.model.6B <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*turk,
                       data = final_long,
@@ -1447,7 +1446,7 @@ r.squaredGLMM(r.model.6B)
 Data was binned because of the distributions of the visual analogue scale - does the data source make a difference? 
 
 ```{r}
-r.model.6C <- glmer(reason_vas_combined ~ (1|vignette/id/Person) + 
+r.model.6C <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*reason_vas_combined_source,
                       data = final_long,
@@ -1535,7 +1534,7 @@ r.squaredGLMM(l.model.3)
 Vignette nested in participants which is then nested in labs:
 
 ```{r}
-l.model.4 <- glmer(luck_vas_combined ~ (1|vignette/id/Person),
+l.model.4 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code),
                       data = final_long,
                       family = binomial,
                       control = glmerControl(optimizer = "bobyqa"),
@@ -1556,7 +1555,7 @@ r.squaredGLMM(l.model.4)
 Addition of the covariates added to the vignette random intercept model. 
 
 ```{r}
-l.model.5 <- glmer(luck_vas_combined ~ (1|vignette/id/Person) + 
+l.model.5 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education,
                       data = final_long,
                       family = binomial,
@@ -1580,7 +1579,7 @@ r.squaredGLMM(l.model.5)
 The previous model of covariates plus the variable of focus: condition.
 
 ```{r}
-l.model.6 <- glmer(luck_vas_combined ~ (1|vignette/id/Person) + 
+l.model.6 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond,
                       data = final_long,
@@ -1608,7 +1607,7 @@ r.squaredGLMM(l.model.6)
 Does the vignette interact with the condition?
 
 ```{r}
-l.model.6A <- glmer(luck_vas_combined ~ (1 | vignette/id/Person) + 
+l.model.6A <- glmer(luck_vas_combined ~ (1 | vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond*vignette,
                       data = final_long,
@@ -1727,7 +1726,7 @@ v.chi.sq(x2 = prop2$statistic,
 Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
 
 ```{r}
-l.model.6B <- glmer(luck_vas_combined ~ (1|vignette/id/Person) + 
+l.model.6B <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*turk,
                       data = final_long,
@@ -1751,7 +1750,7 @@ r.squaredGLMM(l.model.6B)
 Data was binned because of the distributions of the visual analogue scale - does the data source make a difference? 
 
 ```{r}
-l.model.6C <- glmer(luck_vas_combined ~ (1|vignette/id/Person) + 
+l.model.6C <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*luck_vas_combined_source,
                       data = final_long,
@@ -1847,7 +1846,7 @@ v.chi.sq(x2 = prop2$statistic,
 ### Condition by Luck 
 
 ```{r}
-k.model.6E <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
+k.model.6E <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*luck_vas_combined,
                       data = final_long,
@@ -1940,7 +1939,7 @@ final_long$know_alt <- final_long$know_alt - 1 #center over zero
 table("original" = final_long$know_vas_combined, 
       "alternative" = final_long$know_alt)
 
-k.model.6F <- glmer(know_alt ~ (1|vignette/id/Person) + 
+k.model.6F <- glmer(know_alt ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond,
                       data = final_long,
@@ -1969,7 +1968,7 @@ r.squaredGLMM(k.model.6F)
 ### Order Effects 
 
 ```{r}
-k.model.6G <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
+k.model.6G <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond + vignette_order + cond_order,
                       data = final_long,
@@ -2014,7 +2013,7 @@ ggplot(data_graph) +
 - However, these plots indicate that there's likely not a lot of effect for order - only slightly differences in knows versus believes selection. 
 
 ```{r}
-k.model.6H <- glmer(know_vas_combined ~ (1|vignette/id/Person) + 
+k.model.6H <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                    comp + age + gender2 + education + 
                    cond*vignette_order + cond*cond_order,
                       data = final_long,
