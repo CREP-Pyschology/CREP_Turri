@@ -38,7 +38,7 @@ library(broom.mixed) # for nicely presented results
 clean_variable_names <- function(tidy_model_obj){
   
   tidy_model_obj %>% 
-    mutate(group = str_replace(group, "Person.*", "site"),
+    mutate(group = str_replace(group, "person_code.*", "site"),
            group = str_replace(group, "id:vignette","participant")) %>% 
     mutate(term = str_replace(term, "compYes", "compensation"),
            term = str_replace(term, "gender2male", "gender"))
@@ -47,30 +47,23 @@ clean_variable_names <- function(tidy_model_obj){
 
 ```
 
-
 # EDA on the analysis set
 
-
 A few notes about variables:
-- Person is a unique lab identifier (identifies PI)
+- person_code_code is a unique lab identifier (identifies PI)
 - lab_id is a not a unique lab identifier, but rather identifies the undergraduate PI
 (and some of these undergraduate PIs were students with the same lab PI)
 - lab_country is the variable we are using to identify country/region
-- UN_Region groups lab country into larger regions
+- un_region groups lab country into larger regions
 - source identifies the method of data collection
 - id uniquely identifies each participant by concatenating the source (qualtrics vs socscisurvey),
 undergraduate PI (lab_id), and the unique identifier (case, which was of a different format depending on source)
 - variables ending in valid are logical and identify valid cases (in the "final_long" dataset, there will not be variance)
 - variables ending in order indicate the order in which vignettes or condition were presented (varies by participant),
-or the order in which binary DVs were presented (for socscisurvey, this varies by person within lab such that people 
+or the order in which binary DVs were presented (for socscisurvey, this varies by person_code within lab such that people 
 were presented with "normal" (*not sure what direction this is*) or "swapped", but for Qualtrics, this was randomized 
-within person and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
+within person_code and so is coded as "mixed" and and we do not have more detailed information about order in the final dataset. also one lab didn't properly randomize.)
 - 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.
-
-```{r UN_Region}
-full_long %>% filter(is.na(UN_Region)) %>% tabyl(lab_id)
-```
-Information that came from lab_sheet (ultimately the source was a google doc) is not accurate and doesn't contain information about qualtrics labs. This is a problem.
 
 ```{r years of education}
 final_long$education[which(final_long$education <10)] %>% 
@@ -81,126 +74,75 @@ final_long$education[which(final_long$education <10)] %>%
 
 # Method
 
-
 ```{r}
+# number of unique person_code by osf ids (some people had multiple projects) that are not NA
+lab_sheet$unique_project <- paste0(lab_sheet$person_code_code, lab_sheet$link_code)
 
-#labs that applied
-n_labs_applied <- 69
-n_labs_rejected <- (69-37)
-n_labs_failed <- 30
-n_labs_finished_crep <- 22
-# sources: https://docs.google.com/spreadsheets/d/1Y4ZFB0AZQMhjVwGP-aA9eEC2CWKUUq5LdJu7wZLAdQ8/edit#gid=575778621
-# https://docs.google.com/spreadsheets/d/1Y4ZFB0AZQMhjVwGP-aA9eEC2CWKUUq5LdJu7wZLAdQ8/edit#gid=1889366473
+n_labs_applied <- length(unique(lab_sheet$unique_project[lab_sheet$unique_project != "NANA"]))
 
-#create table content
+# number of unique person_code names that have protocol approved
+n_labs_rejected <- n_labs_applied - length(unique(na.omit(lab_sheet$unique_project[lab_sheet$protocol_approved == "Yes"
+])))
 
-#save teams per site
-teams_per_site <- final_long %>% 
-  group_by(Person, lab_id) %>% group_by(Person, lab_id) %>% count() %>% 
-  group_by(Person) %>% count() %>%
-  rename(n_student_teams = n) %>% 
-  ungroup() %>% 
-  glimpse()
+# number of unique person_codes who were approved but didn't collect data
+n_labs_failed <- length(unique(na.omit(lab_sheet$unique_project[lab_sheet$data_collected == "No"])))
 
-#save full n per site
-full_data_n_per_site <- full_long %>% 
-  group_by(Person, id) %>% count() %>% 
-  group_by(Person) %>% count() %>% 
-  rename(full_data_n = n) %>% 
-  ungroup() %>% 
-  glimpse()
-
-#save final n per site
-final_data_n_per_site <- final_long %>% 
-  group_by(Person, id) %>% count() %>% 
-  group_by(Person) %>% count() %>% 
-  rename(final_data_n = n) %>% 
-  ungroup() %>% 
-  glimpse()
+# number of labs who "finished" crep
+n_labs_finished_crep <- length(unique(na.omit(lab_sheet$unique_project[lab_sheet$completed_crep_requirements == "Yes"])))
 
 #check assumption that each site had one data collection source...
 #error out if any site contributed data from both Qualtrics and SSS
 if (full_long %>% 
-  group_by(Person, source) %>% count() %>% 
-  group_by(Person) %>% count() %>% 
+  group_by(person_code, source) %>% count() %>% 
+  group_by(person_code) %>% count() %>% 
   filter(n > 1) %>% 
   nrow() %>% .[1] != 0) STOP
 
 #save survey platform info
 platform <- full_long %>% 
-  group_by(Person) %>% 
+  group_by(person_code) %>% 
   summarize(survey_platform = first(source)) %>%
   ungroup() %>% 
   glimpse()
 
-#save world region info
-full_long %>% 
-  group_by(Person)
-
-#check assumption that each site had one compensation type...
-#something is fishy
-#FIX: Need to check all comp information in lab_sheet and it's source gsheet -- people in the same data site have different values
-#these values should reflect the compensation that was in people's
-#IRB approvals
+#check assumption that each site had one compensation type
 multiple_compensation <- lab_sheet %>% 
-   group_by(Person, Compensation) %>% count() %>% 
-   group_by(Person) %>% count() %>% 
-   filter(n > 1) %>% pull(Person)
+   group_by(person_code, compensation) %>% count() %>% 
+   group_by(person_code) %>% count() %>% 
+   filter(n > 1) %>% pull(person_code)
 
-#FIX:exporting summary of issue
-lab_sheet %>% 
-  filter(Person %in% multiple_compensation) %>% 
-  select(lab_code, Person, Compensation, comp) 
-  #write.csv("compensation_discrepancies.csv")
+#FIX SOPHIAS
 
-#save compensation information 
-lab_sheet %>% 
-  select(Person, Compensation) %>% 
-  group_by(Person) %>% 
-  count()
+# Erin remade this table
+use_data <- subset(lab_sheet, use == "Yes")
+full_sample_n <- as.data.frame(table(full_long$lab_id))
+colnames(full_sample_n) <- c("lab_code", "full_sample_size")
+final_sample_n <- as.data.frame(table(final_long$lab_id))
+colnames(final_sample_n) <- c("lab_code", "final_sample_size")
+use_data <- merge(use_data, full_sample_n, all.x = T, by = "lab_code")
+use_data <- merge(use_data, final_sample_n, all.x = T, by = "lab_code")
+use_data$full_sample_size <- use_data$full_sample_size / 3
+use_data$final_sample_size <- use_data$final_sample_size / 3
 
-#FIX: Need to do the same for the remaining columns:
-#(this is the table we hope to fill with this code https://docs.google.com/spreadsheets/d/1zjnaAMd8EbGsgY5PPAWwoZg7Fkm5P-0NO-amhmHqDpg/edit#gid=0)
-# UN_Region
-# Method variations or extension notes
-# Whether any data were collected in groups
-# Whether any data were collected in person
-# Whether community samples were used / what the sampled population is
-
-left_join(teams_per_site, full_data_n_per_site, by = "Person") %>% 
-  left_join(final_data_n_per_site, by = "Person") %>% 
-  left_join(platform, by = "Person") %>% 
-  #FIX: join checked UN region
-  #FIX: join checked compensation method in the IRB
-  #FIX: join checked methods variations or extension notes
-  #FIX: join checked sampled population (e.g., community, subject pool)
-  #FIX: join checked grouped data collection info, even if all zeros
-  #FIX: join whether any data were collected in person
-arrange(-final_data_n) %>% 
+use_data %>% 
+  select(un_region, compensation, sampled_population, group_data, 
+         in_person, deviation_issues, full_sample_size, 
+         final_sample_size) %>% 
+  arrange(-final_sample_size) %>% 
   mutate(site_id = row_number()) %>% 
   select(site_id, everything()) %>% 
   clean_names("sentence") %>% 
-  #FIX: delete next line once we have the data
-  mutate(`UN Region` = 'check',
-         `Compensation method` = 'check',
-         `Method variations` = 'check',
-         `Sampled population` = 'check',
-         `Group data collection` = 'check',
-         `In person data collection` = 'check') %>% 
   kable(caption = "Data Collection Site Information") %>% 
   kable_styling()
 ```
 
-
-In the approved protocol, sections of the manuscript relevant to understanding the study method included detailed descriptions of the study's logistics, including the recruitment and approval of collaborators who would collect data. This section has been restructured to more closely resemble a typical study method description, including relevant information about the study's logisitics. The text from the approved protocol has been updated and moved to Appendix X.
+In the approved protocol, sections of the manuscript relevant to understanding the study method included detailed descriptions of the study's logistics, including the recruitment and approval of collaborators who would collect data. This section has been restructured to more closely resemble a typical study method description, including relevant information about the study's logistics. The text from the approved protocol has been updated and moved to Appendix X.
 
 ## Participants
 
 This project was designed to be a training and learning experience for undergraduate students. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., cite) in concert with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the undergraduate students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independetly designing an analysis plan, completing a preregistration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository. Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved (for more information about this process, see Appendix X).
 
 For the present article and analyses, data are structured such that observations are nested within data collection sites. At some sites, there were multiple student-led teams who completed the project. Because observations collected by different teams are organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unsuable for analyses (e.g., vignettes were not appropriately randomized). For a summary of student-led team and data collection site information, see Appendix X.
-
-
 
 ```{r}
 #create dataset for demographics 
@@ -218,10 +160,10 @@ final_demographics <- final_long %>%
          turk,
          language,
          lab_id, 
-         Person,
+         person_code,
          lab_country,
          country,
-         UN_Region,
+         un_region,
          gender, 
          gender_other,
          starts_with("ethn_"),
@@ -246,10 +188,10 @@ full_demographics <- full_long %>%
          turk,
          language,
          lab_id, 
-         Person,
+         person_code,
          lab_country,
          country,
-         UN_Region,
+         un_region,
          gender, 
          gender_other,
          starts_with("ethn_"),
@@ -265,7 +207,7 @@ if (length(unique(final_long$id)) != nrow(final_demographics)) STOP
 
 ```
 
-In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. Prior to exclusions, `r length(unique(full_demographics$Person))` unique data collection sites contributed data to the project. Data collection sites were located in `r length(unique(full_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(full_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.
+In total, `r n_labs_applied` teams led by undergraduate students signed up to collect data for this project.  Of the teams that originally signed up, `r n_labs_rejected` either did not submit protocols for review or submitted protocols but did not complete required revisions. In total, `r n_labs_finished_crep` teams completed the entire project, including the purely pedagogical tasks. Some teams collected data but did not complete the project. Prior to exclusions, `r length(unique(full_demographics$person_code))` unique data collection sites contributed data to the project. Data collection sites were located in `r length(unique(full_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(full_long, un_region)) %>% drop_na() %>% arrange(-n) %>% pull(un_region) %>% paste(collapse = ", ")`). See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.
 
 Of the `r nrow(full_demographics)` participants who completed the survey, data from `r round((nrow(full_demographics) - nrow(final_demographics))/nrow(full_demographics), 3)*100`% (_n_ = `r (nrow(full_demographics) - nrow(final_demographics))`) of people were excluded.
 
@@ -288,11 +230,11 @@ exclusions %>%
 ```
 
 
-Evaluating criteria 2 and 4 required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the langauge. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at osf.io/gs29c. Responses marked as identified test cases (e.g., "TEST") were excluded. Responses that were not coherent were labeled, but not excluded, and some observations in the final data were not coherent (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). Responses that were missing were not evaluated by raters, but no observations in the final dataset were missing evalutions (_n_ study purpose = `r nrow(filter(final_demographics, is.na(purpose_exclusion)))`; _n_ previously participated = `r nrow(filter(final_demographics, is.na(previous_exclusion)))`). 
+Evaluating criteria 2 and 4 required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the langauge. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at osf.io/gs29c. Responses marked as identified test cases (e.g., "TEST") were excluded. Responses that were not coherent were labeled, but not excluded, and some observations in the final data were not coherent (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). Responses that were missing were not evaluated by raters, but no observations in the final dataset were missing evaluations (_n_ study purpose = `r nrow(filter(final_demographics, is.na(purpose_exclusion)))`; _n_ previously participated = `r nrow(filter(final_demographics, is.na(previous_exclusion)))`). 
 
 All of these exclusions were preregistered with one exception. We did not pregister the exclusion of people over the age of 100, which resulted in the excusion of data from `r nrow(filter(full_demographics, !(age < 100)))` people. The age exclusion was made first, and captured many observations in the data that appeared to be invalid test responses. Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked "test"). The exclusion of people over the age of 100 likely captured many invalid test responses. 
 
-In the analysis sample (i.e., following exclusions), participants were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$Person))` data collection sites in `r length(unique(final_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(final_long, UN_Region)) %>% drop_na() %>% arrange(-n) %>% pull(UN_Region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(Person) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
+In the analysis sample (i.e., following exclusions), participants were `r nrow(final_demographics)` adults recruited to participate by student researchers at `r length(unique(final_long$person_code))` data collection sites in `r length(unique(final_long$lab_country))` countries spanning world regions (i.e., `r count(group_by(final_long, un_region)) %>% drop_na() %>% arrange(-n) %>% pull(un_region) %>% paste(collapse = ", ")`). Data collection sites contributed an average of `r final_demographics %>% group_by(person_code) %>% count() %>% pull(n) %>% mean() %>% round(2)` participants to the anlaysis sample (min = `r final_demographics %>% group_by(person_code) %>% count() %>% pull(n) %>% min()`, max = `r final_demographics %>% group_by(person_code) %>% count() %>% pull(n) %>% max()`). See Table X for a summary of participants' age, years of education, and ethnic/racial identity.
 
 Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. However, some used Qualtrics surveys that student researchers programmed themselves. Most data collection sites used the central SocSciSurvey survey.
 
@@ -420,7 +362,7 @@ All materials used in this replication, including the details of these vignettes
 # Results
 
   In the approved protocol, the results section focused heavily on the project's logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks. Further, some model specification details in the approved protocol conflicted with stated research questions. We have implemented models that test the stated research questions. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in the Appendix.
-  There were `r length(unique(final_long$Person))` data collection sites in the final dataset. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(Person, id) %>% count() %>% group_by(Person) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
+  There were `r length(unique(final_long$person_code))` data collection sites in the final dataset. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(person_code, id) %>% count() %>% group_by(person_code) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
   The approved protocol described testing assumptions before conducting analyses (for full results of the following assumption checks, see Appendix X). Assumptions of and related to linearity are primarily relevant for the anlayses of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal when examined unconditionally and by vignette and condition.
 
   A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
@@ -430,7 +372,7 @@ All materials used in this replication, including the details of these vignettes
 *Knowledge attributions*
 
 To determine whether participants made different attributions about vignette subject's knowledge as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their knowledge ("knows") and 1 means the subject's identification was not ("belief"). Listwise deletion was used to handle missing data. 
-  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially, before models with different interaction terms were estimated.
+  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person_code, and data collection site were added sequentially, before models with different interaction terms were estimated.
   Compared to the baseline model (AIC = `r round(AIC(k.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(k.model.2), 2)`) explained more variance. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(k.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.2)[1,2]*100, 1)`% of the random variance in knowledge attributions. People tended to attribute knowledge differently in each vignette. People attributed Darrel's identification to his knowledge and his belief with roughly equal frequency, but slightly favored attributing his knowledge. People tended to attribute Emma's identification to her belief much more often than to her knowledge. People tended to attribute Gerald's identification to his belief slightly more often than to his knowledge. 
   
 ```{r random vignette}
@@ -578,7 +520,7 @@ Although the pattern of results was the same for all three vignettes, Cramer's V
 *Reasonableness attributions*
 
   To determine whether participants made different judgments about vignette subjects' reasonableness as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions, just as with the previous analyses that focused on knowledge attribution as a dependent variable. Like with those analyses, we analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject was rated as reasonable and 1 means the subject was rated as unreasonable.  Listwise deletion was used to handle missing data. 
-  A baseline intercept-only model was estimated initially and models with random intercepts for vignette, person, and data collection site were added sequentially, followed by a model with coviariates, and then a model with knowledge condition. Then, models with interactions were estimated to better understand whether the effect of condition on reasonableness differed as a function of vignette, sampling type, and measurement type.
+  A baseline intercept-only model was estimated initially and models with random intercepts for vignette, person_code, and data collection site were added sequentially, followed by a model with coviariates, and then a model with knowledge condition. Then, models with interactions were estimated to better understand whether the effect of condition on reasonableness differed as a function of vignette, sampling type, and measurement type.
   Compared to the baseline model (AIC = `r round(AIC(r.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(r.model.2), 2)`) explained more variance. For all vignettes, the great majority of people rated subjects as reasonable. However, the rates differed slighltly by vignette. Collapsing across conditions, more people rated Emma unreasonable than Gerald, and more people rated Gerald as unreasonable than Darrel. Psuedo Rsqaured values suggest that vignette accounts for a small portion of the random variance in reasonableness attributions (between `r round(r.squaredGLMM(r.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.2)[1,2]*100, 1)`%).
   
 ```{r reasonableness by vignette}
@@ -739,7 +681,7 @@ To test whether the effect of condition on reasonableness differed as a function
 *Luck*
 
   We estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their luck and 1 means the subject's identification was attributed to their ability. Listwise deletion was used to handle missing data. 
-  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person, and data collection site were added sequentially. 
+  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person_code, and data collection site were added sequentially. 
   Compared to the baseline model (AIC = `r round(AIC(l.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(l.model.2), 2)`) explained more variance. People tended to attribute luck differently in each vignette. For Darrel, people were more likley to attribute ability over luck. For Emma, people were more likely to attribute luck over ability. For Gerald, people showed a slight tendency to attribute luck over ability. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(l.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.2)[1,2]*100, 1)`% of the random variance in luck attributions. 
   
 ```{r luck model vignette}
@@ -1153,7 +1095,7 @@ Take breaks! This work is hopefully interesting, but it can be cognitively exhau
 After you label a response, do not go back and change it later. This may be tempting to do after mentally comparing how you rated different responses, but just carefully work through each response and know that your initial rating is final.
 
 Don’t discuss your ratings with other raters—this will invalidate everyone’s work.
-Do assign labels for every response in your assigned sheet(s). If you would like to contribute more, please email the person listed at the top of this sheet.
+Do assign labels for every response in your assigned sheet(s). If you would like to contribute more, please email the person_code listed at the top of this sheet.
 
 **To summarize, for each set of answers**
 Read the answer to the question and assign a label that describes either whether people intuited the study hypothesis (for purpose) or whether people participated in a similar study previously (for previous)
