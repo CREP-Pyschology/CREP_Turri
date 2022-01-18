@@ -1810,6 +1810,11 @@ ggplot(l.data_graph) +
 chisq.test(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "Binary"],
            l.data_graph$cond[l.data_graph$luck_vas_combined_source == "Binary"])
 
+#HM getting error -- 
+#Error in names(attr(result$observed, "dimnames")) <- c(dname_x, dname_y) : 
+#  'names' attribute [3] must be the same length as the vector [2]
+
+
 b_table <- table(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "Binary"],
            l.data_graph$cond[l.data_graph$luck_vas_combined_source == "Binary"])
 
