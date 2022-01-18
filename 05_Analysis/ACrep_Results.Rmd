@@ -230,11 +230,11 @@ sites_fewer_than_50 <- final_long %>%
 Of the `r nrow(full_demographics)` participants who completed the survey, data from `r round((nrow(full_demographics) - nrow(final_demographics))/nrow(full_demographics), 3)*100`% (_n_ = `r (nrow(full_demographics) - nrow(final_demographics))`) of people were excluded. Data from `r (nrow(full_demographics) - nrow(final_demographics) - nrow(filter(full_demographics, age_exclusion))-nrow(filter(full_demographics, previous_exclusion))-nrow(filter(full_demographics, studyans_exclusion))-nrow(filter(full_demographics, purpose_exclusion))-nrow(filter(full_demographics, lang_exclusion)))*(-1)` participants were excluded for multiple reasons. 
 
 Data were excluded for the following reasons (applied in the order listed):^[All listed exclusions were pre-registered with one exception. We did not pre-register the exclusion of people over the age of 100. 18 people were excluded on the basis of this criteria alone (i.e., they did not meet any other exclusion criteria). These responses may have been errors in data entry, or they may have been unlabeled test responses.] 
-(1) the participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older,  operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (_n_ = `r nrow(filter(full_demographics, age_exclusion))`);
-(2) the participant had taken part in a previous version of this study or in another contributors' replication of the same study (_n_ = `r nrow(filter(full_demographics, previous_exclusion))`);
-(3) the participant failed to answer all three of the vignette comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion))`; e.g., did not correctly identify what Darrel was looking at);
-(4) the participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose_exclusion))`);
-(5) the participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion))`); see Vickstrom, Shin, Collazo, & Bauman, 2015).
+Age. The participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older,  operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (_n_ = `r nrow(filter(full_demographics, age_exclusion))`);
+Prior Participation. The participant had taken part in a previous version of this study or in another contributors' replication of the same study (_n_ = `r nrow(filter(full_demographics, previous_exclusion))`);
+Comprehension. The participant failed to answer all three of the vignette comprehension questions correctly (_n_ = `r nrow(filter(full_demographics, studyans_exclusion))`; e.g., did not correctly identify what Darrel was looking at);
+Knowledge of Hypothesis. The participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (_n_ = `r nrow(filter(full_demographics, purpose_exclusion))`);
+Language Proficiency. The participant reported their understanding of the language the survey was written in as "not well" or "not well at all" (_n_ = `r nrow(filter(full_demographics, lang_exclusion))`); see Vickstrom, Shin, Collazo, & Bauman, 2015).
 
 Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age as noted above.
 
@@ -247,13 +247,13 @@ exclusions %>%
 ```
 
 
-Evaluating criteria 2 and 4 above required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the language. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at http://osf.io/gs29c. Responses identified by raters as test cases (e.g., “TEST”) were excluded. Responses that were not coherent were labeled, but not excluded (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). No observations in the final dataset were missing responses; therefore all responses were evaluated.
+Evaluating criteria 2 and 4 above required making subjective judgments about open-ended responses. Each non-missing observation was evaluated by three people who spoke the language. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at http://osf.io/gs29c. Responses identified by raters as test cases (e.g., “TEST”) were excluded. Responses that were not coherent were labeled, but not excluded (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). No observations in the final data set were missing responses; therefore all responses were evaluated.
 
 Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked “test”). The age-related exclusion criteria (1 above) was applied first and may have captured many invalid test responses.
 
 *_Materials and Measures_*
 
-  Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accomodate lab-specific variations. However, `r` sites used Qualtrics surveys that student researchers programmed themselves, and `r`% of participants completed the study survey from a campus laboratory. All participants completed an online consent form. Deviations that labs made from the materials and procedure described here are summarized in *table, appendix, etc*. All materials used in this replication, including the details of these vignettes and related pretests, are available in the Appendix and at osf.io/n5b3w.
+  Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accommodate lab-specific variations. However, `r` sites used Qualtrics surveys that student researchers programmed themselves, and `r`% of participants completed the study survey from a campus laboratory. All participants completed an online consent form. Deviations that labs made from the materials and procedure described here are summarized in *table, appendix, etc*. All materials used in this replication, including the details of these vignettes and related pretests, are available in the Appendix and at osf.io/n5b3w.
 
 
 ```{r}
@@ -265,7 +265,7 @@ final_demographics %>%
   kable_styling()
 ```
 
-In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive cateogories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Appendixal Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r round(nrow(filter(final_demographics, ethn_wh == TRUE))/nrow(final_demographics)*100, 2)`% (_n_ = `r nrow(filter(final_demographics, ethn_wh == TRUE))`) identified as White.
+In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive categories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Appendix Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r round(nrow(filter(final_demographics, ethn_wh == TRUE))/nrow(final_demographics)*100, 2)`% (_n_ = `r nrow(filter(final_demographics, ethn_wh == TRUE))`) identified as White.
 
 
 ```{r}
@@ -325,12 +325,12 @@ In the approved protocol, we described a plan for data collection whereby each l
 
 Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
 
-Vignette content varied by subject and identification target. There were three vignette scenarios that were randomly presented to participants: the "Squirrel/Darrel" vignette from Turri et al. (2015), the “Fake Barn/Gerald” vignette from Colaca et al. (2014; altered to include matched knowledge and ignorance control conditions), and the “Diamond/Emma” vignette from Nagel, San Juan, & Mar (2013). The vigenettes are reported in full in Appendix X.
-  These vignettes all describe counterfiet object Gettier cases. The primary research aim for this project was to replicate Experiment 1 from Turri et al., (2015), which used a counterfeit object Gettier case ("Squirrel/Darrel"). The two vignettes that were not used in Experiment 1 of Turri et al. (2015) were selected on the basis of their similarity to the original vignette, their quality, and their prevalence in the literature. [Note that on page 33, it says that these vignettes were selected because they had matched controls. But elsewhere, we say that the Gerald vignette didn't have matched controls.]
+Vignette content varied by subject and identification target. There were three vignette scenarios that were randomly presented to participants: the "Squirrel/Darrel" vignette from Turri et al. (2015), the “Fake Barn/Gerald” vignette from Colaca et al. (2014; altered to include matched knowledge and ignorance control conditions), and the “Diamond/Emma” vignette from Nagel, San Juan, & Mar (2013). The vignettes are reported in full in Appendix X.
+  These vignettes all describe counterfeit object Gettier cases. The primary research aim for this project was to replicate Experiment 1 from Turri et al., (2015), which used a counterfeit object Gettier case ("Squirrel/Darrel"). The two vignettes that were not used in Experiment 1 of Turri et al. (2015) were selected on the basis of their similarity to the original vignette, their quality, and their prevalence in the literature. [Note that on page 33, it says that these vignettes were selected because they had matched controls. But elsewhere, we say that the Gerald vignette didn't have matched controls.]
 
   Vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix X). Some labs tested an additional vignette that was not described in the approved protocol (for more information, see [LINK TO MORE INFORMATION]).
 
-For each vignette, there were three conditions: a Gettier case condition in which subjects correctly identified the target, but not due to their knowledge; a knowledge control condition in which subjects correctly identified the target due to their knowledge; an ignorance control condition in which subjects incorrectly identified the taraget, but not due to their knowledge. Vignette content and condition were randomly assigned. Each participant read and evaluated three vignettes (one of each subject/identification target type and one of each condition).
+For each vignette, there were three conditions: a Gettier case condition in which subjects correctly identified the target, but not due to their knowledge; a knowledge control condition in which subjects correctly identified the target due to their knowledge; an ignorance control condition in which subjects incorrectly identified the target, but not due to their knowledge. Vignette content and condition were randomly assigned. Each participant read and evaluated three vignettes (one of each subject/identification target type and one of each condition).
 
 For each of the three vignettes they read, participants evaluated the subject's knowledge on a series of questions. Student-led teams varied in the exact questions they asked. The percentage of observations that have each question among all vignettes for all participants in the final data is listed in parentheses after each question description. After each vignette, participants were asked:
 1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 (`r round(pct_complete(final_long$know_vas), 2)`% complete) or as a binary choice (`r round(pct_complete(final_long$know_bin), 2)`% complete);
@@ -348,17 +348,17 @@ All materials used in this replication, including the details of these vignettes
 
 ## Analytic Approach
 
-  All raw data collected for this study were aggregated and analyzed as a single dataset. Multilevel models were used to evaluate hypotheses. The unit of anlaysis was the trial and random intercepts for the vignette, participant, and data collection site were be included to account for the nesting of trials within these groups. 
+  All raw data collected for this study were aggregated and analyzed as a single data set. Multilevel models were used to evaluate hypotheses. The unit of analysis was the trial and random intercepts for the vignette, participant, and data collection site were be included to account for the nesting of trials within these groups. 
   The approved protocol did not detail criteria that would be used for testing assumptions or approaches to handling convergence issues. We describe the approach taken to test assumptions and to handling convergence issues in the results section where relevant.
 
 [Error on page 34 -- says that the minimum sample size is 40]
 
-  Analyses were conducted on all raw data collected in SocSciSurvey, and data collected in Qualtrics by two labs. In the original protocol, we planned to evaluate the quality of each student-led team's data, including the raw data, anlalysis scrips, codebooks, cleaned data sets, and narrative summaries of results, and data would be included in analyses only if these products passed a quality check. the original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent anlayses for this report, all available raw data were used, regardless of the completion or quality of subsequent pedagogical activities.
-  Aggregating data required making imputations and other adjustments to account for erros, unpredicted data issues, and differences in how student-led teams measured items (see Table X for a summary of methods deviations at the data collection site level). We describe these imputations and other adjustments in the following subsections.
+  Analyses were conducted on all raw data collected in SocSciSurvey, and data collected in Qualtrics by two labs. In the original protocol, we planned to evaluate the quality of each student-led team's data, including the raw data, analysis scrips, code books, cleaned data sets, and narrative summaries of results, and data would be included in analyses only if these products passed a quality check. the original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent analyses for this report, all available raw data were used, regardless of the completion or quality of subsequent pedagogical activities.
+  Aggregating data required making imputations and other adjustments to account for errors, unpredictable data issues, and differences in how student-led teams measured items (see Table X for a summary of methods deviations at the data collection site level). We describe these imputations and other adjustments in the following subsections.
   
 *Compensation*
 
-  Participants were asked to report whether and how they were compensated for their participation. Some student-led teams opted to skip this question because all participants were compensated the same way. The documented method of compensation (e.g., as described in the IRB protocol), was imputed for those missing responses to compensation due to survey programming. Among participants who were asked about their compensation, responses were sometimes missing or discrepant with the documented method of compensation. For student-led teams where fewer than 50% of participants in the final dataset agreed on a method of compensation, the documented method of compensated was imputed for all participants (if a single method of compensation was documented).
+  Participants were asked to report whether and how they were compensated for their participation. Some student-led teams opted to skip this question because all participants were compensated the same way. The documented method of compensation (e.g., as described in the IRB protocol), was imputed for those missing responses to compensation due to survey programming. Among participants who were asked about their compensation, responses were sometimes missing or discrepant with the documented method of compensation. For student-led teams where fewer than 50% of participants in the final data set agreed on a method of compensation, the documented method of compensated was imputed for all participants (if a single method of compensation was documented).
 
 *Data collection sites*
 
@@ -373,25 +373,25 @@ All materials used in this replication, including the details of these vignettes
 
 ## Sample Size Determination
 
-  The approved protocol described power analyses. The text from the original protocol is reproduced in full in Appendix X, and is summarized here. Power anlyses suggested that, given 3 vignettes per participant and 9 labs, at least 32 participants per lab (288 total participants; 864 total observations), would be required to detect an effect of X size at a power of at least .90 with an alpha of .05.
+  The approved protocol described power analyses. The text from the original protocol is reproduced in full in Appendix X, and is summarized here. Power analyses suggested that, given 3 vignettes per participant and 9 labs, at least 32 participants per lab (288 total participants; 864 total observations), would be required to detect an effect of X size at a power of at least .90 with an alpha of .05.
   Considering the high potential for attrition and heterogeneity at the data collection site level, a target sample size of 50 participants per lab was set. 
 
 
 # Results
 
   In the approved protocol, the results section focused heavily on the project's logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks. Further, some model specification details in the approved protocol conflicted with stated research questions. We have implemented models that test the stated research questions. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in the Appendix.
-  There were `r length(unique(final_long$person_code))` data collection sites in the final dataset. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(person_code, id) %>% count() %>% group_by(person_code) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
-  The approved protocol described testing assumptions before conducting analyses (for full results of the following assumption checks, see Appendix X). Assumptions of and related to linearity are primarily relevant for the anlayses of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal when examined unconditionally and by vignette and condition.
+  There were `r length(unique(final_long$person_code))` data collection sites in the final data set. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(person_code, id) %>% count() %>% group_by(person_code) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
+  The approved protocol described testing assumptions before conducting analyses (for full results of the following assumption checks, see Appendix X). Assumptions of and related to linearity are primarily relevant for the analyses of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bi-modal when examined unconditionally and by vignette and condition.
 
-  A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
+  A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bi-modal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
 
-  It is generally not recommended to transform continuous varibles in to discreet variables for anlayses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continous or binary) affects judgments. So, this was the approach taken.
+  It is generally not recommended to transform continuous variables in to discreet variables for analyses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continuous or binary) affects judgments. So, this was the approach taken.
 
 *Knowledge attributions*
 
-To determine whether participants made different attributions about vignette subject's knowledge as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their knowledge ("knows") and 1 means the subject's identification was not ("belief"). Listwise deletion was used to handle missing data. 
+To determine whether participants made different attributions about vignette subject's knowledge as a function of the vignette's knowledge condition, we estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their knowledge ("knows") and 1 means the subject's identification was not ("belief"). List-wise deletion was used to handle missing data. 
   First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person_code, and data collection site were added sequentially, before models with different interaction terms were estimated.
-  Compared to the baseline model (AIC = `r round(AIC(k.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(k.model.2), 2)`) explained more variance. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(k.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.2)[1,2]*100, 1)`% of the random variance in knowledge attributions. People tended to attribute knowledge differently in each vignette. People attributed Darrel's identification to his knowledge and his belief with roughly equal frequency, but slightly favored attributing his knowledge. People tended to attribute Emma's identification to her belief much more often than to her knowledge. People tended to attribute Gerald's identification to his belief slightly more often than to his knowledge. 
+  Compared to the baseline model (AIC = `r round(AIC(k.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(k.model.2), 2)`) explained more variance. Pseudo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(k.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.2)[1,2]*100, 1)`% of the random variance in knowledge attributions. People tended to attribute knowledge differently in each vignette. People attributed Darrel's identification to his knowledge and his belief with roughly equal frequency, but slightly favored attributing his knowledge. People tended to attribute Emma's identification to her belief much more often than to her knowledge. People tended to attribute Gerald's identification to his belief slightly more often than to his knowledge. 
   
 ```{r random vignette}
 tidy(k.model.2) %>% 
@@ -407,8 +407,8 @@ table(data_graph$know_vas_combined,
   kable_styling()
 ```
 
-  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(k.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(k.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
-  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(k.model.4)`). The addition of data collection site was not useful relative to the previous model. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(k.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(k.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(k.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(k.model.4)`). The addition of data collection site was not useful relative to the previous model. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(k.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
   Next, covariates were added to the model as fixed effects to account for the effects of participant age, perceived compensation (a binary variable, with 0 = no perceived compensation and 1 = perceived compensation), gender (a binary variable, with 0 = female and 1 = male), and education (in years) on their knowledge attributions (AIC = `r round(AIC(k.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. However, no covariates predicted knowledge attributions accounting for all others.
   
 ```{r all random intercepts on knowledge}
@@ -418,7 +418,7 @@ tidy(k.model.5) %>%
   kable_styling()
 ```
 
-  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(k.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on people's knowledge attributions. Both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the knowledge condition, people were much more likely to attribute subject's identification to their knowledge rather than their belief. In the Gettier condition, people were slighltly more likely to attribute belief than knowledge and in the ignorance condition, people were much more likely to attribute belief than knowledge. Psuedo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(k.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
+  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(k.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on people's knowledge attributions. Both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the knowledge condition, people were much more likely to attribute subject's identification to their knowledge rather than their belief. In the Gettier condition, people were slightly more likely to attribute belief than knowledge and in the ignorance condition, people were much more likely to attribute belief than knowledge. Pseudo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(k.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
 
 ```{r knowledge condition on knowledge}
 tidy(k.model.6) %>% 
@@ -437,7 +437,7 @@ table(k.model.6@frame$cond,
 
 *Does the effect of knowledge condition differ by vignette?*
 
-  To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(k.model.6A), 2)`). This model explained more variance than the model without th einteraction between condition and vignette. As shown in Figure X, although the general pattern is the same for all vignettes, when making attirbutions about the Emma vignette, people were more likely to attribute belief in every condition than they were for the other vignettes. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(k.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
+  To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(k.model.6A), 2)`). This model explained more variance than the model without th interaction between condition and vignette. As shown in Figure X, although the general pattern is the same for all vignettes, when making attributions about the Emma vignette, people were more likely to attribute belief in every condition than they were for the other vignettes. Pseudo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(k.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
 
 ```{r interaction of cond vignette on knowledge}
 tidy(k.model.6A) %>% 
@@ -536,9 +536,9 @@ Although the pattern of results was the same for all three vignettes, Cramer's V
 
 *Reasonableness attributions*
 
-  To determine whether participants made different judgments about vignette subjects' reasonableness as a funtion of the vignette's knowledge condition, we estimated a series of logistic regressions, just as with the previous analyses that focused on knowledge attribution as a dependent variable. Like with those analyses, we analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject was rated as reasonable and 1 means the subject was rated as unreasonable.  Listwise deletion was used to handle missing data. 
-  A baseline intercept-only model was estimated initially and models with random intercepts for vignette, person_code, and data collection site were added sequentially, followed by a model with coviariates, and then a model with knowledge condition. Then, models with interactions were estimated to better understand whether the effect of condition on reasonableness differed as a function of vignette, sampling type, and measurement type.
-  Compared to the baseline model (AIC = `r round(AIC(r.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(r.model.2), 2)`) explained more variance. For all vignettes, the great majority of people rated subjects as reasonable. However, the rates differed slighltly by vignette. Collapsing across conditions, more people rated Emma unreasonable than Gerald, and more people rated Gerald as unreasonable than Darrel. Psuedo Rsqaured values suggest that vignette accounts for a small portion of the random variance in reasonableness attributions (between `r round(r.squaredGLMM(r.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.2)[1,2]*100, 1)`%).
+  To determine whether participants made different judgments about vignette subjects' reasonableness as a function of the vignette's knowledge condition, we estimated a series of logistic regressions, just as with the previous analyses that focused on knowledge attribution as a dependent variable. Like with those analyses, we analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject was rated as reasonable and 1 means the subject was rated as unreasonable.  List-wise deletion was used to handle missing data. 
+  A baseline intercept-only model was estimated initially and models with random intercepts for vignette, person_code, and data collection site were added sequentially, followed by a model with covariates, and then a model with knowledge condition. Then, models with interactions were estimated to better understand whether the effect of condition on reasonableness differed as a function of vignette, sampling type, and measurement type.
+  Compared to the baseline model (AIC = `r round(AIC(r.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(r.model.2), 2)`) explained more variance. For all vignettes, the great majority of people rated subjects as reasonable. However, the rates differed slightly by vignette. Collapsing across conditions, more people rated Emma unreasonable than Gerald, and more people rated Gerald as unreasonable than Darrel. Pseudo Rsqaured values suggest that vignette accounts for a small portion of the random variance in reasonableness attributions (between `r round(r.squaredGLMM(r.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.2)[1,2]*100, 1)`%).
   
 ```{r reasonableness by vignette}
 table(r.data_graph$reason_vas_combined, 
@@ -554,8 +554,8 @@ tidy(r.model.2) %>%
   kable_styling()
 ```
 
-  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(r.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
-  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(r.model.4)`). The addition of data collection site was not useful relative to the previous model. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(r.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(r.model.4)`). The addition of data collection site was not useful relative to the previous model. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
   
   Next, covariates were added to the model as fixed effects (AIC = `r round(AIC(r.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. Compensation was associated with reasonableness; participants who were compensated were more likely to judge the subject as reasonable. Education was also associated with reasonableness. The fewer years of education people had the more likely they were to judge the subject as reasonable.
   
@@ -566,7 +566,7 @@ tidy(r.model.5) %>%
   kable_styling()
 ```
 
-  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(r.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on reasonableness. Although in all conditions, most people rated the subject as reasonable, both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the ignorance condition, people were more likely to rate the subject reasonable than in the Gettier condition. In the knowledge condition, people were less likely to rate the subject reasonable than in the Gettier condition. Psuedo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(r.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(r.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
+  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(r.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on reasonableness. Although in all conditions, most people rated the subject as reasonable, both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the ignorance condition, people were more likely to rate the subject reasonable than in the Gettier condition. In the knowledge condition, people were less likely to rate the subject reasonable than in the Gettier condition. Pseudo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(r.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(r.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
 
 ```{r reasonableness by knowledge condition}
 tidy(r.model.6) %>% 
@@ -584,7 +584,7 @@ r.d_table %>%
 
 *Does the effect of knowledge condition differ by vignette?*
 
-  To test whether the effect of condition varied by vignette, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(r.model.6A), 2)`). This model explained more variance than the model without the interaction term. As shown in Figure X, although the general pattern is the same for all vignettes, the magnitudes of differences varied by vignette. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(r.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(r.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
+  To test whether the effect of condition varied by vignette, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(r.model.6A), 2)`). This model explained more variance than the model without the interaction term. As shown in Figure X, although the general pattern is the same for all vignettes, the magnitudes of differences varied by vignette. Pseudo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(r.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(r.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
   
 
 ```{r int cond and vig on reasonableness}
@@ -606,7 +606,7 @@ ggplot(r.data_graph) +
   theme_classic() + 
   xlab("Vignette") + 
   ylab("Condition") +
-  ggtitle("Figure X. Reasonablenss Judgments by Condition and Vignette")
+  ggtitle("Figure X. Reasonableness Judgments by Condition and Vignette")
 ```
 
 ```{r Darrel reason effect}
@@ -697,9 +697,9 @@ To test whether the effect of condition on reasonableness differed as a function
 
 *Luck*
 
-  We estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their luck and 1 means the subject's identification was attributed to their ability. Listwise deletion was used to handle missing data. 
+  We estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their luck and 1 means the subject's identification was attributed to their ability. List-wise deletion was used to handle missing data. 
   First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person_code, and data collection site were added sequentially. 
-  Compared to the baseline model (AIC = `r round(AIC(l.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(l.model.2), 2)`) explained more variance. People tended to attribute luck differently in each vignette. For Darrel, people were more likely to attribute ability over luck. For Emma, people were more likely to attribute luck over ability. For Gerald, people showed a slight tendency to attribute luck over ability. Psuedo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(l.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.2)[1,2]*100, 1)`% of the random variance in luck attributions. 
+  Compared to the baseline model (AIC = `r round(AIC(l.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(l.model.2), 2)`) explained more variance. People tended to attribute luck differently in each vignette. For Darrel, people were more likely to attribute ability over luck. For Emma, people were more likely to attribute luck over ability. For Gerald, people showed a slight tendency to attribute luck over ability. Pseudo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(l.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.2)[1,2]*100, 1)`% of the random variance in luck attributions. 
   
 ```{r luck model vignette}
 tidy(l.model.2) %>% 
@@ -708,8 +708,8 @@ tidy(l.model.2) %>%
   kable_styling()
 ```
 
-  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(l.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(l.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
-  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(l.model.4)`). The addition of data collection site was not useful relative to the previous model. Psuedo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(l.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(l.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(l.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
+  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(l.model.4)`). The addition of data collection site was not useful relative to the previous model. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(l.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(l.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
   Next, covariates were added to the model as fixed effects (AIC = `r round(AIC(l.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. There was an association between years of education and luck attributions. People who had fewer years of education were more likely to attribute luck rather than ability.
   
 ```{r intercepts and cov model}
@@ -719,7 +719,7 @@ tidy(l.model.5) %>%
   kable_styling()
 ```
 
-  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(l.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on people's luck attributions. Both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the knowledge condition and the ignorance condition, people were more likely to attribute subject's identification to their ability. In the Gettier condition, people were more likely to attribute luck. Psuedo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(l.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(l.model.6)[1,1]*100, 1)`% of the fixed effect variance in luck attributions.
+  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(l.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on people's luck attributions. Both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the knowledge condition and the ignorance condition, people were more likely to attribute subject's identification to their ability. In the Gettier condition, people were more likely to attribute luck. Pseudo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(l.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(l.model.6)[1,1]*100, 1)`% of the fixed effect variance in luck attributions.
 
 ```{r condition luck model}
 tidy(l.model.6) %>% 
@@ -738,7 +738,7 @@ table(l.model.6@frame$cond,
 
 *Does the effect of knowledge condition differ by vignette?*
 
-  To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(l.model.6A), 2)`). This model explained more variance than the model without the interaction between condition and vignette. As shown in Figure X, each vignette shows a different pattern of condition effects. Psuedo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(l.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(l.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
+  To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(l.model.6A), 2)`). This model explained more variance than the model without the interaction between condition and vignette. As shown in Figure X, each vignette shows a different pattern of condition effects. Pseudo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(l.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(l.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
   
 
 ```{r luck interaction table}
@@ -831,7 +831,7 @@ l.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(l.g_table[1:2, c(1,3)]))$statistic,
 ```
 
 
-In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(`r l.gcond_effect$parameter[[1]]`) = `r round(l.gcond_effect$statistic[[1]], 2)`, p `r if(round(l.gcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. As with Darrel and Emma, the likelihood that people attributed Gerald's identification to his lcuk differed such that people were more likely to attribute luck in the Gettier condition (`r round(l.gcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(l.gcond_GI$estimate2, 2)`; Cramer's `r l.gcond_GI_v$estimate`, `r l.gcond_GI_v$statistic`). In addition, people were less likely to attribute lcuk to Gerald in the knowledge condition (`r round(l.gcond_GK$estimate2, 2)`) than in the Gettier condition (Cramer's `r l.gcond_GK_v$estimate`, `r l.gcond_GK_v$statistic`). 
+In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(`r l.gcond_effect$parameter[[1]]`) = `r round(l.gcond_effect$statistic[[1]], 2)`, p `r if(round(l.gcond_effect$p.value[[1]], 4) == 0)paste("<.0001")`. As with Darrel and Emma, the likelihood that people attributed Gerald's identification to his luck differed such that people were more likely to attribute luck in the Gettier condition (`r round(l.gcond_GI$estimate1, 2)`) than in the ignorance condition (`r round(l.gcond_GI$estimate2, 2)`; Cramer's `r l.gcond_GI_v$estimate`, `r l.gcond_GI_v$statistic`). In addition, people were less likely to attribute luck to Gerald in the knowledge condition (`r round(l.gcond_GK$estimate2, 2)`) than in the Gettier condition (Cramer's `r l.gcond_GK_v$estimate`, `r l.gcond_GK_v$statistic`). 
 
 *Does the effect of knowledge condition differ in participants recruited through Mturk?*
 
@@ -847,7 +847,7 @@ tidy(l.model.6B) %>%
 
 *Does the effect of knowledge condition differ as a function of how attributions were measured?*
 
-We estimated a model that included an interaction between condition and measurement type (AIC = `r round(AIC(l.model.6C), 2)`). This model performed better than a model without the condition by measurement type interaction. As shown in Figure X, the effect was consistent across mesaurement type, suggesting a slight difference in magnitude between the two measurement types for one or more conditions.
+We estimated a model that included an interaction between condition and measurement type (AIC = `r round(AIC(l.model.6C), 2)`). This model performed better than a model without the condition by measurement type interaction. As shown in Figure X, the effect was consistent across measurement type, suggesting a slight difference in magnitude between the two measurement types for one or more conditions.
 
 ```{r}
 #graph the three way binary 
@@ -891,7 +891,7 @@ bin_cond_GK_v <- v.chi.sq(x2 = prop.test(t(b_table[1:2, c(1,3)]))$statistic,
 ```
 
 
-For the binary measurement type, there was an effect of condition on luck attributions  X^2(`r bin_cond$parameter[[1]]`) = `r round(bin_cond$statistic[[1]], 2)`, p `r if(round(bin_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likley to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(bin_cond_GI$estimate2, 2)`; Cramer's `r bin_cond_GI_v$estimate`, `r bin_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(bin_cond_GK$estimate2, 2)`; Cramer's `r bin_cond_GK_v$estimate`, `r bin_cond_GK_v$statistic`). 
+For the binary measurement type, there was an effect of condition on luck attributions  X^2(`r bin_cond$parameter[[1]]`) = `r round(bin_cond$statistic[[1]], 2)`, p `r if(round(bin_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(bin_cond_GI$estimate2, 2)`; Cramer's `r bin_cond_GI_v$estimate`, `r bin_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(bin_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(bin_cond_GK$estimate2, 2)`; Cramer's `r bin_cond_GK_v$estimate`, `r bin_cond_GK_v$statistic`). 
 
 ```{r}
 
@@ -919,7 +919,7 @@ vas_cond_GK_v <- v.chi.sq(x2 = prop.test(t(vas_table[1:2, c(1,3)]))$statistic,
 ```
 
 
-For the continuous measurement type, there was a similar pattern of results. There was an effect of condition on luck attributions  X^2(`r vas_cond$parameter[[1]]`) = `r round(vas_cond$statistic[[1]], 2)`, p `r if(round(vas_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likley to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(vas_cond_GI$estimate2, 2)`; Cramer's `r vas_cond_GI_v$estimate`, `r vas_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(vas_cond_GK$estimate2, 2)`; Cramer's `r vas_cond_GK_v$estimate`, `r vas_cond_GK_v$statistic`). The effect sizes of the effects were smaller when luck was measured continuously, but the confidence intervals of these effect sizes overlapped with the confidence intervals of the effect sizes for the binary measurement type. 
+For the continuous measurement type, there was a similar pattern of results. There was an effect of condition on luck attributions  X^2(`r vas_cond$parameter[[1]]`) = `r round(vas_cond$statistic[[1]], 2)`, p `r if(round(vas_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(vas_cond_GI$estimate2, 2)`; Cramer's `r vas_cond_GI_v$estimate`, `r vas_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(vas_cond_GK$estimate2, 2)`; Cramer's `r vas_cond_GK_v$estimate`, `r vas_cond_GK_v$statistic`). The effect sizes of the effects were smaller when luck was measured continuously, but the confidence intervals of these effect sizes overlapped with the confidence intervals of the effect sizes for the binary measurement type. 
 
 ### Exploratory analyses
 
@@ -938,7 +938,7 @@ For the continuous measurement type, there was a similar pattern of results. The
  
 *Ethical approval:*
 
-All contributing labs were required to submit their local institutional ethics approval prior to data collection as part of their pre-registstration and CREP review process and will be carried out in accordance with the provisions of the World Medical Association Declaration of Helsinki. All participating labs posted their ethics approval to their lab's OSF page for this study. 
+All contributing labs were required to submit their local institutional ethics approval prior to data collection as part of their pre-registration and CREP review process and will be carried out in accordance with the provisions of the World Medical Association Declaration of Helsinki. All participating labs posted their ethics approval to their lab's OSF page for this study. 
 
 *Author Contributions:*
 
@@ -978,7 +978,7 @@ In the ignorance condition, participants read:
 
 “Having driven through the tornado-ravaged area, Gerald has encountered many of these fake houses. When he tells Andrew 'That's a house,' the object he sees and points at is a fake house that was built after the tornado and is not actually a house.”
 
-In the gettier condition, participants read:
+In the Gettier condition, participants read:
 
 “Having just entered the tornado-ravaged area, Gerald has not yet encountered any fake houses. When he tells Andrew 'That's a house,' the object he sees and points at is a real house that has survived the tornado and not one of the fake houses.”
 
@@ -994,7 +994,7 @@ In the ignorance condition, participants read:
 
 “Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose, almost all of the pendants had cubic zirconium stones rather than diamonds (and the one she chose was in fact fake).”
 
-In the gettier condition, participants read:
+In the Gettier condition, participants read:
 
 “Unfortunately, this particular store has very dishonest employees who have been stealing real diamonds and replacing them with fakes; in the tray Emma chose, almost all of the pendants had cubic zirconium stones rather than diamonds (but the one she chose happened to be real).”
 
@@ -1011,7 +1011,7 @@ In the ignorance condition, participants read:
 
 “Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. And, the animal Darrel is looking at is indeed one of the prairie dogs.”
 
-In the gettier condition, participants read:
+In the Gettier condition, participants read:
 
 “Ecologists are unaware that a non-native species of prairie dog recently began invading the park. These prairie dogs also have red markings on their chest and belly. When these prairie dogs tried to invade Zone 3, the red speckled ground squirrels were unable to completely drive them away. Still, the animal Darrel is looking at is a red speckled ground squirrel.”
 
@@ -1046,7 +1046,7 @@ For each question this is how we would like you to evaluate answers. If you are 
 
 _yes_
 
-The participant identified that we are studying justified true belief and gettier cases.
+The participant identified that we are studying justified true belief and Gettier cases.
 
 Example “yes” coding cases: “To test exceptions to the Justified True Belief theory”
 
@@ -1153,7 +1153,7 @@ Pacific Island descent
 Native American descent
 
 *Version C*
-Used by the following data collectoin sites in Qualtrics: [List sites that used this option here]
+Used by the following data collection sites in Qualtrics: [List sites that used this option here]
 White/European
 Black/African American
 Hispanic Latino
