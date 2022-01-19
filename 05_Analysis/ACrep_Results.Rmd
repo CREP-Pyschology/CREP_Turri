@@ -329,7 +329,6 @@ luck_vas_trials_dropped_pct <- final_luck %>%
 ```
 
   Transforming continuous variables into discrete variables for analysis is not generally recommended (cite). For the present analyses, however, this approach was necessary due to the already bimodal distribution of the dependent variables. Thus, we split the continuously measured versions of the three dependent variables such that scores at and below 40 and scores at and above 60 were classified into discrete categories. Using this approach resulted in minimal data loss: Of non-missing responses on each continuous measure, `r know_vas_trials_dropped_n` (`r know_vas_trials_dropped_pct`%) trials were dropped for the knowledge attribution variable, `r reason_vas_trials_dropped_n` (`r reason_vas_trials_dropped_pct`%) trials were dropped for the reasonableness attribution variable, and `r luck_vas_trials_dropped_n` (`r luck_vas_trials_dropped_pct`%) trials were dropped for the luck attribution variable. *Add clear information about variable coding here or elsewhere* This approach allowed us to validly interpret model results and also test whether the method of measurement (continuous or binary) affected results. 
-  
 
   *Model Steps.* A series of multilevel logistic regression models were fit predicting knowledge attributions, reasonableness judgements, and luck attributions. We analyzed responses originally reported on continuous and binary scales together using a combined binary variable. Listwise deletion was used to handle missing data. After estimating a baseline intercept-only model (Model 1), we fit models with random intercepts for vignette (Model 2), person (Model 3), and data collection site (Model 4) added sequentially. In Model 5, participant age, compensation, gender, and education (in years) were added to as fixed effects. These variables served as covariates. Finally, knowledge condition was added in Model 6.
 
@@ -452,66 +451,36 @@ gridExtra::grid.arrange(know_vas, reason_vas, luck_vas, ncol = 3)
 # Results
 
    To better test our research questions, we implemented analyses that differ from those we originally planned.^[In the approved protocol, the results section focused heavily on the project’s logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks. Further, some model specification details in the approved protocol conflicted with stated research questions.] All deviations from the approved protocol are summarized in Table X. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in Appendix X.
-
-  The goal of the present research was to provide a well-powered estimate of the magnitude and prevalence of Gettier intuitions (i.e., the difference in knowledge attribution between Gettier and knowledge conditions) across different scenarios and testing sites in a replication and extension of Turri et al., 2015. Models were fit in steps to determine whether participants attributed knowledge to the protagonist at different rates as a function of condition. The same series of models were fit in steps to determine whether participants attributed reasonableness and luck to the protagonist at different rates as a function of condition. Then, models were fit to address... exploratory analyses....
   
 *Knowledge Attribution*
 
+  The goal of the present research was to provide a well-powered estimate of the magnitude and prevalence of Gettier intuitions (i.e., the difference in knowledge attribution between Gettier and knowledge conditions) across different scenarios and testing sites in a replication and extension of Turri et al., 2015. Models were fit in steps to determine whether participants attributed knowledge to the protagonist at different rates as a function of condition.
+  Compared to the baseline Model 1 (AIC = `r round(AIC(k.model.1), 2)`), the model including random intercepts for vignette (AIC = `r round(AIC(k.model.2), 2)`) explained more variance. Pseudo-_R_^2^ values suggested that vignette accounts for `r round(r.squaredGLMM(k.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.2)[1,2]*100, 1)`% of the random variance in knowledge attributions. Inspection of frequencies indicated that participants attributed knowledge most frequently in response to the Gerald vignette (`r filter(data_graph, vignette == "Gerald") %>% tabyl(know_vas_combined) %>% filter(know_vas_combined == "Knows") %>% pull(percent) %>% round(4) %>% .[]*100`%) and least frequently in response to the Emma vignette (`r filter(data_graph, vignette == "Emma") %>% tabyl(know_vas_combined) %>% filter(know_vas_combined == "Knows") %>% pull(percent) %>% round(4) %>% .[]*100`%).
   
-  
-  A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bi-modal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
-
-  It is generally not recommended to transform continuous variables in to discreet variables for analyses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continuous or binary) affects judgments. So, this was the approach taken.
-
-*Knowledge attributions*
-
-To determine whether participants made different attributions about vignette subject's knowledge as a function of the vignette's knowledge condition, we estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject's identification was attributed to their knowledge ("knows") and 1 means the subject's identification was not ("belief"). List-wise deletion was used to handle missing data. 
-  First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person_code, and data collection site were added sequentially, before models with different interaction terms were estimated.
-  Compared to the baseline model (AIC = `r round(AIC(k.model.1), 2)`), a model with a random intercept for vignette (AIC = `r round(AIC(k.model.2), 2)`) explained more variance. Pseudo Rsqaured values suggest that vignette accounts for `r round(r.squaredGLMM(k.model.2)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.2)[1,2]*100, 1)`% of the random variance in knowledge attributions. People tended to attribute knowledge differently in each vignette. People attributed Darrel's identification to his knowledge and his belief with roughly equal frequency, but slightly favored attributing his knowledge. People tended to attribute Emma's identification to her belief much more often than to her knowledge. People tended to attribute Gerald's identification to his belief slightly more often than to his knowledge. 
-  
-```{r random vignette}
-tidy(k.model.2) %>% 
-  clean_variable_names() %>% 
-  kable(caption = "Explaining Variance in Knowledge Attributions with a Random Intercept for Vignette") %>% 
-  kable_styling()
-```
-
-```{r random vignette table}
+```{r table of random vignette on knowledge}
 table(data_graph$know_vas_combined, 
            data_graph$vignette) %>% 
   kable(caption = "Knowledge Attributions by Vignette") %>% 
   kable_styling()
 ```
 
-  A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(k.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(k.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
-  Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(k.model.4)`). The addition of data collection site was not useful relative to the previous model. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(k.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
-  Next, covariates were added to the model as fixed effects to account for the effects of participant age, perceived compensation (a binary variable, with 0 = no perceived compensation and 1 = perceived compensation), gender (a binary variable, with 0 = female and 1 = male), and education (in years) on their knowledge attributions (AIC = `r round(AIC(k.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. However, no covariates predicted knowledge attributions accounting for all others.
+  The model nesting vignette within participants (Model 3; AIC = `r round(AIC(k.model.3), 2)`) explained similar amounts of variance (`r round(r.squaredGLMM(k.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(k.model.3)[1,2]*100, 1)`%) as Model 2. The addition of data collection site in Model 4 (AIC = `r AIC(k.model.4)`) likewise did not improve model fit (Pseudo-_R_^2^ = `r round(r.squaredGLMM(k.model.4)[2,2]*100, 1)` - `r round(r.squaredGLMM(k.model.4)[1,2]*100, 1)`).The model including the covariates predicting knowledge attributions as fixed effects (Model 5; AIC = `r round(AIC(k.model.5), 2)`) was more useful in explaining variance in knowledge attribution. However, no covariates predicted knowledge attributions accounting for all others (see Table X).
   
-```{r all random intercepts on knowledge}
-tidy(k.model.5) %>% 
-  clean_variable_names() %>% 
-  kable(caption = "Explaining Variance in Knowledge Attributions with Random Intercepts for Vignette/Participant/Site and Covariates") %>% 
-  kable_styling()
-```
-
-  Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(k.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on people's knowledge attributions. Both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the knowledge condition, people were much more likely to attribute subject's identification to their knowledge rather than their belief. In the Gettier condition, people were slightly more likely to attribute belief than knowledge and in the ignorance condition, people were much more likely to attribute belief than knowledge. Pseudo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(k.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
-
-```{r knowledge condition on knowledge}
-tidy(k.model.6) %>% 
-  clean_variable_names() %>% 
-  kable(caption = "Effect of Condition on Knowledge Attributions") %>% 
-  kable_styling()
-```
-
-
 ```{r table of knowledge condition on knowledge}
 table(k.model.6@frame$cond, 
       str_replace(
         str_replace(k.model.6@frame$know_vas_combined, "0", "Knows"),
-        "1", "Believes")) 
+        "1", "Believes")) %>% 
+  kable(caption = "Knowledge Attribution by Condition") %>% 
+  kable_styling()
 ```
 
-*Does the effect of knowledge condition differ by vignette?*
+
+  Model 6 served as the key replication test of Turri et al. (2015). Knowledge condition was added as a fixed effect (AIC = `r round(AIC(k.model.6A), 2)`). This model performed better than the previous model and revealed an effect of condition on knowledge attribution. Participants were more likely to attribute knowledge to the protagonist in the knowledge condition vignette than to the protagonists in the ignorance and Gettier condition vignettes; further, the ignorance condition differed from the Gettier condition (see Table X). Pseudo-_R_^2^ values suggest that condition accounted for `r round(r.squaredGLMM(k.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6A)[1,1]*100, 1)`% of the fixed effect variance in knowledge attribution. Thus, we did not fully replicate the results of Turri et al. (2015, Experiment 1), who found no difference in knowledge attribution between the knowledge and Gettier conditions. 
+  
+  *Does the effect of knowledge condition differ by vignette?*
+  
+  *HM stopped here*
 
   To better understand whether the effect of condition varied as a function of the vignette's content, a model was estimated that included an interaction between vignette and subject (AIC = `r round(AIC(k.model.6A), 2)`). This model explained more variance than the model without th interaction between condition and vignette. As shown in Figure X, although the general pattern is the same for all vignettes, when making attributions about the Emma vignette, people were more likely to attribute belief in every condition than they were for the other vignettes. Pseudo Rsqaured values suggest that the interaction between condition and vignette accounts for `r round(r.squaredGLMM(k.model.6A)[2,1]*100, 1)`% to `r round(r.squaredGLMM(k.model.6A)[1,1]*100, 1)`% of the random variance in knowledge attributions.
 
@@ -610,6 +579,46 @@ In the Gerald vignette,the overall pattern was the same. People made different a
 Although the pattern of results was the same for all three vignettes, Cramer's V shows that the likelihood differences varied by vignette. For example, the likelihood difference between the Gettier condition and ignorance condition was much smaller in the Emma vignette than in the Darrel and Gerald vignettes. The likelihood difference between the Gettier and knowledge conditions was much smaller in the Darrel vignette than in the Emma and Gerald vignettes.
 
 
+
+```{r}
+
+mutate(tidy(k.model.6H), model = "Model 6H") %>% 
+  full_join(
+   mutate(tidy(k.model.6G), model = "Model 6G"), 
+   .) %>% 
+  full_join(
+    mutate(tidy(k.model.6F), model = "Model 6F"),
+    .) %>% 
+  full_join(
+    mutate(tidy(k.model.6E), model = "Model 6E"), 
+    .) %>% 
+  full_join(
+    mutate(tidy(k.model.6C), model = "Model 6C"), 
+    .) %>%  
+  full_join(
+   mutate(tidy(k.model.6B), model = "Model 6B"), 
+   .) %>% 
+  full_join(
+    mutate(tidy(k.model.6A), model = "Model 6A"),
+    .) %>% 
+  full_join(
+    mutate(tidy(k.model.6), model = "Model 6"), .) %>% 
+  full_join(
+    mutate(tidy(k.model.5), model = "Model 5"), .) %>% 
+  full_join(
+    mutate(tidy(k.model.4), model = "Model 4"), .) %>% 
+  full_join(
+    mutate(tidy(k.model.3), model = "Model 3"), .) %>% 
+  full_join(
+    mutate(tidy(k.model.2), model = "Model 2"), .) %>% 
+  full_join(
+    mutate(tidy(k.model.1), model = "Model 1"), .) %>% 
+  select(., model, effect, group, term, estimate, std.error, statistic, p.value) %>% 
+  kable(caption = "Knowledge Attribution Model Results") %>% 
+  kable_styling()
+```
+
+
 *Reasonableness attributions*
 
   To determine whether participants made different judgments about vignette subjects' reasonableness as a function of the vignette's knowledge condition, we estimated a series of logistic regressions, just as with the previous analyses that focused on knowledge attribution as a dependent variable. Like with those analyses, we analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject was rated as reasonable and 1 means the subject was rated as unreasonable.  List-wise deletion was used to handle missing data. 
@@ -623,40 +632,20 @@ table(r.data_graph$reason_vas_combined,
   kable_styling()
 ```
   
-```{r random intercept for vignette, reasonableness}
-tidy(r.model.2) %>% 
-  clean_variable_names() %>% 
-  kable(caption = "Explaining Variance in Reasonableness with a Random Intercept for Vignette") %>% 
-  kable_styling()
-```
 
   A model with a random intercept for vignette nested within participant (AIC = `r round(AIC(r.model.3), 2)`) explained similar amounts of variance to a model with a random intercept for vignette alone. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.3)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.3)[1,2]*100, 1)`% of the random variance in knowledge attributions.
   Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = `r AIC(r.model.4)`). The addition of data collection site was not useful relative to the previous model. Pseudo Rsqaured values suggest that this model accounts for `r round(r.squaredGLMM(r.model.4)[2,2]*100, 1)`% to `r round(r.squaredGLMM(r.model.4)[1,2]*100, 1)`% of the random variance in knowledge attributions.
   
   Next, covariates were added to the model as fixed effects (AIC = `r round(AIC(r.model.5), 2)`). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. Compensation was associated with reasonableness; participants who were compensated were more likely to judge the subject as reasonable. Education was also associated with reasonableness. The fewer years of education people had the more likely they were to judge the subject as reasonable.
   
-```{r reasonableness by random intercepts}
-tidy(r.model.5) %>% 
-  clean_variable_names() %>% 
-  kable(caption = "Explaining Variance in Reasonableness with Random Intercepts for Vignette/Participant/Site and Covariates") %>% 
-  kable_styling()
-```
-
   Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = `r round(AIC(r.model.6), 2)`). This model performed better than the previous model, suggesting that there was an effect of vignette condition on reasonableness. Although in all conditions, most people rated the subject as reasonable, both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the ignorance condition, people were more likely to rate the subject reasonable than in the Gettier condition. In the knowledge condition, people were less likely to rate the subject reasonable than in the Gettier condition. Pseudo Rsqaured values suggest that condition accounts for `r round(r.squaredGLMM(r.model.6)[2,1]*100, 1)`% to `r round(r.squaredGLMM(r.model.6)[1,1]*100, 1)`% of the fixed effect variance in knowledge attributions.
-
-```{r reasonableness by knowledge condition}
-tidy(r.model.6) %>% 
-  clean_variable_names() %>% 
-  kable(caption = "Effect of Condition on Knowledge Attributions") %>% 
-  kable_styling()
-```
-
 
 ```{r table of reasonableness by cond}
 r.d_table %>% 
   kable(cpation = "Reasonableness by Condition") %>% 
   kable_styling()
 ```
+
 
 *Does the effect of knowledge condition differ by vignette?*
 
@@ -770,6 +759,33 @@ tidy(r.model.6B) %>%
 *Does the effect of knowledge condition differ as a function of how attributions were measured?*
 
 To test whether the effect of condition on reasonableness differed as a function of measurement type, we estimated a model that included an interaction between condition and measurement type (AIC = `r round(AIC(r.model.6C), 2)`). As with knowledge attributions, this model did not perform better than a model without the interaction. There was no evidence that the effect of condition differed depending on how reasonableness was measured.
+
+
+```{r}
+mutate(tidy(r.model.6C), model = "Model 6C") %>%  
+  full_join(
+    mutate(tidy(r.model.6B), model = "Model 6B"), 
+    .) %>% 
+  full_join(
+    mutate(tidy(r.model.6A), model = "Model 6A"),
+    .) %>% 
+  full_join(
+    mutate(tidy(r.model.6), model = "Model 6"), .) %>% 
+  full_join(
+    mutate(tidy(r.model.5), model = "Model 5"), .) %>% 
+  full_join(
+    mutate(tidy(r.model.4), model = "Model 4"), .) %>% 
+  full_join(
+    mutate(tidy(r.model.3), model = "Model 3"), .) %>% 
+  full_join(
+    mutate(tidy(r.model.2), model = "Model 2"), .) %>% 
+  full_join(
+    mutate(tidy(r.model.1), model = "Model 1"), .) %>% 
+  select(., model, effect, group, term, estimate, std.error, statistic, p.value) %>% 
+  kable(caption = "Reasonableness Attribution Model Results") %>% 
+  kable_styling()
+```
+
 
 *Luck*
 
@@ -996,6 +1012,34 @@ vas_cond_GK_v <- v.chi.sq(x2 = prop.test(t(vas_table[1:2, c(1,3)]))$statistic,
 
 
 For the continuous measurement type, there was a similar pattern of results. There was an effect of condition on luck attributions  X^2(`r vas_cond$parameter[[1]]`) = `r round(vas_cond$statistic[[1]], 2)`, p `r if(round(vas_cond$p.value[[1]], 4) == 0)paste("<.0001")`. People were more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GI$estimate1, 2)`) than in the ignorance condition (`r round(vas_cond_GI$estimate2, 2)`; Cramer's `r vas_cond_GI_v$estimate`, `r vas_cond_GI_v$statistic`). People were also more likely to attribute subjects' identifications to luck in the Gettier condition (`r round(vas_cond_GK$estimate1, 2)`) than in the knowledge condition (`r round(vas_cond_GK$estimate2, 2)`; Cramer's `r vas_cond_GK_v$estimate`, `r vas_cond_GK_v$statistic`). The effect sizes of the effects were smaller when luck was measured continuously, but the confidence intervals of these effect sizes overlapped with the confidence intervals of the effect sizes for the binary measurement type. 
+
+
+
+```{r}
+mutate(tidy(l.model.6C), model = "Model 6C") %>%  
+  full_join(
+    mutate(tidy(l.model.6B), model = "Model 6B"), 
+    .) %>% 
+  full_join(
+    mutate(tidy(l.model.6A), model = "Model 6A"),
+    .) %>% 
+  full_join(
+    mutate(tidy(l.model.6), model = "Model 6"), .) %>% 
+  full_join(
+    mutate(tidy(l.model.5), model = "Model 5"), .) %>% 
+  full_join(
+    mutate(tidy(l.model.4), model = "Model 4"), .) %>% 
+  full_join(
+    mutate(tidy(l.model.3), model = "Model 3"), .) %>% 
+  full_join(
+    mutate(tidy(l.model.2), model = "Model 2"), .) %>% 
+  full_join(
+    mutate(tidy(l.model.1), model = "Model 1"), .) %>% 
+  select(., model, effect, group, term, estimate, std.error, statistic, p.value) %>% 
+  kable(caption = "Luck Attribution Model Results") %>% 
+  kable_styling()
+```
+
 
 ### Exploratory analyses
 
