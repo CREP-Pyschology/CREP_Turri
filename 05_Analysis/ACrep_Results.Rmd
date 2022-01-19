@@ -122,17 +122,6 @@ use_data <- merge(use_data, full_sample_n, all.x = T, by = "lab_code")
 use_data <- merge(use_data, final_sample_n, all.x = T, by = "lab_code")
 use_data$full_sample_size <- use_data$full_sample_size / 3
 use_data$final_sample_size <- use_data$final_sample_size / 3
-
-use_data %>% 
-  select(un_region, compensation, sampled_population, group_data, 
-         in_person, deviation_issues, full_sample_size, 
-         final_sample_size) %>% 
-  arrange(-final_sample_size) %>% 
-  mutate(site_id = row_number()) %>% 
-  select(site_id, everything()) %>% 
-  clean_names("sentence") %>% 
-  kable(caption = "Data Collection Site Information") %>% 
-  kable_styling()
 ```
 
   This project was designed to align  undergraduate research training and learning with contributions to science. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., 2019) in collaboration with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independently designing an analysis plan, completing a pre-registration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository (Open Science Framework; LINK). Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved. For more information about this process and detailed descriptions of logistical considerations, see Appendix X ^[The stage 1 registered report manuscript included sections that described the recruitment and approval of collaborators who would collect data. We have restructured the Methods section to more closely resemble that in a typical empirical article. The original text, updated to reflect the study’s completion, can be found in Appendix X.]. 
@@ -238,22 +227,125 @@ Language Proficiency. The participant reported their understanding of the langua
 
 Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age as noted above.
 
-```{r}
-exclusions %>% 
-  kable(caption = "Multiway Table of All Exclusions") %>% 
-  kable_styling()
+  Evaluating criteria 2 and 4 above required making subjective judgments about open-ended responses. Each non-missing observation was evaluated by three people who spoke the language. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at http://osf.io/gs29c. Responses identified by raters as test cases (e.g., “TEST”) were excluded. Responses that were not coherent were labeled, but not excluded (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). No observations in the final data set were missing responses; therefore all responses were evaluated.
+    Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked “test”). The Age exclusion criteria (1 above) was applied first and may have captured many invalid test responses.
 
-#Note: There are many NA in exclusion criteria because we didn't evaluate folks that were excluded for previous criteria
+*Materials and Measures*
+
+  Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accommodate lab-specific variations. However, `r lab_sheet %>% group_by(survey_platform) %>% count() %>% filter(survey_platform == "Qualtrics") %>% .[[1,2]]` labs used Qualtrics surveys that student researchers programmed themselves. For the majority of these labs, data collected via Qualtrics was not incorporated into the analysis data (e.g., due to lack of access to raw survey data). In the analysis dataset, `r final_long %>% group_by(person_code, source) %>% count() %>% group_by(source) %>% count() %>% filter(source == "Qualtrics") %>% .[[1,2]]` sites used Qualtrics surveys. In the analysis dataset, `r lab_sheet %>% group_by(in_person) %>% count() %>% filter(in_person == "Yes") %>% .[[1,2]]` labs collected data from all participants in-person (from an on-campus computer), `r lab_sheet %>% group_by(in_person) %>% count() %>% filter(in_person == "Both") %>% .[[1,2]]` labs collected data from some participants in-person, and for `r lab_sheet %>% group_by(in_person) %>% count() %>% filter(in_person == "Unclear") %>% .[[1,2]]` labs, whether data collection took place in-person was not clearly documented. All participants completed an online consent form. Deviations that labs made from the materials and procedure described here are summarized in Table X. All materials used in this replication, including the details of these vignettes and related pretests, are available in the Appendix and at osf.io/n5b3w.
+
+
+*_Vignettes_*
+
+  In addition to the “Squirrel/Darrel” vignette from Turri et al. (2015), two vignettes were selected on the basis of their similarity to the original vignette, their quality, and their prevalence in the literature: the “Fake Barn/Gerald” vignette (Colaca et al., 2014; altered to more closely match the “Squirrel/Darrel” vignette), and the “Diamond/Emma” vignette (Nagel et al., 2013). The vignettes as administered in this study are reported in full in Appendix X. The vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix X). Four labs included a fourth vignette that was not described in the approved protocol (see Larkin et al., in preparation *I don't think it makes sense to cite a work that doesn't exist yet -- if there is a preprint, then we can cite that*; osf.io/XXXX).
+  For each vignette, participants were randomly assigned without replacement to one of three conditions: a Gettier case condition in which the vignette subject correctly identified the target, but not due to their knowledge (i.e., the “Threat” condition for Turri et al., 2015); a knowledge control condition in which the subject correctly identified the target due to their knowledge (i.e., the “No Threat” condition for Turri et al.); and an ignorance control condition in which the protagonist incorrectly identified the target, but not due to their knowledge (i.e., the “No Detection” condition for Turri et al.). 
+
+*_Dependent Measures_*
+
+*Braeden working on edits in the google doc*
+
+For each of the three vignettes they read, participants evaluated the subject's knowledge on a series of questions. Student-led teams varied in the exact questions they asked. The percentage of observations that have each question among all vignettes for all participants in the final data is listed in parentheses after each question description. After each vignette, participants were asked:
+1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 (`r round(pct_complete(final_long$know_vas), 2)`% complete) or as a binary choice (`r round(pct_complete(final_long$know_bin), 2)`% complete);
+2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options (`r round(pct_complete(final_long$compr), 2)`% complete);
+3) the extent to which the subject's belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or (`r round(pct_complete(final_long$reason_vas), 2)`% complete) as a binary choice (`r round(pct_complete(final_long$reason_bin), 2)`% complete); 
+4a) whether or the subject identified the target correctly or incorrectly (`r round(pct_complete(final_long$ri_wr), 2)`% complete) and then,
+4b) whether this was due to ability/inability versus good luck/ bad luck, measured either on a continuous scale from 0 to 100 (`r round(pct_complete(final_long$luck_vas), 2)`% complete) or as a binary choice (`r round(pct_complete(final_long$luck_bin), 2)`% complete);
+4) an alternative knowledge probe in which participants were asked whether the subject knew or only thought they knew what the identification target was (`r round(pct_complete(final_long$know_alt), 2)`% complete). 
+
+In the original protocol, 4a and 4b were described as being one question, but, after piloting, the question was split to reduce confusion.
+
+*_Demographics_*
+
+  Participants were asked to report their age, gender, country of residence, birth country, the number of years they had attended school, and their ethnicity. Because of differences in how student-led teams measured these items, imputations and other adjustments were required for some cases.
+  
+  *Education level.* All participants were asked a question about their education. Participants who completed the survey in SocSciSurvey were asked about the number of years they had been in school (truncated at 18). Participants who completed the survey in Qualtrics were asked about their educational attainment. Education (in years) was imputed for participants who reported their educational attainment (_n_ = `r final_demographics %>% filter(!(is.na(education_level))) %>% nrow()`) according to the following scheme, which was designed with input from PIs who oversaw data collection in each country. For participants from the United States, less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college or a 2-year college degree was translated as 14 years, a 4-year college degree was translated as 16 years, a master’s was translated as 18 years, and a doctorate or professional degree was translated as 20 years. For participants from Portugal, the labels were the same except that a 4-year college degree was translated as 15 years, a doctorate or professional degree was translated to 21 years., less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college was translated as 16 years, a masters was translated as 18 years, and a graduate degree was translated as 20 years. These translated values were imputed, but with truncation to match how this item was measured in SocSciSurvey. Any value above 17 was imputed as 18.
+  
+*Compensation.* Participants were asked whether or not they were compensated for their participation (“Will you receive any kind of compensation or reward for taking part in this study?”), and indicated the type of compensation  (e.g., the number of course credits, the amount of money). Some student-led teams opted to skip this question because all participants were compensated the same way. The method of compensation described in the IRB protocol was imputed for those missing responses to compensation due to survey programming. Among participants who were asked about their compensation, responses were sometimes missing or discrepant with the documented method of compensation. For student-led teams where fewer than 50% of participants in the final dataset agreed on a method of compensation, the method of compensation described in the data collection site's approved IRB protocol was imputed for all participants (if a single method of compensation was described).
+
+*_Participation and Exclusion Measures_*
+
+Participants were asked to describe what they thought the hypothesis of the study wasof the study (used for exclusions), their impression of study materials (not used in any analyses), whether they had participated in a similar study (used for exclusions), and their language comprehension of the survey language (used for exclusions). Participants also completed a 12-question study experience questionnaire that was not used in analyses (see Appendix X).
+
+## Procedure
+
+After providing informed consent, participants read and answered questions about three vignettes that described counterfeit object cases. Each participant read and responded to one vignette for each protagonist and one for each knowledge condition. The random assignment of vignette and knowledge condition was executed by random presentation features in SocSciSurvey and Qualtrics. For each vignette, participants evaluated the protagonist’s knowledge on the knowledge attribution, reasonableness judgment, luck attribution, and other measures. Next, participants answered questions related to data exclusion criteria, demographics, and their experience completing the study. Finally, participants were debriefed and compensated if applicable.
+
+## Analytic Approach
+
+  Analyses were conducted on aggregated  raw data collected in SocSciSurvey, and Qualtrics (by two labs). In the original protocol, we planned to evaluate the quality of each student-led team’s data, including the raw data, analysis scripts, codebooks, cleaned data sets, and narrative summaries of results. We also planned that data would be included in analyses only if these products passed a quality check. The original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent analyses, we therefore decided to use all available raw data, regardless of the completion or quality of subsequent pedagogical activities. A summary of how labs analyzed their data (i.e., the test used for the effect of condition on knowledge attribution) is reported in Table X.
+Aggregating data collected by different data collection sites required making imputations and other adjustments to account for errors, unpredicted data issues, and differences in how student-led teams measured items (see Table X for a summary of methods deviations at the data collection site level). Imputations and other adjustments not previously described above are noted in this section. 
+
+*Note -- after Jordan Wagge compiles info, add summary of lab analysis choices to lab table*
+
+
+*_Multilevel Models_*
+
+  Multilevel models were used to evaluate our hypotheses. The unit of analysis was the question response, and random intercepts for the vignette, participant, and data collection site were to be included to account for the nesting of responses within these groups.^[In the approved protocol, data collection was described as taking place in labs. Labs were described as uniquely identifying data collection sites. However, at some data collection sites, multiple student-led teams joined this project (e.g., under the mentorship of the same PI, multiple students joined the project as “labs”). Observations were labeled as belonging to both a “lab” (which we describe as a “student-led team”) and a data collection site. For analyses, the data collection site was used in place of the “lab” variable described in the approved protocol.]
+  *Assumptions and Transformations.* While the approved protocol described testing assumptions before conducting analyses, it did not detail criteria that would be used for testing assumptions or approaches to handling convergence issues. Here we describe the approach taken to test assumptions. Convergence issues are described in the results section where relevant.
+  Assumptions of and related to linearity are primarily relevant for the analysis of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal (see Table X). Distributions by vignette and experimental condition were also dramatically bimodal. A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck/ability variables.
+  
+```{r}
+know_vas_trials_dropped_n <- final_long %>%
+  filter(!is.na(know_vas)) %>% 
+  tabyl(know_vas_binned) %>% 
+  filter(is.na(know_vas_binned)) %>% 
+  pull(n) 
+
+know_vas_trials_dropped_pct <- final_long %>%
+  filter(!is.na(know_vas)) %>% 
+  tabyl(know_vas_binned) %>% 
+  filter(is.na(know_vas_binned)) %>% 
+  pull(percent) %>% 
+  round(4) %>% 
+  .[]*100 
+
+reason_vas_trials_dropped_n <- final_long %>%
+  filter(!is.na(reason_vas)) %>% 
+  tabyl(reason_vas_binned) %>% 
+  filter(is.na(reason_vas_binned)) %>% 
+  pull(n) 
+
+reason_vas_trials_dropped_pct <- final_long %>%
+  filter(!is.na(reason_vas)) %>% 
+  tabyl(reason_vas_binned) %>% 
+  filter(is.na(reason_vas_binned)) %>% 
+  pull(percent) %>% 
+  round(4) %>% 
+  .[]*100 
+
+luck_vas_trials_dropped_n <- final_luck %>%
+  filter(!is.na(luck_vas)) %>% 
+  tabyl(luck_vas_binned) %>% 
+  filter(is.na(luck_vas_binned)) %>% 
+  pull(n) 
+
+luck_vas_trials_dropped_pct <- final_luck %>%
+  filter(!is.na(luck_vas)) %>% 
+  tabyl(luck_vas_binned) %>% 
+  filter(is.na(luck_vas_binned)) %>% 
+  pull(percent) %>% 
+  round(4) %>% 
+  .[]*100 
 ```
 
+  Transforming continuous variables into discrete variables for analysis is not generally recommended (cite). For the present analyses, however, this approach was necessary due to the already bimodal distribution of the dependent variables. Thus, we split the continuously measured versions of the three dependent variables such that scores at and below 40 and scores at and above 60 were classified into discrete categories. Using this approach resulted in minimal data loss: Of non-missing responses on each continuous measure, `r know_vas_trials_dropped_n` (`r know_vas_trials_dropped_pct`%) trials were dropped for the knowledge attribution variable, `r reason_vas_trials_dropped_n` (`r reason_vas_trials_dropped_pct`%) trials were dropped for the reasonableness attribution variable, and `r luck_vas_trials_dropped_n` (`r luck_vas_trials_dropped_pct`%) trials were dropped for the luck attribution variable. *Add clear information about variable coding here or elsewhere* This approach allowed us to validly interpret model results and also test whether the method of measurement (continuous or binary) affected results. 
+  
 
-Evaluating criteria 2 and 4 above required making subjective judgments about open-ended responses. Each non-missing observation was evaluated by three people who spoke the language. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at http://osf.io/gs29c. Responses identified by raters as test cases (e.g., “TEST”) were excluded. Responses that were not coherent were labeled, but not excluded (_n_ study purpose = `r nrow(filter(final_demographics, purpose_nonsense))`; _n_ previously participated = `r nrow(filter(final_demographics, previous_nonsense))`). No observations in the final data set were missing responses; therefore all responses were evaluated.
+  *Model Steps.* A series of multilevel logistic regression models were fit predicting knowledge attributions, reasonableness judgements, and luck attributions. We analyzed responses originally reported on continuous and binary scales together using a combined binary variable. Listwise deletion was used to handle missing data. After estimating a baseline intercept-only model (Model 1), we fit models with random intercepts for vignette (Model 2), person (Model 3), and data collection site (Model 4) added sequentially. In Model 5, participant age, compensation, gender, and education (in years) were added to as fixed effects. These variables served as covariates. Finally, knowledge condition was added in Model 6.
 
-Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked “test”). The age-related exclusion criteria (1 above) was applied first and may have captured many invalid test responses.
-
-*_Materials and Measures_*
-
-  Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accommodate lab-specific variations. However, `r` sites used Qualtrics surveys that student researchers programmed themselves, and `r`% of participants completed the study survey from a campus laboratory. All participants completed an online consent form. Deviations that labs made from the materials and procedure described here are summarized in *table, appendix, etc*. All materials used in this replication, including the details of these vignettes and related pretests, are available in the Appendix and at osf.io/n5b3w.
+### Method figures and tables
+```{r}
+use_data %>% 
+  select(un_region, compensation, sampled_population, group_data, 
+         in_person, deviation_issues, full_sample_size, 
+         final_sample_size) %>% 
+  arrange(-final_sample_size) %>% 
+  mutate(site_id = row_number()) %>% 
+  select(site_id, everything()) %>% 
+  clean_names("sentence") %>% 
+  kable(caption = "Data Collection Site Information") %>% 
+  kable_styling()
+```
 
 
 ```{r}
@@ -265,7 +357,14 @@ final_demographics %>%
   kable_styling()
 ```
 
-In the approved proposal, we planned to measure participants' racial and ethnic identities using an open-ended response. For reasons that were not documented, racial and ethnic identity was measured using non-exclusive categories with an open-ended fill-in option. Student research teams designed different response options tailored to their geographic region (see all variations in Appendix Table X). All data collection sites allowed people to select multiple racial and ethnic identities, and all asked whether participants identified as White (either "White/European", "White / European descent", or "European descent"). In the final sample, `r round(nrow(filter(final_demographics, ethn_wh == TRUE))/nrow(final_demographics)*100, 2)`% (_n_ = `r nrow(filter(final_demographics, ethn_wh == TRUE))`) identified as White.
+
+```{r}
+exclusions %>% 
+  kable(caption = "Multiway Table of All Exclusions") %>% 
+  kable_styling()
+
+#Note: There are many NA in exclusion criteria because we didn't evaluate folks that were excluded for previous criteria
+```
 
 
 ```{r}
@@ -283,11 +382,11 @@ final_demographics %>%
   mutate(count = n*mean,
          percent = count/n*100) %>% 
   select(count, percent) %>% 
-  kable(digits = 2, caption = "Number and Percent of Participants by Data Collection Context Variables in Analysis Data (Total N = 2957)") %>% 
+  kable(digits = 2, 
+        caption = paste("Number and Percent of Participants by Data Collection Context Variables in Analysis Data (Total N = ", nrow(final_demographics), ")")) %>% 
   kable_styling()
 
 ```
-
 
 ```{r}
 final_demographics %>% 
@@ -299,6 +398,7 @@ final_demographics %>%
 ```
 
 ```{r}
+
 survey_lang_table <- final_demographics %>%
   mutate(survey_lang = str_replace_all(survey_lang, "prt", "por"),
          survey_lang = str_replace_all(survey_lang, "zho", "chi")) %>% 
@@ -318,71 +418,47 @@ survey_lang_table %>%
   kable_styling()
 ```
 
+```{r}
 
-## Procedure
+know_vas <- final_long %>% 
+  ggplot(aes(x=know_vas)) +
+  geom_histogram() +
+  labs(x = "Knowledge Attributions") +
+  jtools::theme_apa()
 
-In the approved protocol, we described a plan for data collection whereby each lab pre-registered a target sample size of 50 after exclusions and stopped collection data on April 1, 2020 or once all contributors reached their pre-registered target sample size. Due to the Covid-19 pandemic, this plan was not feasible. The deadline for data collection was extended to June 1, 2021. Many data collection sites stopped collecting data earlier.
+reason_vas <- final_long %>% 
+  ggplot(aes(x=reason_vas)) +
+  geom_histogram() +
+  labs(x = "Reasonableness Attributions") +
+  jtools::theme_apa()
 
-Data collection took place between January 1, 2019 and June 1, 2021. Some participants completed the study survey from a campus laboratory. All participants completed an online survey that included a consent form. After providing informed consent, participants read and answered questions about three vignettes whose content and conditions varied according to the random presentation feature in SocSciSurvey and Qualtrics. The vignettes used in the study were selected on the basis of pretesting in English, described in Appendix X. 
+luck_vas <- final_long %>% 
+  ggplot(aes(x=luck_vas)) +
+  geom_histogram() +
+  labs(x = "Luck Attributions") +
+  jtools::theme_apa()
 
-Vignette content varied by subject and identification target. There were three vignette scenarios that were randomly presented to participants: the "Squirrel/Darrel" vignette from Turri et al. (2015), the “Fake Barn/Gerald” vignette from Colaca et al. (2014; altered to include matched knowledge and ignorance control conditions), and the “Diamond/Emma” vignette from Nagel, San Juan, & Mar (2013). The vignettes are reported in full in Appendix X.
-  These vignettes all describe counterfeit object Gettier cases. The primary research aim for this project was to replicate Experiment 1 from Turri et al., (2015), which used a counterfeit object Gettier case ("Squirrel/Darrel"). The two vignettes that were not used in Experiment 1 of Turri et al. (2015) were selected on the basis of their similarity to the original vignette, their quality, and their prevalence in the literature. [Note that on page 33, it says that these vignettes were selected because they had matched controls. But elsewhere, we say that the Gerald vignette didn't have matched controls.]
 
-  Vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix X). Some labs tested an additional vignette that was not described in the approved protocol (for more information, see [LINK TO MORE INFORMATION]).
+gridExtra::grid.arrange(know_vas, reason_vas, luck_vas, ncol = 3) 
 
-For each vignette, there were three conditions: a Gettier case condition in which subjects correctly identified the target, but not due to their knowledge; a knowledge control condition in which subjects correctly identified the target due to their knowledge; an ignorance control condition in which subjects incorrectly identified the target, but not due to their knowledge. Vignette content and condition were randomly assigned. Each participant read and evaluated three vignettes (one of each subject/identification target type and one of each condition).
+#png("./figures/vas_distributions.png")
+#gridExtra::grid.arrange(know_vas, reason_vas, luck_vas, ncol = 3) 
+#dev.off()
 
-For each of the three vignettes they read, participants evaluated the subject's knowledge on a series of questions. Student-led teams varied in the exact questions they asked. The percentage of observations that have each question among all vignettes for all participants in the final data is listed in parentheses after each question description. After each vignette, participants were asked:
-1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 (`r round(pct_complete(final_long$know_vas), 2)`% complete) or as a binary choice (`r round(pct_complete(final_long$know_bin), 2)`% complete);
-2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options (`r round(pct_complete(final_long$compr), 2)`% complete);
-3) the extent to which the subject's belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or (`r round(pct_complete(final_long$reason_vas), 2)`% complete) as a binary choice (`r round(pct_complete(final_long$reason_bin), 2)`% complete); 
-4a) whether or the subject identified the target correctly or incorrectly (`r round(pct_complete(final_long$ri_wr), 2)`% complete) and then,
-4b) whether this was due to ability/inability versus good luck/ bad luck, measured either on a continuous scale from 0 to 100 (`r round(pct_complete(final_long$luck_vas), 2)`% complete) or as a binary choice (`r round(pct_complete(final_long$luck_bin), 2)`% complete);
-4) an alternative knowledge probe in which participants were asked whether the subject knew or only thought they knew what the identification target was (`r round(pct_complete(final_long$know_alt), 2)`% complete). 
 
-In the original protocol, 4a and 4b were described as being one question, but further piloting revealed that the question confused participants.
-
-After reading three vignettes and answering three sets of questions, participants answered questions related to exclusion criteria and demographics. They described the purpose of the study (used for exclusions), their impression of study materials (not used in any analyses), whether they had participated in a similar study (used for exclusions), their language comprehension of the survey language (used for exclusions), and their age, gender, country, birth country, the number of years they had attended school, and their ethnicity. Participants described their perceptions of their compensation ("Will you receive any kind of compensation or reward for taking part in this study?"), before describing the compensation in more detail (e.g., the number of course credits, the amount of money). Participants also completed a 12-question study experience questionnaire that was not used in analyses.
-
-All materials used in this replication, including the details of these vignettes and related pretests, are available at osf.io/n5b3w.
-
-## Analytic Approach
-
-  All raw data collected for this study were aggregated and analyzed as a single data set. Multilevel models were used to evaluate hypotheses. The unit of analysis was the trial and random intercepts for the vignette, participant, and data collection site were be included to account for the nesting of trials within these groups. 
-  The approved protocol did not detail criteria that would be used for testing assumptions or approaches to handling convergence issues. We describe the approach taken to test assumptions and to handling convergence issues in the results section where relevant.
-
-[Error on page 34 -- says that the minimum sample size is 40]
-
-  Analyses were conducted on all raw data collected in SocSciSurvey, and data collected in Qualtrics by two labs. In the original protocol, we planned to evaluate the quality of each student-led team's data, including the raw data, analysis scrips, code books, cleaned data sets, and narrative summaries of results, and data would be included in analyses only if these products passed a quality check. the original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent analyses for this report, all available raw data were used, regardless of the completion or quality of subsequent pedagogical activities.
-  Aggregating data required making imputations and other adjustments to account for errors, unpredictable data issues, and differences in how student-led teams measured items (see Table X for a summary of methods deviations at the data collection site level). We describe these imputations and other adjustments in the following subsections.
-  
-*Compensation*
-
-  Participants were asked to report whether and how they were compensated for their participation. Some student-led teams opted to skip this question because all participants were compensated the same way. The documented method of compensation (e.g., as described in the IRB protocol), was imputed for those missing responses to compensation due to survey programming. Among participants who were asked about their compensation, responses were sometimes missing or discrepant with the documented method of compensation. For student-led teams where fewer than 50% of participants in the final data set agreed on a method of compensation, the documented method of compensated was imputed for all participants (if a single method of compensation was documented).
-
-*Data collection sites*
-
-  In the approved protocol, data collection was described as taking place in labs. Labs were described as uniquely identifying data collection sites. However, at some data collection sites, multiple student-led teams joined this project (e.g., under the mentorship of the same PI, multiple students joined the project as "labs"). Observations were labeled as belonging to both a "lab" (which we describe as a "student-led team") and a data collection site. For analyses, the data collection site was used in place of the "lab" variable described in the approved protocol. 
-  
-*Education level*
-
-  All participants were asked a question about their education. Participants who completed the survey in SocSciSurvey were asked about the number of years they had been in school (truncated at 18). Participants who completed the survey in Qualtrics were asked about their educational attainment. Years of education was imputed for participants who reported their educational attainment according to the following scheme, which was designed with input from PIs who oversaw data collection in each country. For participants from the United States, less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college or a 2-year college degree was translated as 14 years, a 4-year college degree was translated as 16 years, a master's was translated as 18 years, and a doctorate or professional degree was translated as 20 years. For participants from Portugal, the labels were the same except that a 4-year college degree was translated as 15 years, a doctorate or professional degree was translated to 21 years., less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college was translated as 16 years, a masters was translated as 18 years, and a graduate degree was translated as 20 years. These translated values were imputed, but with truncation to match how this item was measured in SocSciSurvey. Any value above 17 was imputed as 18.
-  Participants were asked to report their gender, and were given three response options. The vast majority of participants selected "male" or "female" (_n_ identified as neither = `r final_demographics %>% filter(gender == "other") %>% nrow()`)
-
-[Need to either collect information about the analyses people did or report that this is a deviation from the original protocol]
-
-## Sample Size Determination
-
-  The approved protocol described power analyses. The text from the original protocol is reproduced in full in Appendix X, and is summarized here. Power analyses suggested that, given 3 vignettes per participant and 9 labs, at least 32 participants per lab (288 total participants; 864 total observations), would be required to detect an effect of X size at a power of at least .90 with an alpha of .05.
-  Considering the high potential for attrition and heterogeneity at the data collection site level, a target sample size of 50 participants per lab was set. 
+```
 
 
 # Results
 
-  In the approved protocol, the results section focused heavily on the project's logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks. Further, some model specification details in the approved protocol conflicted with stated research questions. We have implemented models that test the stated research questions. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in the Appendix.
-  There were `r length(unique(final_long$person_code))` data collection sites in the final data set. The number of participants at each site varied (see Table X). In the approved protocol, we anticipated that all data collection sites would contribute data from at least 50 participants, after exclusions. `r final_long %>% group_by(person_code, id) %>% count() %>% group_by(person_code) %>% count() %>% filter(n < 50) %>% nrow()` sites fell short of this threshold.
-  The approved protocol described testing assumptions before conducting analyses (for full results of the following assumption checks, see Appendix X). Assumptions of and related to linearity are primarily relevant for the analyses of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bi-modal when examined unconditionally and by vignette and condition.
+   To better test our research questions, we implemented analyses that differ from those we originally planned.^[In the approved protocol, the results section focused heavily on the project’s logistics and structured results reporting in ways that would not allow for a transparent and thorough description of model fit and other important aspects of results, like assumption checks. Further, some model specification details in the approved protocol conflicted with stated research questions.] All deviations from the approved protocol are summarized in Table X. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in Appendix X.
 
+  The goal of the present research was to provide a well-powered estimate of the magnitude and prevalence of Gettier intuitions (i.e., the difference in knowledge attribution between Gettier and knowledge conditions) across different scenarios and testing sites in a replication and extension of Turri et al., 2015. Models were fit in steps to determine whether participants attributed knowledge to the protagonist at different rates as a function of condition. The same series of models were fit in steps to determine whether participants attributed reasonableness and luck to the protagonist at different rates as a function of condition. Then, models were fit to address... exploratory analyses....
+  
+*Knowledge Attribution*
+
+  
+  
   A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bi-modal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck.
 
   It is generally not recommended to transform continuous variables in to discreet variables for analyses (cite). For the present analyses, however, splitting the continuously measured versions of dependent variables such that scores at and below 40 and scores at and above 60 were classified into a discreet category allows us to validly interpret model results and also test whether the method of measurement (continuous or binary) affects judgments. So, this was the approach taken.
