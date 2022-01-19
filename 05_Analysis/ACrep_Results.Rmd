@@ -1040,10 +1040,20 @@ mutate(tidy(l.model.6C), model = "Model 6C") %>%
   kable_styling()
 ```
 
+*Moderation Effects*
+
+*_Participant Recruitment_*
+
+*_Measurement Characteristics_*
+
+```{r}
+
+```
+
 
 ### Exploratory analyses
 
-[Getting more information about why re ran these]
+*Section not finalized* 
 
 
 # Disclosures
