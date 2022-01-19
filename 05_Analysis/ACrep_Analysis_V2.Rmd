@@ -748,8 +748,8 @@ table(final_long$know_bin)
 ## split data 
 final_long$know_vas_binned <- final_long$know_vas
 final_long$know_vas_binned[final_long$know_vas_binned <= 40] <- 2
-final_long$know_vas_binned[final_long$know_vas_binned >= 40 & 
-                             final_long$know_vas_binned <= 60] <- NA
+final_long$know_vas_binned[final_long$know_vas_binned > 40 & 
+                             final_long$know_vas_binned < 60] <- NA
 final_long$know_vas_binned[final_long$know_vas_binned >= 60] <- 1
 table(final_long$know_vas_binned, useNA = "ifany")
 
@@ -773,8 +773,8 @@ table(final_long$reason_bin)
 ## split data 
 final_long$reason_vas_binned <- final_long$reason_vas
 final_long$reason_vas_binned[final_long$reason_vas_binned <= 40] <- 2
-final_long$reason_vas_binned[final_long$reason_vas_binned >= 40 & 
-                             final_long$reason_vas_binned <= 60] <- NA
+final_long$reason_vas_binned[final_long$reason_vas_binned > 40 & 
+                             final_long$reason_vas_binned < 60] <- NA
 final_long$reason_vas_binned[final_long$reason_vas_binned >= 60] <- 1
 table(final_long$reason_vas_binned, useNA = "ifany")
 
@@ -798,8 +798,8 @@ table(final_luck$luck_bin)
 ## split data 
 final_luck$luck_vas_binned <- final_luck$luck_vas
 final_luck$luck_vas_binned[final_luck$luck_vas_binned <= 40] <- 2
-final_luck$luck_vas_binned[final_luck$luck_vas_binned >= 40 & 
-                             final_luck$luck_vas_binned <= 60] <- NA
+final_luck$luck_vas_binned[final_luck$luck_vas_binned > 40 & 
+                             final_luck$luck_vas_binned < 60] <- NA
 final_luck$luck_vas_binned[final_luck$luck_vas_binned >= 60] <- 1
 table(final_luck$luck_vas_binned, useNA = "ifany")
 
@@ -1873,8 +1873,8 @@ v.chi.sq(x2 = prop2$statistic,
 ## add to this data
 final_luck$know_vas_binned <- final_luck$know_vas
 final_luck$know_vas_binned[final_luck$know_vas_binned <= 40] <- 2
-final_luck$know_vas_binned[final_luck$know_vas_binned >= 40 & 
-                             final_luck$know_vas_binned <= 60] <- NA
+final_luck$know_vas_binned[final_luck$know_vas_binned > 40 & 
+                             final_luck$know_vas_binned < 60] <- NA
 final_luck$know_vas_binned[final_luck$know_vas_binned >= 60] <- 1
 table(final_luck$know_vas_binned, useNA = "ifany")
 
