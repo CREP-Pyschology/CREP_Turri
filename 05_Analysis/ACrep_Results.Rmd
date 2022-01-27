@@ -559,7 +559,6 @@ tidy(k.model.6A) %>%
 
 ```{r graph of con vignette on knowledge}
 #graph the three way binary 
-data_graph
 ggplot(data_graph) +
   geom_mosaic(aes(x = product(know_vas_combined, cond, vignette), 
                   fill = know_vas_combined)) + 
