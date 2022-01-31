@@ -48,7 +48,7 @@ library(MOTE)
 The `full_long` dataset includes all participants in long format - wherein each trial of their study is on one row of the dataset. Our uploaded data also includes `full.Rds` which is the same data in wide format - one column for each variable in the dataset and one row per participant.
 
 ```{r}
-full_long <- readRDS("../04_Data/rds/d_all_long.Rds")
+full_long <- readRDS("./04_Data/rds/d_all_long.Rds")
 #str(full_long)
 ```
 
@@ -69,7 +69,7 @@ Import the open-ended responses and prepare them for merging with the final data
   - Participants are also marked as "nonsense" if they did not write a legible answer or simply typed gibberish. These data points are not excluded but marked if you would like to repeat the analysis and exclude them. 
 
 ```{r}
-file.names <- list.files(path = "../04_Data/open_responses/", 
+file.names <- list.files(path = "./04_Data/open_responses/", 
                          pattern = ".xlsx", full.names = T, 
                          recursive = T)
 
@@ -236,8 +236,8 @@ purpose_missing <- merge(purpose_missing,
                          by = "id", 
                          all.x = T)
 
-write.csv(previous_missing, "../04_Data/data/previous_needs.csv", row.names = F)
-write.csv(purpose_missing, "../04_Data/data/purpose_needs.csv", row.names = F)
+write.csv(previous_missing, "./04_Data/data/previous_needs.csv", row.names = F)
+write.csv(purpose_missing, "./04_Data/data/purpose_needs.csv", row.names = F)
 ```
 
 ```{r}
@@ -253,8 +253,8 @@ purposeDF_wide_missing <- pivot_wider(data = purposeDF_long_missing,
                                        values_from = "code", 
                                        names_from = "coder")
 
-write.csv(previousDF_wide_missing, "../04_Data/data/previous_needs_wide.csv", row.names = F)
-write.csv(purposeDF_wide_missing, "../04_Data/data/purpose_needs_wide.csv", row.names = F)
+write.csv(previousDF_wide_missing, "./04_Data/data/previous_needs_wide.csv", row.names = F)
+write.csv(purposeDF_wide_missing, "./04_Data/data/purpose_needs_wide.csv", row.names = F)
 ```
 
 ## Fix Data Coding / Examine Covariates  
@@ -265,7 +265,7 @@ write.csv(purposeDF_wide_missing, "../04_Data/data/purpose_needs_wide.csv", row.
   - Delete cases that should not be used 
 
 ```{r} 
-lab_sheet <- import("../04_Data/data/lab_sheet.xlsx")
+lab_sheet <- import("./04_Data/data/lab_sheet.xlsx")
 
 nrow(full_long)
 

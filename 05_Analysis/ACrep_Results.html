@@ -1721,7 +1721,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ACrep_Results.Rmd</h1>
 <h4 class="author">Hannah Moshontz, running Erin Buchanan’s Analysis Script</h4>
-<h4 class="date">Last Updated 2022-01-20</h4>
+<h4 class="date">Last Updated 2022-01-31</h4>
 
 </div>
 
@@ -2347,11 +2347,23 @@ clean_variable_names &lt;- function(tidy_model_obj){
 </div>
 <div id="eda-on-the-analysis-set" class="section level1">
 <h1>EDA on the analysis set</h1>
-<p>A few notes about variables: - person_code_code is a unique lab identifier (identifies PI) - lab_id is a not a unique lab identifier, but rather identifies the undergraduate PI (and some of these undergraduate PIs were students with the same lab PI) - lab_country is the variable we are using to identify country/region - un_region groups lab country into larger regions - source identifies the method of data collection - id uniquely identifies each participant by concatenating the source (qualtrics vs socscisurvey), undergraduate PI (lab_id), and the unique identifier (case, which was of a different format depending on source) - variables ending in valid are logical and identify valid cases (in the “final_long” dataset, there will not be variance) - variables ending in order indicate the order in which vignettes or condition were presented (varies by participant), or the order in which binary DVs were presented (for socscisurvey, this varies by person_code within lab such that people were presented with “normal” (<em>not sure what direction this is</em>) or “swapped”, but for Qualtrics, this was randomized within person_code and so is coded as “mixed” and and we do not have more detailed information about order in the final dataset. also one lab didn’t properly randomize.) - 2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.</p>
+<p>A few notes about variables:</p>
+<ul>
+<li>person_code_code is a unique lab identifier (identifies PI)</li>
+<li>lab_id is a not a unique lab identifier, but rather identifies the undergraduate PI (and some of these undergraduate PIs were students with the same lab PI)</li>
+<li>lab_country is the variable we are using to identify country/region</li>
+<li>un_region groups lab country into larger regions</li>
+<li>source identifies the method of data collection</li>
+<li>id uniquely identifies each participant by concatenating the source (qualtrics vs socscisurvey), undergraduate PI (lab_id), and the unique identifier (case, which was of a different format depending on source)</li>
+<li>variables ending in valid are logical and identify valid cases (in the “final_long” dataset, there will not be variance)</li>
+<li>variables ending in order indicate the order in which vignettes or condition were presented (varies by participant), or the order in which binary DVs were presented (for socscisurvey, this varies by person_code within lab such that people were presented with “normal” (<em>not sure what direction this is</em>) or “swapped”, but for Qualtrics, this was randomized within person_code and so is coded as “mixed” and and we do not have more detailed information about order in the final dataset. also one lab didn’t properly randomize.)</li>
+<li>2104 N are missing age. are these likely test observations? and so this exclusion and over 100 were a way to try to catch the test observations.</li>
+</ul>
 <pre class="r"><code>final_long$education[which(final_long$education &lt;10)] %&gt;% 
   hist()</code></pre>
 <p><img src="data:image/png;base64,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b+p+J8fFZ2fOX3c3vvztHsfvTPUu0GS+AiVJgTI2Y/gldEyEAqV980d39568SpzvCXUpUNq3PkPp2fIPiU82QSUKlBE4WL9/9NfRiaCpXwcH106BMgLnrtfsFTxNUKCMwZnz232okjYoUEbh1KU+v9aftEGBMhJvvl+eQbpz7+Efte8KrClQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCilQgEIKFKCQAgUopEABCoUX6Pz92/39/V/ff4gOArhmsQX67vHsxP1XoVkA1yyyQD99Ozvt9rPANIBrFligh7tdad7dW/mq+8POT3FxANcsrkA/f7MozKcbX3izKNRbv4flAVyzuAI9OFeXXaU+CMsDuGZhBTp/NJudfcF+OJt96d144KYIK9DF081zr9dTXwMYKwUKUCjyJfzOszNfC3wJP6ss5lEBTYub/Ofn2rL7seidkKza9alAYZLiJv/j7qJBf9v4wqdFf557UjqM2ez/VKVAYZICJ/+ge2a2s/dkv/PL6kz6oLOYFChQQeTkv9498zp358egJAUKVBA6+fOXmxW68zDsHFAFClQQPfnzd/sv9/b2Hu6/ijyDXoECFTQ0+Vd4b1uBAhU0NPlXODtIgQIVXNfkz9/9+kfvv6RAgZbFTv7b/f3lmaCrSyvv/L3nX1egQMviT2P68sP60sqz3h/kVKBAy6JPpF+4s7y08uqa9P0+yalAgZbFfpTz9pNfFi/ev19/Aqlr1F6/00OBAi0Lv5hIdwWRoyeez3s+BVWgQMvir0h/eHIJkcWT0l4/BVWgQMviL6i8cRXlvhdUVqBAyxSoAgUKxV+RfvG63Ut44CYKfRPpzvq/R5cBPfAmEnCDxE3+4aI4v37//sVsdvfkuajTmICbI3Dynx99/Og/FsV5f3//ce+PIilQ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" width="672" /></p>
-<p>267 people report what amounts to less than a high school diploma. 54 people said they had one year of education. <em>This warrants observation in the manuscript.</em></p>
+<p>267 people report what amounts to less than a high school diploma. 54 people said they had one year of education. <em>This warrants observation in the manuscript.</em><br />
+</p>
 </div>
 <div id="method" class="section level1">
 <h1>Method</h1>
@@ -2406,9 +2418,15 @@ use_data &lt;- merge(use_data, full_sample_n, all.x = T, by = &quot;lab_code&quo
 use_data &lt;- merge(use_data, final_sample_n, all.x = T, by = &quot;lab_code&quot;)
 use_data$full_sample_size &lt;- use_data$full_sample_size / 3
 use_data$final_sample_size &lt;- use_data$final_sample_size / 3</code></pre>
-<p>This project was designed to align undergraduate research training and learning with contributions to science. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., 2019) in collaboration with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independently designing an analysis plan, completing a pre-registration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository (Open Science Framework; LINK). Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved. For more information about this process and detailed descriptions of logistical considerations, see Appendix X <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. In total, 65 student-led teams signed up to collect data for this project. At some sites, multiple teams completed the project. Because observations collected by different teams were sometimes organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unusable for analyses (e.g., vignettes were not appropriately randomized). Of the teams that originally signed up, 14 either did not submit protocols for review or submitted protocols but did not complete revisions required to begin data collection. In total, 22 teams completed the entire project, including the purely pedagogical tasks, and the data from 36 teams were included in analyses. Data collection sites sometimes had multiple teams and spanned 19 countries including many world regions. See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.</p>
+<p>This project was designed to align undergraduate research training and learning with contributions to science. It was conceived of and led by the Collaborative Replications and Education Project (CREP; Wagge et al., 2019) in collaboration with the Psychological Science Accelerator (PSA; Moshontz et al., 2019). For the students who served the role of researcher in this study, the project involved collecting data and completing a series of tasks with pedagogical value, like independently designing an analysis plan, completing a pre-registration, independently executing analyses, and posting the study materials, data, and results summaries in a central repository (Open Science Framework; LINK). Each student-led team submitted a protocol for review to a CREP reviewer. Teams could not contribute to data collection until the protocol was approved. For more information about this process and detailed descriptions of logistical considerations, see Appendix X <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.<br />
+In total, 65 student-led teams signed up to collect data for this project. At some sites, multiple teams completed the project. Because observations collected by different teams were sometimes organized within a single data collection site, counts of student-led teams sometimes differ from counts of data collection sites. Further, some teams that were approved to collect data did not contribute data to this project, either because they did not collect any data (e.g., due to campus closures during the Covid-19 pandemic) or because data were collected in a way that rendered them unusable for analyses (e.g., vignettes were not appropriately randomized).<br />
+Of the teams that originally signed up, 14 either did not submit protocols for review or submitted protocols but did not complete revisions required to begin data collection. In total, 22 teams completed the entire project, including the purely pedagogical tasks, and the data from 36 teams were included in analyses. Data collection sites sometimes had multiple teams and spanned 19 countries including many world regions. See Table X for a summary of student-led teams, and Table X for a summary of data collection sites.<br />
+</p>
 <p><em><em>Power Analysis</em></em></p>
-<p>Power analyses were conducted to estimate the number of participants required to estimate an effect of knowledge condition on participants’ knowledge attributions at 90% power and α = .05 <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. To estimate effect sizes, we considered the effects observed in our pilot test data (difference between Gettier and knowledge, β = 0.32; difference between Gettier and ignorance, β = -0.44), the difference between the Gettier condition and knowledge condition (Cramér’s V = .509) and small non-significant difference between the Gettier condition and ignorance condition (which we manually calculated using the reported statistics; Cramér’s V = .16) from Experiment 1 of Turri et al. (2015; <em>effect size</em>), and the Gettier intuition effect size from Starman and Friedman (2012; Experiment 1; Cohen’s d = 0.4). To be conservative, we selected a standardized fixed effect of .1 for our power analyses. The model tested included random intercepts for data collection site, vignette, and participants nested in data collection sites, such that vignettes were crossed with participants who were further nested in labs. Using the powerCurve function in R, we simulated data where the true effect was a standardized fixed effect regression parameter of .1. In these simulations, the number of participants per site was allowed to vary but the number of vignettes (3) and the number of data collection sites (9) were held constant. Analyses of these data showed that, given these constants, at least 32 participants per data collection site (i.e., 288 total participants; 864 total observations), would be required to detect an effect size of .1 90% of the time with an alpha of .05. Considering the high potential for attrition and heterogeneity at the data collection site level, a target sample size of 50 participants per data collection site was set.</p>
+<p>Power analyses were conducted to estimate the number of participants required to estimate an effect of knowledge condition on participants’ knowledge attributions at 90% power and α = .05 <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>.<br />
+To estimate effect sizes, we considered the effects observed in our pilot test data (difference between Gettier and knowledge, β = 0.32; difference between Gettier and ignorance, β = -0.44), the difference between the Gettier condition and knowledge condition (Cramér’s V = .509) and small non-significant difference between the Gettier condition and ignorance condition (which we manually calculated using the reported statistics; Cramér’s V = .16) from Experiment 1 of Turri et al. (2015; <em>effect size</em>), and the Gettier intuition effect size from Starman and Friedman (2012; Experiment 1; Cohen’s d = 0.4). To be conservative, we selected a standardized fixed effect of .1 for our power analyses.<br />
+The model tested included random intercepts for data collection site, vignette, and participants nested in data collection sites, such that vignettes were crossed with participants who were further nested in labs. Using the powerCurve function in R, we simulated data where the true effect was a standardized fixed effect regression parameter of .1. In these simulations, the number of participants per site was allowed to vary but the number of vignettes (3) and the number of data collection sites (9) were held constant. Analyses of these data showed that, given these constants, at least 32 participants per data collection site (i.e., 288 total participants; 864 total observations), would be required to detect an effect size of .1 90% of the time with an alpha of .05. Considering the high potential for attrition and heterogeneity at the data collection site level, a target sample size of 50 participants per data collection site was set.<br />
+</p>
 <p><em><em>Participants</em></em></p>
 <pre class="r"><code>#create dataset for demographics 
 final_demographics &lt;- final_long %&gt;% 
@@ -2477,36 +2495,66 @@ sites_fewer_than_50 &lt;- final_long %&gt;%
   count() %&gt;% 
   filter(n &lt; 50) %&gt;% 
   nrow()</code></pre>
-<p>In the analysis sample (i.e., after the exclusions described below), participants were 3054 adults recruited to participate by student researchers at 36 data collection sites in 19 countries spanning world regions (i.e., Northern America, Eastern Europe, Western Europe, Northern Europe, Australia and New Zealand, Western Asia, Southeastern Asia, Eastern Asia, Southern Europe). See table X for by country sample sizes. Data collection took place between January 1, 2019 and June 1, 2021. <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> Data collection sites contributed a median of 47 participants to the anlaysis sample (min = 11, max = 356); 25 sites collected fewer than the target of 50 participants. On average, participants were young (M<sub>age</sub> = 25.1, SD = 10.1, n = 3054) and had completed some college as measured by years of education (M<sub>education</sub> = NA, SD = NA, n = 3028). <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> Most participants (70.1%; n = 2141) identified as White. <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> Over half of participants completed the survey in English (see Table X).</p>
+<p>In the analysis sample (i.e., after the exclusions described below), participants were 3054 adults recruited to participate by student researchers at 36 data collection sites in 19 countries spanning world regions (i.e., Northern America, Eastern Europe, Western Europe, Northern Europe, Australia and New Zealand, Western Asia, Southeastern Asia, Eastern Asia, Southern Europe). See table X for by country sample sizes. Data collection took place between January 1, 2019 and June 1, 2021. <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a><br />
+Data collection sites contributed a median of 47 participants to the anlaysis sample (min = 11, max = 356); 25 sites collected fewer than the target of 50 participants.<br />
+On average, participants were young (M<sub>age</sub> = 25.1, SD = 10.1, n = 3054) and had completed some college as measured by years of education (M<sub>education</sub> = 13.97, SD = 2.65, n = 3028). <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a> Most participants (70.1%; n = 2141) identified as White. <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> Over half of participants completed the survey in English (see Table X).<br />
+</p>
 <p><em><em>Exclusions</em></em></p>
-<p>Of the 9275 participants who completed the survey, data from 67.1% (<em>n</em> = 6221) of people were excluded. Data from 1240 participants were excluded for multiple reasons.</p>
-<p>Data were excluded for the following reasons (applied in the order listed):<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a> Age. The participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older, operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (<em>n</em> = 2087); Prior Participation. The participant had taken part in a previous version of this study or in another contributors’ replication of the same study (<em>n</em> = 238); Comprehension. The participant failed to answer all three of the vignette comprehension questions correctly (<em>n</em> = 2842; e.g., did not correctly identify what Darrel was looking at); Knowledge of Hypothesis. The participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (<em>n</em> = 203); Language Proficiency. The participant reported their understanding of the language the survey was written in as “not well” or “not well at all” (<em>n</em> = 2091); see Vickstrom, Shin, Collazo, &amp; Bauman, 2015).</p>
-<p>Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age as noted above.</p>
-<p>Evaluating criteria 2 and 4 above required making subjective judgments about open-ended responses. Each non-missing observation was evaluated by three people who spoke the language. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at <a href="http://osf.io/gs29c" class="uri">http://osf.io/gs29c</a>. Responses identified by raters as test cases (e.g., “TEST”) were excluded. Responses that were not coherent were labeled, but not excluded (<em>n</em> study purpose = 5; <em>n</em> previously participated = 3). No observations in the final data set were missing responses; therefore all responses were evaluated. Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked “test”). The Age exclusion criteria (1 above) was applied first and may have captured many invalid test responses.</p>
+<p>Of the 9275 participants who completed the survey, data from 67.1% (<em>n</em> = 6221) of people were excluded. Data from 1240 participants were excluded for multiple reasons.<br />
+</p>
+<p>Data were excluded for the following reasons (applied in the order listed):<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a><br />
+</p>
+<ul>
+<li>Age. The participant did not provide an age, listed an age greater than or equal to 100, or was not the majority age of their country or older, operationalized as at least 18 in all countries except Slovakia, where the age of consent is 19, and United Arab Emirates, where the age of consent is 21 (<em>n</em> = 2087);</li>
+<li>Prior Participation. The participant had taken part in a previous version of this study or in another contributors’ replication of the same study (<em>n</em> = 238);</li>
+<li>Comprehension. The participant failed to answer all three of the vignette comprehension questions correctly (<em>n</em> = 2842; e.g., did not correctly identify what Darrel was looking at);</li>
+<li>Knowledge of Hypothesis. The participant correctly and explicitly articulated knowledge of the specific hypotheses or specific conditions of this study when asked what they thought the study hypothesis was (<em>n</em> = 203);</li>
+<li>Language Proficiency. The participant reported their understanding of the language the survey was written in as “not well” or “not well at all” (<em>n</em> = 2091); see Vickstrom, Shin, Collazo, &amp; Bauman, 2015).<br />
+</li>
+</ul>
+<p>Many excluded observations met multiple criteria. Exclusion criteria was not evaluated when the response was missing, except for age as noted above.<br />
+</p>
+<p>Evaluating the Prior Participation and Knowledge of Study Hypothesis criteria required making subjective judgements about open-ended responses. Each non-missing observation was evaluated by three people who spoke the language. These three raters did not translate responses, but instead directly evaluated responses with respect to the exclusion criteria (see the Appendix for the instructions given to raters and information about how ratings were combined). Ratings themselves are available at <a href="http://osf.io/gs29c" class="uri">http://osf.io/gs29c</a>. Responses identified by raters as test cases (e.g., “TEST”) were excluded. Responses that were not coherent were labeled, but not excluded (<em>n</em> study purpose = 5; <em>n</em> previously participated = 3). No observations in the final data set were missing responses; therefore all responses were evaluated.<br />
+</p>
+<p>Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked “test”). The age exclusion criteria was applied first and may have captured many invalid test responses.<br />
+Data collection sites were not given instructions about avoiding or clearly identifying test responses. At many data collection sites, the students and other researchers executing the study tested their survey link multiple times (e.g., as inferred by responses to open-ended questions marked “test”). The Age exclusion criteria (1 above) was applied first and may have captured many invalid test responses.<br />
+</p>
 <p><em>Materials and Measures</em></p>
-<p>Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accommodate lab-specific variations. However, 8 labs used Qualtrics surveys that student researchers programmed themselves. For the majority of these labs, data collected via Qualtrics was not incorporated into the analysis data (e.g., due to lack of access to raw survey data). In the analysis dataset, 2 sites used Qualtrics surveys. In the analysis dataset, 7 labs collected data from all participants in-person (from an on-campus computer), 1 labs collected data from some participants in-person, and for 12 labs, whether data collection took place in-person was not clearly documented. All participants completed an online consent form. Deviations that labs made from the materials and procedure described here are summarized in Table X. All materials used in this replication, including the details of these vignettes and related pretests, are available in the Appendix and at osf.io/n5b3w.</p>
+<p>Participation details, like compensation and the sampled population, varied by data collection site, as summarized in Table X. In the approved protocol, we planned to collect all data using a single SocSciSurvey survey programmed to accommodate lab-specific variations. However, 8 labs used Qualtrics surveys that student researchers programmed themselves. For the majority of these labs, data collected via Qualtrics was not incorporated into the analysis data (e.g., due to lack of access to raw survey data). In the analysis dataset, 2 sites used Qualtrics surveys. In the analysis dataset, 7 labs collected data from all participants in-person (from an on-campus computer), 1 labs collected data from some participants in-person, and for 12 labs, whether data collection took place in-person was not clearly documented. All participants completed an online consent form. Deviations that labs made from the materials and procedure described here are summarized in Table X. All materials used in this replication, including the details of these vignettes and related pretests, are available in the Appendix and at osf.io/n5b3w.<br />
+</p>
 <p><em><em>Vignettes</em></em></p>
-<p>In addition to the “Squirrel/Darrel” vignette from Turri et al. (2015), two vignettes were selected on the basis of their similarity to the original vignette, their quality, and their prevalence in the literature: the “Fake Barn/Gerald” vignette (Colaca et al., 2014; altered to more closely match the “Squirrel/Darrel” vignette), and the “Diamond/Emma” vignette (Nagel et al., 2013). The vignettes as administered in this study are reported in full in Appendix X. The vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix X). Four labs included a fourth vignette that was not described in the approved protocol (see Larkin et al., in preparation <em>I don’t think it makes sense to cite a work that doesn’t exist yet – if there is a preprint, then we can cite that</em>; osf.io/XXXX). For each vignette, participants were randomly assigned without replacement to one of three conditions: a Gettier case condition in which the vignette subject correctly identified the target, but not due to their knowledge (i.e., the “Threat” condition for Turri et al., 2015); a knowledge control condition in which the subject correctly identified the target due to their knowledge (i.e., the “No Threat” condition for Turri et al.); and an ignorance control condition in which the protagonist incorrectly identified the target, but not due to their knowledge (i.e., the “No Detection” condition for Turri et al.).</p>
+<p>In addition to the “Squirrel/Darrel” vignette from Turri et al. (2015), two vignettes were selected on the basis of their similarity to the original vignette, their quality, and their prevalence in the literature: the “Fake Barn/Gerald” vignette (Colaca et al., 2014; altered to more closely match the “Squirrel/Darrel” vignette), and the “Diamond/Emma” vignette (Nagel et al., 2013). The vignettes as administered in this study are reported in full in Appendix X. The vignettes were pretested for how effectively they manipulated the target construct and how much participants comprehended them (see Appendix X). Four labs included a fourth vignette that was not described in the approved protocol (see Larkin et al., in preparation <em>I don’t think it makes sense to cite a work that doesn’t exist yet – if there is a preprint, then we can cite that</em>; osf.io/XXXX).<br />
+For each vignette, participants were randomly assigned without replacement to one of three conditions: a Gettier case condition in which the vignette subject correctly identified the target, but not due to the reason they thought it to be true (i.e., the “Threat” condition for Turri et al., 2015); a knowledge control condition in which the subject correctly identified the target due to their knowledge (i.e., the “No Threat” condition for Turri et al.); and an ignorance control condition in which the protagonist incorrectly identified the target, but not due to their knowledge (i.e., the “No Detection” condition for Turri et al.).<br />
+</p>
 <p><em><em>Dependent Measures</em></em></p>
-<p><em>Braeden working on edits in the google doc</em></p>
-<p>For each of the three vignettes they read, participants evaluated the subject’s knowledge on a series of questions. Student-led teams varied in the exact questions they asked. The percentage of observations that have each question among all vignettes for all participants in the final data is listed in parentheses after each question description. After each vignette, participants were asked: 1) whether the subject believes or knows, measured either on a continuous scale from 0 to 100 (86.76% complete) or as a binary choice (13.23% complete); 2) the true correct answer, which functioned as a comprehension question and was measured as a binary choice between the two identification options (100% complete); 3) the extent to which the subject’s belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or (86.77% complete) as a binary choice (13.23% complete); 4a) whether or the subject identified the target correctly or incorrectly (100% complete) and then, 4b) whether this was due to ability/inability versus good luck/ bad luck, measured either on a continuous scale from 0 to 100 (86.77% complete) or as a binary choice (13.23% complete); 4) an alternative knowledge probe in which participants were asked whether the subject knew or only thought they knew what the identification target was (100% complete).</p>
-<p>In the original protocol, 4a and 4b were described as being one question, but, after piloting, the question was split to reduce confusion.</p>
+<p>After each vignette, the dependent variables were measured. Student-led teams varied in the dependent variables they measured (see Table X). The percentage of observations that have each question among all vignettes for all participants in the final data is listed in parentheses after each question description below. Exact question text is reported in the Appendix.<br />
+</p>
+<p><em>Knowledge Attribution.</em> Participants were asked whether the protagonist believes or knows the stated proposition, measured either on a continuous scale from 0 to 100 (86.76% of all responses) or as a binary choice (13.23% of all responses );<br />
+<em>Reasonableness Attribution.</em> Participants were asked to rate the extent to which the protagonist’s belief was unreasonable or reasonable, measured either on a continuous scale from 0 to 100 or (86.77% of all responses) as a binary choice (13.23% of all responses);  <em>Luck Attribution.</em> Participants were asked two questions relevant for evaluating their luck attributions. First participants were asked whether or not the protagonist got the “right” or “wrong” answer (binary choice in all cases). Then, participants were asked whether the protagonist’s “right” or “wrong” answer was due to their ability/inability or their good luck/ bad luck, measured either on a continuous scale from 0 to 100 (86.77% of all responses) or as a binary choice (13.23% of all responses);<br />
+<em>Alternative Knowledge Attribution.</em> Participants were asked an alternative knowledge probe in which participants chose whether the protagonist knew or only thought they knew what the identification target was (binary choice in all cases).<br />
+</p>
 <p><em><em>Demographics</em></em></p>
 <p>Participants were asked to report their age, gender, country of residence, birth country, the number of years they had attended school, and their ethnicity. Because of differences in how student-led teams measured these items, imputations and other adjustments were required for some cases.</p>
 <p><em>Education level.</em> All participants were asked a question about their education. Participants who completed the survey in SocSciSurvey were asked about the number of years they had been in school (truncated at 18). Participants who completed the survey in Qualtrics were asked about their educational attainment. Education (in years) was imputed for participants who reported their educational attainment (<em>n</em> = 367) according to the following scheme, which was designed with input from PIs who oversaw data collection in each country. For participants from the United States, less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college or a 2-year college degree was translated as 14 years, a 4-year college degree was translated as 16 years, a master’s was translated as 18 years, and a doctorate or professional degree was translated as 20 years. For participants from Portugal, the labels were the same except that a 4-year college degree was translated as 15 years, a doctorate or professional degree was translated to 21 years., less than a high school education was translated as 10 years, a high school diploma was translated as 12 years, some college was translated as 16 years, a masters was translated as 18 years, and a graduate degree was translated as 20 years. These translated values were imputed, but with truncation to match how this item was measured in SocSciSurvey. Any value above 17 was imputed as 18.</p>
 <p><em>Compensation.</em> Participants were asked whether or not they were compensated for their participation (“Will you receive any kind of compensation or reward for taking part in this study?”), and indicated the type of compensation (e.g., the number of course credits, the amount of money). Some student-led teams opted to skip this question because all participants were compensated the same way. The method of compensation described in the IRB protocol was imputed for those missing responses to compensation due to survey programming. Among participants who were asked about their compensation, responses were sometimes missing or discrepant with the documented method of compensation. For student-led teams where fewer than 50% of participants in the final dataset agreed on a method of compensation, the method of compensation described in the data collection site’s approved IRB protocol was imputed for all participants (if a single method of compensation was described).</p>
 <p><em><em>Participation and Exclusion Measures</em></em></p>
-<p>Participants were asked to describe what they thought the hypothesis of the study wasof the study (used for exclusions), their impression of study materials (not used in any analyses), whether they had participated in a similar study (used for exclusions), and their language comprehension of the survey language (used for exclusions). Participants also completed a 12-question study experience questionnaire that was not used in analyses (see Appendix X).</p>
+<p>Participants were asked to indicate the true correct answer for each vignette (“vignette comprehension variable”; a binary choice used for exclusions) and to describe what they thought the hypothesis of the study was of the study (“knowledge of study hypothesis” variable; used for exclusions), their impression of study materials (not used in any analyses), whether they had participated in a similar study (“prior participation variable; used for exclusions), and their language comprehension of the survey language (“language proficiency” variable; used for exclusions). Participants also completed a 12-question study experience questionnaire that was not used in analyses (see Appendix X).</p>
 <div id="procedure" class="section level2">
 <h2>Procedure</h2>
 <p>After providing informed consent, participants read and answered questions about three vignettes that described counterfeit object cases. Each participant read and responded to one vignette for each protagonist and one for each knowledge condition. The random assignment of vignette and knowledge condition was executed by random presentation features in SocSciSurvey and Qualtrics. For each vignette, participants evaluated the protagonist’s knowledge on the knowledge attribution, reasonableness judgment, luck attribution, and other measures. Next, participants answered questions related to data exclusion criteria, demographics, and their experience completing the study. Finally, participants were debriefed and compensated if applicable.</p>
 </div>
 <div id="analytic-approach" class="section level2">
 <h2>Analytic Approach</h2>
-<p>Analyses were conducted on aggregated raw data collected in SocSciSurvey, and Qualtrics (by two labs). In the original protocol, we planned to evaluate the quality of each student-led team’s data, including the raw data, analysis scripts, codebooks, cleaned data sets, and narrative summaries of results. We also planned that data would be included in analyses only if these products passed a quality check. The original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent analyses, we therefore decided to use all available raw data, regardless of the completion or quality of subsequent pedagogical activities. A summary of how labs analyzed their data (i.e., the test used for the effect of condition on knowledge attribution) is reported in Table X. Aggregating data collected by different data collection sites required making imputations and other adjustments to account for errors, unpredicted data issues, and differences in how student-led teams measured items (see Table X for a summary of methods deviations at the data collection site level). Imputations and other adjustments not previously described above are noted in this section.</p>
+<p>Analyses were conducted on aggregated raw data collected in SocSciSurvey, and Qualtrics (by two labs). In the original protocol, we planned to evaluate the quality of each student-led team’s data, including the raw data, analysis scripts, codebooks, cleaned data sets, and narrative summaries of results. We also planned that data would be included in analyses only if these products passed a quality check. The original protocol did not describe clear criteria that would be used to detect and correct errors. In order to conduct reproducible, transparent analyses, we therefore decided to use all available raw data, regardless of the completion or quality of subsequent pedagogical activities. A summary of how labs analyzed their data (i.e., the test used for the effect of condition on knowledge attribution) is reported in Table X.<br />
+</p>
+<p>Aggregating data collected by different data collection sites required making imputations and other adjustments to account for errors, unpredicted data issues, and differences in how student-led teams measured items (see Table X for a summary of methods deviations at the data collection site level). Imputations and other adjustments not previously described above are noted in this section.<br />
+</p>
 <p><em>Note – after Jordan Wagge compiles info, add summary of lab analysis choices to lab table</em></p>
 <p><em><em>Multilevel Models</em></em></p>
-<p>Multilevel models were used to evaluate our hypotheses. The unit of analysis was the question response, and random intercepts for the vignette, participant, and data collection site were to be included to account for the nesting of responses within these groups.<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> <em>Assumptions and Transformations.</em> While the approved protocol described testing assumptions before conducting analyses, it did not detail criteria that would be used for testing assumptions or approaches to handling convergence issues. Here we describe the approach taken to test assumptions. Convergence issues are described in the results section where relevant. Assumptions of and related to linearity are primarily relevant for the analysis of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal (see Table X). Distributions by vignette and experimental condition were also dramatically bimodal. A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck/ability variables.</p>
+<p>Multilevel models were used to evaluate our hypotheses. The unit of analysis was the question response, and random intercepts for the vignette, participant, and data collection site were to be included to account for the nesting of responses within these groups.<a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a><br />
+<em>Assumptions and Transformations.</em> While the approved protocol described testing assumptions before conducting analyses, it did not detail criteria that would be used for testing assumptions or approaches to handling convergence issues. Here we describe the approach taken to test assumptions. Convergence issues are described in the results section where relevant.<br />
+Assumptions of and related to linearity are primarily relevant for the analysis of the continuously measured dependent variables. The continuous knowledge attribution was dramatically bimodal (see Table X). Distributions by vignette and experimental condition were also dramatically bimodal. A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness or luck/ability variables.<br />
+</p>
 <pre class="r"><code>know_vas_trials_dropped_n &lt;- final_long %&gt;%
   filter(!is.na(know_vas)) %&gt;% 
   tabyl(know_vas_binned) %&gt;% 
@@ -2548,8 +2596,10 @@ luck_vas_trials_dropped_pct &lt;- final_luck %&gt;%
   pull(percent) %&gt;% 
   round(4) %&gt;% 
   .[]*100 </code></pre>
-<p>Transforming continuous variables into discrete variables for analysis is not generally recommended (cite). For the present analyses, however, this approach was necessary due to the already bimodal distribution of the dependent variables. Thus, we split the continuously measured versions of the three dependent variables such that scores at and below 40 and scores at and above 60 were classified into discrete categories. Using this approach resulted in minimal data loss: Of non-missing responses on each continuous measure, 234 (2.94%) trials were dropped for the knowledge attribution variable, 164 (2.06%) trials were dropped for the reasonableness attribution variable, and 453 (6.09%) trials were dropped for the luck attribution variable. <em>Add clear information about variable coding here or elsewhere</em> This approach allowed us to validly interpret model results and also test whether the method of measurement (continuous or binary) affected results.</p>
-<p><em>Model Steps.</em> A series of multilevel logistic regression models were fit predicting knowledge attributions, reasonableness judgements, and luck attributions. We analyzed responses originally reported on continuous and binary scales together using a combined binary variable. Listwise deletion was used to handle missing data. After estimating a baseline intercept-only model (Model 1), we fit models with random intercepts for vignette (Model 2), person (Model 3), and data collection site (Model 4) added sequentially. In Model 5, participant age, compensation, gender, and education (in years) were added to as fixed effects. These variables served as covariates. Finally, knowledge condition was added in Model 6.</p>
+<p>Transforming continuous variables into discrete variables for analysis is not generally recommended (cite). For the present analyses, however, this approach was necessary due to the already bimodal distribution of the dependent variables. Thus, we split the continuously measured versions of the three dependent variables such that scores at and below 40 and scores at and above 60 were classified into discrete categories. Using this approach resulted in minimal data loss: Of non-missing responses on each continuous measure, 234 (2.94%) trials were dropped for the knowledge attribution variable, 164 (2.06%) trials were dropped for the reasonableness attribution variable, and 453 (6.09%) trials were dropped for the luck attribution variable. <em>Add clear information about variable coding here or elsewhere</em> This approach allowed us to validly interpret model results and also test whether the method of measurement (continuous or binary) affected results.<br />
+</p>
+<p><em>Model Steps.</em> A series of multilevel logistic regression models were fit predicting knowledge attributions, reasonableness judgements, and luck attributions. We analyzed responses originally reported on continuous and binary scales together using a combined binary variable. Listwise deletion was used to handle missing data. After estimating a baseline intercept-only model (Model 1), we fit models with random intercepts for vignette (Model 2), person (Model 3), and data collection site (Model 4) added sequentially. In Model 5, participant age, compensation, gender, and education (in years) were added to as fixed effects. These variables served as covariates. Finally, knowledge condition was added in Model 6. To see if the effect of condition varied by vignette, the interaction between vignetted and condition was added as a fixed effect in Model 6a. Additional models were fit to test the moderating effects of participant source (Model 6b; MTurk vs. lab) and original measurement scale (Model 6c; binary vs. continuous). Exploratory analyses Each variable and its interaction with condition were added to Model 6 in these analyses.<br />
+</p>
 <div id="method-figures-and-tables" class="section level3">
 <h3>Method figures and tables</h3>
 <pre class="r"><code>use_data %&gt;% 
@@ -5296,9 +5346,75 @@ gridExtra::grid.arrange(know_vas, reason_vas, luck_vas, ncol = 3) </code></pre>
 </div>
 <div id="results" class="section level1">
 <h1>Results</h1>
-<p>To better test our research questions, we implemented analyses that differ from those we originally planned.<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> All deviations from the approved protocol are summarized in Table X. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in Appendix X.</p>
+<p>To better test our research questions, we implemented analyses that differ from those we originally planned.<a href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> All deviations from the approved protocol are summarized in Table X. The results as they appeared in the approved protocol are included in full, with updated statistics where possible, in Appendix X.<br />
+</p>
 <p><em>Knowledge Attribution</em></p>
-<p>The goal of the present research was to provide a well-powered estimate of the magnitude and prevalence of Gettier intuitions (i.e., the difference in knowledge attribution between Gettier and knowledge conditions) across different scenarios and testing sites in a replication and extension of Turri et al., 2015. Models were fit in steps to determine whether participants attributed knowledge to the protagonist at different rates as a function of condition. Compared to the baseline Model 1 (AIC = 11904.79), the model including random intercepts for vignette (AIC = 11229.29) explained more variance. Pseudo-<em>R</em><sup>2</sup> values suggested that vignette accounts for 8.1% to 10.2% of the random variance in knowledge attributions. Inspection of frequencies indicated that participants attributed knowledge most frequently in response to the Gerald vignette (43.84%) and least frequently in response to the Emma vignette (20.35%).</p>
+<p>The goal of the present research was to provide a well-powered estimate of the magnitude and prevalence of Gettier intuitions (i.e., the difference in knowledge attribution between Gettier and knowledge conditions) across different scenarios and testing sites in a replication and extension of Turri et al., 2015. Models were fit in steps to determine whether participants attributed knowledge to the protagonist at different rates as a function of condition. Compared to the baseline Model 1 (AIC = 11904.79), the model including random intercepts for vignette (AIC = 11229.29) explained more variance. Pseudo-<em>R</em><sup>2</sup> values suggested that vignette accounts for 8.1% to 10.2% of the random variance in knowledge attributions. Inspection of frequencies indicated that participants attributed knowledge most frequently in response to the Gerald vignette (43.84%) and least frequently in response to the Emma vignette (20.35%).<br />
+The model nesting vignette within participants (Model 3; AIC = 11231.29) explained similar amounts of variance (8.1% to 10.2%) as Model 2. The addition of data collection site in Model 4 (AIC = 11233.2886673) likewise did not improve model fit (Pseudo-<em>R</em><sup>2</sup> = 8.1 - 10.2).The model including the covariates predicting knowledge attributions as fixed effects (Model 5; AIC = 11115.41) was more useful in explaining variance in knowledge attribution. However, no covariates predicted knowledge attributions accounting for all others (see Table X).<br />
+Model 6 served as the key replication test of Turri et al. (2015). Knowledge condition was added as a fixed effect (AIC = 9990.69). This model performed better than the previous model and revealed an effect of condition on knowledge attribution. Participants were more likely to attribute knowledge to the protagonist in the knowledge condition vignette than to the protagonists in the ignorance and Gettier condition vignettes; further, the ignorance condition differed from the Gettier condition (see Table X). Pseudo-<em>R</em><sup>2</sup> values suggest that condition accounted for 20% to 24.3% of the fixed effect variance in knowledge attribution. Thus, we did not fully replicate the results of Turri et al. (2015, Experiment 1), who found no difference in knowledge attribution between the knowledge and Gettier conditions.<br />
+</p>
+<p><em>Does the effect of knowledge condition differ by vignette?</em></p>
+<pre class="r"><code>  k.dcond_effect &lt;- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Darrel&quot;]) %&gt;% 
+  tidy()
+  
+  k.dcond_GI &lt;- prop.test(t(k.d_table[1:2, 1:2])) %&gt;% 
+  tidy()
+  
+  k.dcond_GI_v &lt;- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, 1:2]))$statistic, 
+         n = sum(t(k.d_table[1:2, 1:2])),
+         r = 2, c = 2) 
+  
+  k.dcond_GK &lt;- prop.test(t(k.d_table[1:2, c(1,3)])) %&gt;% 
+  tidy()
+  
+  k.dcond_GK_v &lt;- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(k.d_table[1:2, c(1,3)])),
+         r = 2, c = 2) </code></pre>
+<pre class="r"><code>k.econd_effect &lt;- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Emma&quot;]) %&gt;% 
+  tidy()
+
+k.econd_GI &lt;- prop.test(t(k.e_table[1:2, 1:2])) %&gt;% 
+  tidy()
+
+k.econd_GI_v &lt;- v.chi.sq(x2 = prop.test(t(k.e_table[1:2, 1:2]))$statistic, 
+         n = sum(t(k.e_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+k.econd_GK &lt;- prop.test(t(k.e_table[1:2, c(1,3)])) %&gt;% 
+  tidy()
+
+k.econd_GK_v &lt;- v.chi.sq(x2 = prop.test(t(k.e_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(k.e_table[1:2, c(1,3)])),
+         r = 2, c = 2) </code></pre>
+<pre class="r"><code>k.gcond_effect &lt;- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;], 
+           data_graph$cond[data_graph$vignette == &quot;Gerald&quot;]) %&gt;% 
+  tidy()
+
+k.gcond_GI &lt;- prop.test(t(k.e_table[1:2, 1:2])) %&gt;% 
+  tidy()
+
+k.gcond_GI_v &lt;- v.chi.sq(x2 = prop.test(t(k.g_table[1:2, 1:2]))$statistic, 
+         n = sum(t(k.e_table[1:2, 1:2])),
+         r = 2, c = 2) 
+
+k.gcond_GK &lt;- prop.test(t(k.e_table[1:2, c(1,3)])) %&gt;% 
+  tidy()
+
+k.gcond_GK_v &lt;- v.chi.sq(x2 = prop.test(t(k.g_table[1:2, c(1,3)]))$statistic, 
+         n = sum(t(k.e_table[1:2, c(1,3)])),
+         r = 2, c = 2) </code></pre>
+<p>To better understand whether the effect of condition varied as a function of the vignette’s content, Model 6a was estimated including an interaction between vignette and condition (AIC = 9990.69). This model explained more variance than Model 6. As shown in Figure X, the general pattern of results was the same for every vignette; however, Pseudo-<em>R</em><sup>2</sup> values suggest that the interaction between condition and vignette accounts for 20% to 24.3% of the random variance in knowledge attributions. In other words, the differences in the conditions varied according to which vignette they were matched.<br />
+</p>
+<p>In responding to the Darrel vignette, participants attributed knowledge at different rates according to the vignette’s conditions, <em>X</em><sup>2</sup>(2) = 492.12, p &lt;.0001. Participants were more likely to attribute knowledge when responding to the Gettier condition version (0.62) than in the ignorance condition version(0.23; Cramer’s <span class="math inline">\(V\)</span> = .39, 95% CI [.35, .44], <span class="math inline">\(\chi^2\)</span>(1) = 301.21, <span class="math inline">\(p\)</span> &lt; .001). They were also more likely to attribute knowledge to Darrel when responding to the knowledge condition version (0.7than in the Gettier condition version (0.62; Cramer’s <span class="math inline">\(V\)</span> = .08, 95% CI [.05, .13], <span class="math inline">\(\chi^2\)</span>(1) = 13.88, <span class="math inline">\(p\)</span> &lt; .001).<br />
+</p>
+<p>The pattern of responding was similar for the Emma vignette; the likelihood that participants attributed knowledge to Emma differed according to the vignette’s condition, <em>X</em><sup>2</sup>(2) = 188.08, p &lt;.0001. Participants were more likely to attribute knowledge when responding to the Gettier condition of the Emma vignette (0.17) than in the ignorance condition of the Emma vignette (0.1; Cramer’s <span class="math inline">\(V\)</span> = .11, 95% CI [.07, .15], <span class="math inline">\(\chi^2\)</span>(1) = 22.80, <span class="math inline">\(p\)</span> &lt; .001). The likelihood of knowledge attribution was higher for the knowledge version of the vignette (0.34) than for the Gettier version (0.17; Cramer’s<span class="math inline">\(V\)</span> = .19, 95% CI [.15, .24], <span class="math inline">\(\chi^2\)</span>(1) = 70.90, <span class="math inline">\(p\)</span> &lt; .001).<br />
+</p>
+<p>In response to the Gerald vignette, participant knowledge attributions similarly differed according to vignette condition, <em>X</em><sup>2</sup>(2) = 399.5, p &lt;.0001. Participants were more likely to attribute knowledge in response to the Gettier condition version of the Gerald vignette (0.17) than to the ignorance condition version of the Gerald vignette (0.1; Cramer’s <span class="math inline">\(V\)</span> = .31, 95% CI [.27, .36], <span class="math inline">\(\chi^2\)</span>(1) = 189.46, <span class="math inline">\(p\)</span> &lt; .001). In addition, they were more likely to attribute knowledge to Gerald in the knowledge condition version (0.34) than in the Gettier condition version (0.17; Cramer’s <span class="math inline">\(V\)</span> = .14, 95% CI [.10, .19], <span class="math inline">\(\chi^2\)</span>(1) = 40.14, <span class="math inline">\(p\)</span> &lt; .001).<br />
+</p>
+<p>To interpret the condition by vignette interaction, we examined Cramer’s V for the analyses of each vignette. This approach revealed that the likelihood of knowledge attributions in the Gettier and ignorance conditions differed less for the Emma vignette than for the Darrel and Gerald vignettes. Additionally, the Gettier and knowledge conditions of the Darrel vignette produced a smaller difference in likelihood than that for those conditions of the other two vignettes. Thus, participants demonstrated Gettier intuitions in all three vignettes (i.e., participants were more likely to deny knowledge in Gettier cases than in JTB cases), but these Gettier intuitions were weakest in response to the Darrel vignette and strongest in response to the Emma vignette.<br />
+</p>
 <pre class="r"><code>table(data_graph$know_vas_combined, 
            data_graph$vignette) %&gt;% 
   kable(caption = &quot;Knowledge Attributions by Vignette&quot;) %&gt;% 
@@ -5353,7 +5469,6 @@ Believes
 </tr>
 </tbody>
 </table>
-<p>The model nesting vignette within participants (Model 3; AIC = 11231.29) explained similar amounts of variance (8.1% to 10.2%) as Model 2. The addition of data collection site in Model 4 (AIC = 11233.2886673) likewise did not improve model fit (Pseudo-<em>R</em><sup>2</sup> = 8.1 - 10.2).The model including the covariates predicting knowledge attributions as fixed effects (Model 5; AIC = 11115.41) was more useful in explaining variance in knowledge attribution. However, no covariates predicted knowledge attributions accounting for all others (see Table X).</p>
 <pre class="r"><code>table(k.model.6@frame$cond, 
       str_replace(
         str_replace(k.model.6@frame$know_vas_combined, &quot;0&quot;, &quot;Knows&quot;),
@@ -5412,10 +5527,6 @@ Knowledge
 </tr>
 </tbody>
 </table>
-<p>Model 6 served as the key replication test of Turri et al. (2015). Knowledge condition was added as a fixed effect (AIC = 9990.69). This model performed better than the previous model and revealed an effect of condition on knowledge attribution. Participants were more likely to attribute knowledge to the protagonist in the knowledge condition vignette than to the protagonists in the ignorance and Gettier condition vignettes; further, the ignorance condition differed from the Gettier condition (see Table X). Pseudo-<em>R</em><sup>2</sup> values suggest that condition accounted for 20% to 24.3% of the fixed effect variance in knowledge attribution. Thus, we did not fully replicate the results of Turri et al. (2015, Experiment 1), who found no difference in knowledge attribution between the knowledge and Gettier conditions.</p>
-<p><em>Does the effect of knowledge condition differ by vignette?</em></p>
-<p><em>HM stopped here</em></p>
-<p>To better understand whether the effect of condition varied as a function of the vignette’s content, a model was estimated that included an interaction between vignette and subject (AIC = 9990.69). This model explained more variance than the model without th interaction between condition and vignette. As shown in Figure X, although the general pattern is the same for all vignettes, when making attributions about the Emma vignette, people were more likely to attribute belief in every condition than they were for the other vignettes. Pseudo Rsqaured values suggest that the interaction between condition and vignette accounts for 20% to 24.3% of the random variance in knowledge attributions.</p>
 <pre class="r"><code>tidy(k.model.6A) %&gt;% 
   clean_variable_names() %&gt;% 
   kable(caption = &quot;Interaction of Condition and Vignette on Reasonableness Attributions&quot;) %&gt;% 
@@ -5833,61 +5944,6 @@ ggplot(data_graph) +
   ylab(&quot;Condition&quot;) +
   ggtitle(&quot;Figure X. Rates of Knowledge Attribution by Condition and Vignette&quot;)</code></pre>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAMAAADDuCPrAAABqlBMVEUAAAAAADoAAGYAOjoAOmYAOpAAZpAAZrYKCgozMzM6AAA6ADo6OgA6Ojo6OmY6OpA6ZmY6ZpA6ZrY6kJA6kLY6kNtNTU1NTW5NTY5Nbm5Nbo5NbqtNjqtNjshmAABmOgBmOjpmZgBmZjpmZmZmZpBmkJBmkLZmkNtmtrZmtttmtv9uTU1uTW5ubk1ubm5ubo5ujo5ujqtujshuq8huq+SOTU2Obk2Obm6Ojk2Ojm6Ojo6Oq6uOq8iOq+SOyOSOyP+QOgCQZgCQZjqQZmaQkDqQkGaQkLaQtpCQtraQttuQtv+Q29uQ2/+rbk2rjm6rq46ryOSr5P+2ZgC2Zjq2Zma2kDq2kGa2kJC2tma2tpC2tra2ttu229u22/+2/7a2///BwcHIjk3Ijm7Iq27Iq47IyI7I5OTI5P/I/8jI///Ly8vbkDrbkGbbtmbbtpDbtrbb25Db27bb29vb2//b/7bb/9vb///kq27kq47kyI7kyKvkyMjk5Mjk5P/k/8jk/+Tk////tmb/yI7/25D/27b/29v/5Kv/5Mj/5OT//7b//8j//9v//+T///8VRXV9AAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nO29i59d1XWgeQViFGuAYGJd2WYQBGInlsZ2cIM96WQsBncyzTTQphjItGO3W3YmTFwtpgkZqXE7M5QkwFC6//Oc99nnddc9u/Zr7fq+Hz906772WWud9dU+z9rsAADAik3sBQAA0AoCBQCwBIECAFiCQAEALEGgAACWIFAAAEsQKACAJQgUAMASBAoAYAkCBQCwBIECAFiCQAEALEGgAACWIFAAAEsQKACAJcoEerIZcX23++La5sIbrgc6Lr77ivFzMcjgZ5P7l80levSp1++4Xpp5bj9RDve/9U8UC33JeP2d4uWLvzzjIAdl92g5OQdQfPqRFYvZLNHpq1X1135sJWtHqT/0wfPlKvHoV3++eryWJqOThfaysi8O33E8LVG1sgVanIRBoAsUq5DxrWUfPbbkxaFAS2vtWZwPnne1rO9UY5mhDwVavr64zAfjX6Dl76bRx/skzaRrrUCbrwgm0NN3jDXhF6tHrJkI9ExR2A7fUa7iwzTUiTn74uwttQIQ6AJlW/f6mfkN3DMR6PLyFKudq2VtUmEu1kCgbvwZQKBVIOaS9kmaTdc6gXZfEUqgw7Xhwurpa81IoGeMwnb4jjINlwbvKMIsanbWxRFKrQB9AnUghUOH6laik82+NqrXpYbTD57bjFe2Hofrf2HLC69PnuoGduRP/wItO+fxQXr7IfcNfqDazpjx1QKt/Hnx9Y+Khx++ttm73uzjaLIHKaheJgU9Gc8Kjs+016blsFKnDAJdpN+IL2ejS0rcjQRa9NzR8hTU4WpyNF0mQ6BHpcVdZMq7QMvs3R7Eolmg5apy4TvtTw+urdu925OaQMfHABwtEAINTEiBftGt/Uf7Rx0JtJqELPjErUDHg3QCPXXmT/8CLacyw0E0C3T0y3PPqiB+T1ICHffAyd4pxcEg0MCEFGi14V6uJcd7dmqWjAVaNl1UgVb+fNrNML4FWu/7GnyBYoFOhHlsucImJ9AiMnMJjmz3TQxBoIGZE2if+tPyxJ4LT9/p6m+sB61cin+vn75TrA1PVp958Fqxyl/46vzB0qNqF5Y4i9gn0A9eq05o+fZHzRvNY0yTsR+89vjy2S8fPm+8uztSMdhAbGIc+7Na2avBHv32nfnv6/vBON46PlFlsrynHzw/zPdMCeY+Z1JX9KSPpE+SmS6jbIODSB+WS9AlbFJv4yuMQAahL+WniWcyyqDTxx6ZHGy8//yf/N1cwhdGHWe0HuzMUZQM1sQDhx8lYvA7ropzf+/NLM9gXZgv9fhdaZOTQB8811ZBEOhRW6v+jJOn59a5aiP+P16TJhHLm/DtEjVHYweryWRs4/SX6dkv5fprvHufQCt/mqt/uSq339123+j7+r2nxrGzo8GJKtNcTfM995SQ4/p9xkRvWaBN2UyBHjdf/dU7xpcZuZhTzyj0+fyYeR+NYgzSesR898KW7UGjTtK3LNBVUUzWxAOHNxnMpU+a1/f33nStG64LCwIV1pi0yEig1fmEFY/88V6BPlG9qfiefiVcWO9nThWaYXwQ6dV2jemXqH7GXE2mYx/1T0xGNL+pHGuPQKsvHqz9R23I7adnv6/5piPzPcVzxok0o+Xtz9fp8j1TAiHH7df37bko0LZshkBfHIV1iEDHoc/mZ1DM0ShGucd7Apcvtzho1GlGFwW6LorJmnjg8HOVataS4VlV8703HmC8LsyXWuzKpMhIoNWGa/Hi7aoYewS62Xztzu7Tj+rHTxf/fvrOZmHFr+cewt6egUA/fe/xjaHEC98pXjl97/L4N/Z07HIdKp/YffrudGnK2Motmg+f615b2Adar35jgdafrqYJ1+e+rzsLr/p47dLaDobhhstbvbN8pjpvq8v3uARCjo97K3XtObdjzCibIdDiw21YS/XuvsJcTYapnMlPx8wog3MXh2+fnm++XMDpqDMZNQR1lihm1sSDhh9/R+uzbo3f33vj5ZmuC0ul3t+VKaFPoCZVWZrUlytvff7Ig2ub/QJtnit/bV7vvnd2mlmtVNKvwemJ9PUFlMPvr9Y4sxFGYxvnIB2Px+x3CpweGacGzAj0v3u1+03e0W/StzOk6fe1p/UVrzzRS/ZKt8TT5e3z3c15Z0og5LhTkLmLbamrrgxeNkrTJeUAgc6kcpqf4QKOR+lOgezn7bsuxPkjIQeNOpPRJYGujGJmTTxo+AFG/Y7br9vfe6MBZtaFmVIf0JUpkY9ADeucbPYKtF3HTU8tHFWsViXpMOpEoM0eOWO6XCzjUKDTsY/3XLh+NPgm028D6vnyhf/18nDFM641b2YR0+9r5xTH1ceNidY0u83yDick1UdmSiDkuFeQ0SwLAm3LZgjU+ET11QcIdCaV0/z0zI3Szb8mv+gWBXrQqDMZXRLoyihm1sSDhp+k4nr7qPns/t4bDTCzLsyU+oCuTIlsBGpuTnW/gucF2q5LZnlOZtaYXbtfUtiOGN1M5FszBw8nRy2nY1ehPfVvP5oZYLCp2K7nSwItvv94OG0+Gs9tZ76v7YmjzWP/fK3dLVr+03fscHnH3zE8EtSVQMhxv2jGxGNBoIYCWoFeMb7nyu4Qgc6lcpIfg7lR2m346SlOo3N9Bt8ijjqT0SWBro3CoF0TDxp+SPe1RZh91fb03mh5ZtaFmVIf0JUpoU+gC/tAx2eX7BFoU1dzZ/VmM7vONb4WTlDrZiSn7xbvnZ4J80//4SeXR5ssM2N3Tz35N8snau0G22BzAu22bvvWnmRh7vuO2/sKXCreb2zU9y0yXN7BdxybW/vmoEKOzWMbm660CwK91H+oP41pENcBAp0LfeZTHXOjtKmZbMEv7gM9aNSZjC4JdG0UbTDGmnjQ8EO6eI9Hv+sO6725dWFa6gO6MilyEmi/NlsJdLqlXvbDpfJ/B5/GdDJ684fVmZ0VewVafsZ47uLwIvcVAq3fVy7zdJXe7RNofcjopGyNqj/aada8QKtj4X2+T1qBjksg5Hi0QTHRpiDQQRDeBDoZpd0MnlpmuvdxsMj7R53JqEOBjtfEg4Yf0W93D7cGDuu9uXVBFmi462bsQKDLpWr2f41vDTrBPAp/Yn5Rf/LdIQItzx/unhgMuEKgxtmc3WIcJNC6K47Lxbxf7gRtg/Ip0PGrzdJbCNTnDHQySnMWz8z9g2bOAz1+8tu/iC/Q6ZpoI9DmF4jxIgLNSaAWm/B7d1GXO0Cvm+d1LjA4jcnY/9hsoD7x1Lf+7p+vTQU6O/anf1vdi3c44Hjras8+0LZx+mOgB2ytNd934Y1isep7lD12Z3iq9HR5D9+E33sbKyPO7iqeYJvwy5/qmN2ErxUyvn5iEIP5+SuHjWq7CX9AFDNrosUmfL8/vHvj2k348bowL9DUDxyZZCNQM/Hdnv+jgUVGAp3fUz4Yq3PI3tMphreze3XTLshxc/Ldbv4g0uLYp+MTQVccRDIs031m/6rcfl8phfuXm2Mxj/yy3ZffNc3M+T17DiK1Jdib4+NBNe9PT5aVBLrnINLRvEAXDr/sFeh4lGa6PieZyeHr+rj8QaOe/SDSYhQza+JBw485an4bdN9+WO9NFT/8/OCR0JWpkY1Al06lMKabY4Ga/Tu/P+ux7nykfTuzh1OR+91JRMaqMDnvbTL23vV3eAx632lM3WKebDrrT1flue8r++Kkfly8/GfXhtPBaa5G33FlN1uCfTke7TEsMzA810sUaPvV7VR2pt4j9cyFLgl0PEr1kQv/bvYOwEebwQTqi2uLCRerskega6OYWRMPGn5MtaafGBHu773lAcYz7H2dkTb5CLQ/mfeL7mTefouq27I2am1MF6bnnww23EdtMWK0LdcOZUxe7o+Pws+Mbaw4g2nP8N3SifSXzB+6PXbjVXnu+8p55x/Xj+uz6Qc7JKfLO/yOTXNYelyCfTkenzXZ/ny4QNsFaC03U++xeuZPQd8r0PEo9aL+0bXpqlgHPrwfaDX6QaPOZHRJoOuimFsTDxp+TLXb98jYHNvTe/sG6NaFmVLv7cr0yEegleXKy8mMK9HKX4cX/117dGYs0OoTF3/eXOA23vm/Gf6i3f8nPcbXwrdzgmrDqbomrf58vypPxi5XnIvV36MrL88bjVa++7BLOYeLsbQneOb76kPirXS66M3sDnM1+I5upHEJ9uT4aPREO13rk9Q/WhBof+nh9TaEUb27rzADmVwEuV+go1G6p+ccU2WxvueReUf6g0adZtTcM3iGKGbWxIOGn3Bc/eLoX9rTewsDDNeFuVLv68r0yEigXwxOKqyKYRzS+9blqUDNI34jY4222vsfj6ZLMHc3pvZixx7zGOP1ubGPJ4s/iLGjGUsSaH8u0/yhlfH31Yvbr8PDa01mlrd/5sILxt7i5RKMcvzFtfG0vplMTZJ0fUmgLw7Hmqt39xVzq8nCLUgM5kZpizU/O7o9vC7tylIBZ0adZnSUfdsoZtbEg4afUA1rxL2n9/YOMFqHru/vjJTJSKD9uRpf/V+6vf3tXbau358R6O60O29odAO5yZSz24g/QKDd9mOnxAt/9qoxR6oXbjr2f+5W834jsFug7jyU9hZfokCr4ZdOcJl+n7nTYngqQf3kdHnbNf3C9W5f1UwJFnM8OWLd7T/rk9Q9WjgK32a4jW9a7+4r+q3gcejiUfjxKLvmFOHdLOYpQ/3fZz1o1ElGu4U+WxQza+JBw0852gzW/z29NzvAZF2YKfXyGpMiOQm0vqnr5snXd0fd3Ka+z2uxYTIr0HIz63L9kQHTM5e+uNb/5hYF2m3E1zeGffL1O/2wt8vzmb82P/an71U3AHty9g/LV39r/NH+JrOyQKu1/dJSa42/zzSacUWNcYrKNFfljYY3T/7C2Nk/U4I9Ob40farKZJ+k9tHSaUzVHYDNezyP6919hRHIKHT5NKbxKMLZNg/++onq5sXDO2MfNOooo/1CnymKmTXxoOGnjP684p7eWxhgvC5MSz33rnRRJtDD0HYuWYbkXoIvrinYvIxB7oUfk49Ajd94gxN7IRjnqASO/qhaJpyjwo/JR6DGLrXjmQ198M/5KcHMZZznmfNT+An5CLQ6haXc6VSdPZL6+bdZcm5KUP7VnnOlCYFzU/gp+Qi0OmTSwtodhXNRguacoPO0o0/kXBR+lowE2p/9oOGv+WXJuShBfc7juZpmiZyLws+SkUC7v6s+d0t4CMM5KEG5/f7o5ETd8845KPwsWQkUACAkCBQAwBIECgBgCQIFALAEgQIAWIJAAQAsQaAAAJYgUAAASxAoAIAlCBQAwBIECgBgCQIFALAEgQIAWIJAAQAs0STQjaaFBYD80eQkBAoASaHJSQgUAJJCk5MQKAAkhSYnIVAASApNTkKgAJAUmpyEQAEgKTQ5CYECQFJochICBYCk0OQkBAoASaHJSQgUAJJCk5MQKAAkhSYnIVAASApNTkKgAJAUmpyEQAEgKTQ5CYECQFJochICBYCk0OQkBAoASaHJSQgUAJJCk5MQKAAkhSYnIVAASApNTkKgAJAUmpyEQAEgKTQ5CYECQFJochICBYCk0OQkBAoASaHJSQgUAJJCk5MQKAAkhSYnIVAASApNTkKgAJAUmpyEQAEgKTQ5CYECQFJochICBYCk0OQkBAoASaHJSQgUAJJCk5MQKAAkhSYnIVAASApNTjpMoP9JCb/5A2d8xVfkv9m5W0gveIvcEd4S+BVfTQbryFCgv1HCH3zFGd4i3zlcSC+kXnNvCfTVZLAOBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMQaDQQqANSrzkCzRwEGg0E6oDUa45AMweBRgOBOiD1miPQzEGg0UCgDki95gg0cxBoNBCoA1KvOQLNHAQaDQTqgNRrjkAzB4FGA4E6IPWaI9DMQaDRQKAOSL3mCDRzEGg0EKgDUq85As0cBBoNBOqA1GuOQDMHgUYDgTog9Zoj0MxBoNFAoA5IveYINHMsBPrZjWc+qR/9aru9eeinvnzl6/84+8K97bMHfgUC3d9NCDQ9EGjmnEWgd1f4E4FOQKAOSL3mCDRzziDQVf5EoBMQqANSrzkCzRx7ga7zJwKdgEAdkHrNEWjmWAv049aft7Y3P/7udvvS+9VPn7+1rR9/+crVt3elZp+tP/L/1gL9/K0b2+336/fuPr6xvfrjWqAPf7XdfvP9u9uXd+M3GcuKQPd2EwJNDwSaObYCvdfNP29tv7ctqfx470b1+OrNSqzVq6VtC43WM9DP+tfL10r+dSnQh29WT/9FJdDBm8xlRaB7uwmBpgcCzRxLgRb+/HHzY6HBZz8pJ5M3K/W99C/lbLKYfVazyS9fqcRayLQSaPHjDz7ZPfx19eS9Yvq5e1h+vDTs1Z/uPv/htvlM/6aKdqVBoHu7CYGmBwLNHDuBltvebzc/1nPM4p+X2w328odni7c9W773e8UbS3lWAm1fr+RafaKcez5b/u9m9c3mlzTb8zsEemA3IdD0QKCZYyXQYvP6u9v2ZNBbte/u9h4sJ5fPfPLwzcqYf3njZjVnLQX68M1Gu/UT9Q93K9nW31Y6dfCm4bIi0L3dhEDTA4Fmjp1Ar75d/K85eF5PJCsPtk6sD7nfKn649fX/65WXq7lkLdBtSzMl3dVH4e8Zk87Bm4bLikD3dhMCTQ8Emjl2Ar1pnMU0EGijvOrBvXLH5zP/35vPVnPKejPecONnN+YFOnjTcFkR6N5uQqDpgUAzx/480FvNbtDFGehnN14u/tvdqs9gqgXa7Tnd7YYz0Pbc/Jd3gzcNlxWB7u0mBJoeCDRz7AVazBT7o0cz+0CLn575uPj53tf/z3J+2WzC96cmLe8DXTpBH4Hu7yYEmh4INHPOcClnsxvUEOjgKHzx/6//T4UjP/sf/6I0YnMUvv5oJdjpUfjCydVReONNg2VFoHu7CYGmBwLNnLPfTMQUaH0e6O/fqrfu721LBRZWLH9qzwN95v1df9Loy9UVSPV5oG8b54H2bxosKwLd200IND0QaOacRaDFvLE82G4I1LwSqZ2iFu8q31/v8mxe3/6g/sj8lUiDN5nLikD3dhMCTQ8Emjlnuh9otRt0IND+WvhdZcXypfoNX5rXwv+0/vzH3x1dC3/LvBb+p5NlRaB7uwmBpgcCzZy07kh/a+8NnhDo/m5CoOmBQDMnDYE254Qun8FUgUD3dxMCTQ8EmjlpCPTLV8obkjy8NT7uPgSB7u8mBJoeCDRz0hBoeXfR6ijSvgkoAhW6CYGmBwLNnEQEuvvtjwp9vjS5h/IABLq/mxBoeiDQzElFoIeAQPd3EwJNDwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBqdccgWYOAo0GAnVA6jVHoJmDQKOBQB2Qes0RaOYg0GggUAekXnMEmjkINBoI1AGp1xyBZg4CjQYCdUDqNUegmYNAo4FAHZB6zRFo5iDQaCBQB6RecwSaOQg0GgjUAanXHIFmDgKNBgJ1QOo1R6CZg0CjgUAdkHrNEWjmINBoIFAHpF5zBJo5CDQaCNQBdeTuA3fFzm/gEBsEGg0E6gCf6xuACAKNBgJ1gM/1DUAEgUYDgTrA5/oGIIJAo4FAHeBzfQMQyU+g7i3iCecaQaAAgclPoOcXBAoQGE1OQqD7ce9Pf2fhuKKO/D+t5Dd/oB1+cySCJichUJhn9dw79Ym1TOyUQ40mJyFQmAeBQiQ0OQmBwjwIFCKhyUkIFOZBoBAJTU468DxQOzQfVzj33YRAIRIZCnRtM2XQU74znzoIFCKBQHPoqSbyDCfXAraXEGgudo2vJoN1INAcekqIXHNoApY1158RX00G60CgOfSUELnm0AQsa64/I76aDNaBQHPoKSFyzaEJWNZcf0Z8NRmsA4Hm0FNC5JpDE7Csuf6M+GoyWAcCzaGnhMg1hyZgWXP9GfHVZLAOBJpDTwmRaw5NwLLm+jPiq8lgHQg0h54SItccmoBlzfVnxFeTwToQaA49JUSuOTQBy5rrz4ivJoN1INAcekqIXHNoApY1158RX00G60CgOfSUELnm0AQsa64/I76aDNaBQHPoKSFyzaEJWNZcf0Z8NRmsA4Hm0FNC5IarjFMAACAASURBVJpDE7Csuf6M+GoyWAcCzaGnhMg1hyZgWXP9GfHVZLAOBJpDTwmRaw5NwLLm+jPiq8lgHQg0h54SItccmoBlzfVnxFeTwToQaA49JUSuOTQBy5rrz4ivJoN1INAcekqIXHNoApY1158RX00G60CgOfSUELnm0AQsa64/I76aDNaBQHPoKSFyzaEJWNZcf0Z8NRmsA4Hm0FNC5JpDE7Csuf6M+GoyWAcCzaGnhMg1hyZgWXP9GfHVZLAOBJpDTwmRaw5NwLLm+jPiq8lgHQg0h54SItccmoBlzfVnxFeTwToQaA49JUSuOTQBy5rrz4ivJoN1INAcekqIXHNoApY1158RX00G60CgOfSUELnm0AQsa64/I76aDNaBQHPoKSFyzaEJWNZcf0Z8NRmsA4Hm0FNC5JpDE7Csuf6M+GoyWAcCzaGnhMg1hyZgWXP9GfHVZLAOBJpDTwmRaw5NwLLm+jPiq8lgHQg0h54SItccmoBlzfVnxFeTwToQaA49JUSuOTQBy5rrz4ivJoN1INAcekqIXHNoApY1158RX00G60CgOfSUELnm0AQsa64/I76aDNaBQHPoKSFyzaEJWNZcf0Z8NRmsA4Hm0FNC5JpDE7Csuf6M+GoyWAcCzaGnhMg1hyZgWXP9GfHVZLAOBJpDTwmRaw5NwLLm+jPiq8lgHQg0h54SItccmoBlzfVnxFeTwToQaA49JUSuOTQBy5rrz4ivJoN1INAcekqIXHNoApY1158RX00G60CgOfSUELnm0AQsa64/I76aDNaBQHPoKSFyzaEJWNZcf0Z8NRmsA4Hm0FNC5JpDE7Csuf6M+GoyWAcCzaGnhMg1hyZgWXP9GfHVZLAOBJpDTwmRaw5NwLLm+jPiq8lgHQg0h54SItccmoBlzfVnxFeTwToQaA49JUSuOTQBy5rrz4ivJoN1INAcekqIXHNoApY1158RX00G60CgOfSUELnm0AQsa64/I76aDNaBQHPoKSFyzaEJWNZcf0Z8NRmsA4Hm0FNC5JpDE7Csuf6M+GoyWAcCzaGnhMg1hyZgWXP9GfHVZLAOBJpDTwmRaw5NwLLm+jPiq8lgHQg0h54SItccmoBlzfVnxFeTwToQaA49JUSuOTQBy5rrz4j79jraPHanfXy82Vy47uB75jjePPLLlV95+upG+NLB2F9c21w56HulRT0ABJpDTwmRaw5NwLLm+jPivr0Mm9w+gz99CPT+5WKB3uh/vv2Hdwb/jsaWBdp8EIHOgECzCk3Asub6M+K+vXqbnJzFnz4Eery5+Nzm0mSE6UgHCnT5C1aDQHPoKSFyzaEJWNZcf0bct1dnk7P504NAiy34S+anJP8dLFAH7HPSP7V85GiwM4JAlxAi1xyagGXN9WfEfXu1Vjm5fCZ/ehBosQV/vbB6t1AaBPrgtU3P6im3HxDoEkLkmkMTsKy5/oy4b6/GKvfP6E8PAj0qPlFIsftaBQItFgGB6kGIXHNoApY1158R9+1VW6U8XtP6sxTR6XuPbzaPfrv1zYPXyuM5X/3FrtqwrjVUvO1S937DTsZ7Kz54vvjx6TudQMc/j9/fUn//cXsY6biW0pX233JBrn/wXLGUbxj7QE/fKb7sydeN5ao/W4zVfXBhUWfCXmbBScUYF7/1s5a/c6Xrs4FAlxAi1xyagGXN9WfEfXtVNjH9WZrkj56rbXOxdlzjns2FP931Sis+UyvwpHqitVL73s3T1UfLU5Gq2dhr9bvHP4/f31NvvRejXDGXYSDQF5t5XifQrzYzwGpRRIEOwpoJew/zTir32soZDw0CXUKIXHNoApY1158R9+1V2mTgz2o79MKf3tk9eHVTG6icV/18t/vwuVZp15tn2weljxorFc+WM7pP32mMeFT8e2d3+k67RTv+efx+c8HKN3QT3skmfKniwtwPXjeOwndffqmOwxTo5AuGYU3D3se8k764Zp51lQoIdAkhcs2hCVjWXH9G3LdXYZMPS/P0U6fSJJUZG3l1+yGLnwsRtdOso3o6V/58ZWfsCmi+qJ6omhPIUmIzPw/evzOX4lLzxuvdko4FOnilXO4rxncJAh2FNQl7L0sCTWS35wAEuoQQuebQBCxrrj8j7tvraPPo5XbbtqY/cFNPAnu11fo7bnxz4a9bZ17ftVbqDxXVnj1qfy6+tP6uhZ8nm7/GnoJL7ZKOBdp+tjNi/+WXdpJAx2GNw97L0iY8M1BNCJFrDk3Asub6M+K+vcqJ5IU3ToxrfrqjQ414ep/Ur9T7PE82j/2Xy4YDKyuZFiyfMH4+MmevMz+PjpF308Dek1OBDjfu++WunxAEOg5rHPZeFg8iHXYxaVAQ6BJC5JpDE7Csuf6MuG+vo/r8+aP+svOReAxR1Q/r1wtXlMfBjS36+qXBaTyG06rvMs40an9eOO3n/mXjhSu7boSdKdCBL80vPxoONifQhbCMt+9jwUnFFPQ7wifDg0CXECLXHJqAZc31Z8R9ex3Ve/7KPYqNj6YCHc0Sm7nl9eLBpfLd17uXZgQ6FuaBAj02Xxie/7lHoNfnB1sQ6DAsBwI9/ckLxa+jp15s+BNOY0obIXLNoQlY1lx/Rty3V2uV/ki8NAOttuHvl5vvxWb8nZPGNq2EBjsyZ2agSz8PGZq13ruQ/gx0uNScSJ86QuSaQxOwrLn+jLhvr27X43ErqrFJxjsLq6neSb3b8MIbR43GxlaqOGAf6PwB7xPjoNbJxthJsDtQoAMjHh24DxSBItBMQhOwrLn+jLhvr/7YzdH8CejGiUQn3YlLl47KR8WDP2u3m1srtceiajd2LmqOBY2Pwo/f3y9Vfzy7Pbp+gECbb6gj6Ka37XGo8VH4YVgu9oEmCQJdQohcc2gCljXXnxH37dULtJw/zZ2APj5hsnz+0ccrwR3386zuPND+5k7XjZOQls8DHbx/1y3KwKbGiVJ7BdrJvFy6TsknmzmBzpwHikARaCahCVjWXH9G3LeXcfZQsxt0YhLjkp0r3RvbW5CMztIs3/t6IaV3N+aVSYMrj8ZXIg3eX3MyuBjoZNOduHn6UffvrEA3X7tT3RGpvYLqsWLs9y53Y9VfML0SqXw7AkWg+YQmYFlz/Rlx317jP+nxxoxJhheNG4fs+4t/ptfCN1/7TnN5+b9proU/Gv48eX/z/eYZ6c2PJ+W7LnX/zgn0j5qdkMPr8B97tx6r/YLFa+FdCPTT954ovvGJbydyM9AdAl1GiFxzaAKWNdefEfftZQq0/iNEMyapb1v0dCeF4+HG8uB7Hrz2+Ka7I1LBh89Ld2Mavn9nbth3w5VLdLuc795p/509iFTfjennbTzVzZW+08XRfMHobkxNWG4E2p9+lcwp9Qh0CSFyzaEJWNZcf0Z8NVl4HN6cMwJLTir9+ehTL77weEIGRaBLCJFrDk3Asub6M+KryUJxZByVT/DObwez4KRy6lzfXfTBq5tUrotHoEsIkWsOTcCy5voz4qvJQtFt+3eH43Wy4CRjWp3ObwgEuoQQuebQBCxrrj8jvposFOVfDvlOYZfbl+X9jClzwN2Y7l9OZB8FAl1CiFxzaAKWNdefEV9NFoyT9iYhFyd/w0MTB9wPNJmbgyLQJYTINYcmYFlz/Rnx1WTh+PSd+qB7GrMzWxBoDj0lRK45NAHLmuvPiK8mg3Us/k2k/mqqk1ROM0CgSwiRaw5NwLLm+jPiq8lgHRxEyqGnhMg1hyZgWXP9GfHVZLCO5dOYLtZn8X/4HKcxJY8QuebQBCxrrj8jvpoM1rHvRPrNE088kdKlSAh0CSFyzaEJWNZcf0Z8NRmsY9FJt9uzDNL52x4IdAkhcs2hCVjWXH9GfDUZrGPZSacfvFDMQJ9K6CwDBLqEELnm0AQsa64/I76aDNbB7exy6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMljH2EmnPyn/BmfxfxP+KmfiCJFrDk3Asub6M+KryWAdYyfVf7eJPyqnCyFyzaEJWNZcf0Z8NRmsA4Hm0FNC5JpDE7Csuf6MOO+uVflzPrpa2AeaQ08JkWsOTcCy5voz4ry7VuXP+ehqQaA59JQQuebQBCxrrj8jzrtrVf6cj66WhZuJ/MQ4bnT/hT/kIFLaCJFrDk3Asub6M+K8u1blz/noauF2djn0lBC55tAELGuuPyPOu2tV/pyPrpYDBHr/MgJNHCFyzaEJWNZcf0acd9eq/DkfXS0TJ40OwI//0n1MEOgSQuSaQxOwrLn+jDjvrlX5cz66WqZOOpkK9PrMByOAQJcQItccmoBlzfVnxHl3rcqf89HVMnXS6f/+4osvXL7wVHcd0rd+HmG55kCgSwiRaw5NwLLm+jPivLtW5c/56Go5YB9oMiDQJYTINYcmYFlz/Rlx3l2r8ud8dLUccBpTMiDQJYTINYcmYFlz/Rlx3l2r8ud8dLVwIn0OPSVErjk0Acua68+I8+5alT/no6uFuzHl0FNC5JpDE7Csuf6MOO+uVflzPrpauJlIDj0lRK45NAHLmuvPiPPuWpU/56OrBYHm0FNC5JpDE7Csuf6MOO+uVflzPrpa2AeaQ08JkWsOTcCy5voz4ry7VuXP+ehqQaA59JQQuebQBCxrrj8jzrtrVf7GH75/ub1a8Z1krrsJwxkE+tmNr/+juwU5AAS6hBC55tAELGuuPyPOu2tV/sYf7gR6fM78ORXop/805aPZjyLQZBAi1xyagGXN9WfEeXetyt/4w61Az50/5w4iTZk/iIRAk0GIXHNoApY1158R5921Kn/jDzcCPX/+RKBZ9JQQuebQBCxrrj8jzrtrVf7GH64Ferv159Hm+u3HN5uv/qL66cFrm/rxF9cuvLErNXup/ciD54uXnviO82DCMTmR/v/+WcW7m82FP/m3P/vZXz++ufDtv5s9kb4R6MNfbbfffP/u9uXd7tb25sff3W5fer96/fO3tu3je9uXP76x/ebbu91vf1Q8+Y2/+mQ3fvdvf1g8/+Nd88kb2+33358sKwJdQIhcc2gCljXXn5FDWmEVq/I3/nBlw5Nu/nm0eaKfeZ1crh5fuF6JtXq1tG2p0fv1S5VQlbLgpGIieqV5eHvpNNBaoA/fLIy4vfoXtUC/V/6wrcR670b1+OrN8vH2z4ufnvlk96ttzbO70bvv1s+/XH9x/8nBsiLQBYTINYcmYFlz/Rk5pBVWsSp/4w+XAi382U4ljwon3tndvlz6spDkVz/anb6zKWafx6VV6lPNS5mevrr5WqHSDy5XE1OdLDjpqPNnO+OeUgv07vbqT3ef/3BbC3T77Ce7Yq55s7LgS/9STk+vvl0KtLRn+W/x5t3u4+rJ0bv/VfG4kumXr2x/8Mnu4a+33R6CdqVBoAsIkWsOTcCy5vozckgrrGJV/sYfLgRa6LLzYD3HrC3S6uOomnFeKt/7RPHG8oZvzSa9ahbuxvSqEVl/jteQSqDFBPRm9bgW6DP1tvnLpVifrd51q/z3XmXM5pVd86GZd98qn28/ebd+8w6BigiRaw5NwLLm+jNySCusYlX+xh8ut8UvPN796YqjWpqlO4tZZr1df1K8evpqMfc83nzr8vXKKsVrF1O52bAtZ/ijcpVAP7tRWbDW4K1afaUBG7GW7izecK92ZcXv/9u/L+arN+ffvSvtWsu2++p+WRHoAkLkmkMTsKy5/owc0gqrWJW/8Yfvl9PP4n/NtmqzAVsKtJtlVho5Kn44euQ/XrtSb80flztAL/5NGvcqsmNJoIMZ6B6B3jOni80Es1Til680GvzylepdjQvLbf2Km/Pv3rU7Vfu9o8ayItAFhMg1hyZgWXP9GTmkFVaxKn/jD9+vdnce90fhDYE29qgenGyuf3Htsf/n1UvNNm55rL7gab0KXdwHemn2sYkg0MZ+jUCfbT6y3V79/l/+w5sTgfau/PIVBLoWIXLNoQlY1lx/Rg5phVWsyt/4w81uvqNmN+jiDPT+5SvFf7ujx/659erp35ZnMl0Zf6EaFpx00v1WOF28uLURaD23lGaglUCLyeWzn+z6faCzM1Dz8WhZEegCQuSaQxOwrLn+jBzSCqtYlb/xhxuBfnHNOHo0sw+0+Omx28XPJ4/8H8as7PTdVP7urwVLTjoqfi08+eKLL5ZT7Kfn3zK3D7RT4ngfaCXQ1o3FJPPm/Lt3u8Hj0bIi0AWEyDWHJmBZc/0ZOaQVVrEqf+MPtweam92ghkAHR+GL/z/yx8WM9P5//0J9hlM9DV06TK2BJSeVE8+Gpem1eRS+UOJQoOOj8AOB3tsuvLt5XDvZPPJULysCXUCIXHNoApY115+RQ1phFavyN/7w6GYipkDr80A/fa3eui82bYt3FjPV8qdidvrYL3a7B68qPpN+2UmfvlfOPh/99vydRHbGeaBv9+eB9kqszwP9/VvNeaDGJvzDX2/n3v2vPtn9tjontJDxM+/vmhNEB8uKQBcQItccmoBlzfVn5JBWWMWq/I0/3Am0cGJ5sN0QqHklUjtFLc15p/6p4mIad2y34cy3sxteidQrcXQlUj0dvVcfHHrm1+XPg3ff7a9Qaj+5/cF4WRHoAkLkmkMTsKy5/ozY9+0Cq/I3/nC/EV7tBh0ItL8Wfleps3ypvVDnwWuXy0ma2g14F/cDra+FH+8D3Y2uha8F2l7xXm2dD989vRb+p5NlRaALCJFrDk3Asub6M2LZtMusyp/z0dWyz0nC/UAH3Fo68uMQBLqEELnm0AQsa64/I867a1X+nI+uliUnVdPuA/6oXDMNXT73yCEIdAkhcs2hCVjWXH9GnHfXqvw5H10ty3djOkygX75SHRe6NT5i7gMEuoQQuebQBCxrrj8jzrtrVf6cj66WBScdbzYXv/Wzlvn7gdZ8XB/wCTABRaCLCJFrDk3Asub6M+K8u1blz/noalm6G9PhZ2aVt0i++tLk7sceQKBLCJFrDk3Asub6M+K8u1blz/noajngZiLJgECXECLXHJqAZc31Z8R5d63Kn/PR1XLA7eySAYEuIUSuOTQBy5rrz4jz7lqVP+ejq+WAGyonAwJdQohcc2gCljXXnxHn3bUqf85HV8viQaQEbzCFQJcQItccmoBlzfVnxHl3rcqf89HVsuCkYgqa3t8aRaBLCJFrDk3Asub6M+K8u1blz/noalnYhP/JC5vNhadebPiTNK5VRaBLCJFrDk3Asub6M+K8u1blz/noalk6iLQ58ET6kCDQJYTINYcmYFlz/Rlx3l2r8ud8dLUg0Bx6Sohcc2gCljXXnxHn3RV3dLWc4W5MwUGgSwiRaw5NwLLm+jPivLvijq4WBJpDTwmRaw5NwLLm+jPivLvijq4WBJpDTwmRaw5NwLLm+jPivLvijq6WfX/S44nN5sITy3/SIzgIdAkhcs2hCVjWXH9GnHdX3NHVsuikY/GPygUHgS4hRK45NAHLmuvPiPPuiju6WpacVPrz0adefOHxhAyKQJcQItccmoBlzfVnxHl3xR1dLQtOun+5+oOju+pvjqZyXTwCXUKIXHNoApY1158R590Vd3S1LDjpaNP9qfs19wb1CwJdQohcc2gCljXXnxHn3RV3dLUccDem/k+WRgaBLiFErjk0Acua68+I8+6KO7paDrgfaDI3B0WgSwiRaw5NwLLm+jPivLvijq4WBJpDTwmRaw5NwLLm+jPivLvijq6Wxb+JdL374WTDJnziCJFrDk3Asub6M+K8u+KOrhYOIuXQU0LkmkMTsKy5/ow47664o6tl+TSmiz+vHn34HKcxJY8QuebQBCxrrj8jzrsr7uhq2Xci/eaJJ55I6VIkBLqEELnm0AQsa64/I867K+7oall00u3LzZWc6fxtDwS6hBC55tAELGuuPyPOu+tMo99vbHHhyV+MX6qOQSf5N9acsOyk0w9eKGagT72exgGkEgS6hBC55tAELGuuPyPOu+tMo7cCLbg+euncCjQ9EOgSQuSaQxOwrLn+jDjvrjON3l5s8+k7kz9fkcxZkH5AoDn0lBC55tAELGuuPyPOu+tMo3dXKw5OgKw4lwL9tLkJ6P0nE9qCR6CLCJFrDk3Asub6M+K8u840en+591G9sf7gtWKjvtoham7C9882byteuDR4vnj8fHn4OpkDLxJzTnrwXLvH4jilY0gIdBEhcs2hCVjWXH9GnHfXmUYfz0CbfaIXiseGQI1nT+qTy+u3G893e1MTOfdcZMZJ5fH3ZvHfTeksJgS6iBC55tAELGuuPyPOu+tMo7cCPX2nugLni2ubp+/sTt8td4j2Ap08W36uetw/Xxj1a8UXfHA5lZPPJaZOOimc2ZxEXyVkelwtFgh0CSFyzaEJWNZcf0acd9eZRu+Pwl8sN8SPmxlY6c1eoOazxTb89faNw3drMWfDxEnln4Q355zHyfxZeAS6iBC55tAELGuuPyPOu+tMo/cCLXf5dXfDLCemnUAHz9bb8NUW/OD54plu9qaCiZMKYQ7uHVJElMpGPAJdQohcc2gCljXXnxHn3XWm0btN+NuXKyV2Z4U+8ktDoMaz9cS02oIfPl9dAnnxbxI6dr2fsZPKaIab7Ccb7saUOkLkmkMTsKy5/ow4764zjd4fhS/v3VZuxU4FOni2nndWG+/D53e3H68ePp2Gc0TGTiqiGe2EKGbniWzDI9AlhMg1hyZgWXP9GXHeXWcavRdo6cvBjkxDoAOzFE/Vx+Anuz1P//b5lI5d72dGoCNdTp+JBQJdQohcc2gCljXXnxHn3XWm0YcCHZxNb27CXx9+5L+UW/Az597vykPyiWz2SiDQHHpKiFxzaAKWNdefEefddabRh5vwhS/rH+vt+f4ofP9sdaTpr+vD7+bz1V7RXUJ/iE1iZh/odBM+kVgQ6BJC5JpDE7Csuf6MOO+uM43e+e725eaMz/KvoldHlAbngXbP7uo7ZlYPzOcL/5SPHyRzF3eJiZOOxnsfjpO5KgCBLiFErjk0Acua68+I8+460+jG3Zgqk540Pz+9M69EMp7dmQdXzOfbb7qYxlavyMRJ44PunMakACFyzaEJWNZcf0acd9eZRu8E2t48o766/fXi0fRa+Nfrzxh/K8h8vnr86LfT2OiVEU+kP+JE+vQRItccmoBlzfVnxHl3xR1dLfOXcnYnYT14LaETChDoEkLkmkMTsKy5/ow47664o6tlxknNtQA/+9nP3nsuqfuiINAlhMg1hyZgWXP9GXHeXXFHV8uck/5zv0d4s7nwp8GXaQkEuoQQuebQBCxrrj8jzrsr7uhqmXVSteFe6/Ppj0Iv0TIIdAkhcs2hCVjWXH9GnHdX3NHVsuSkD//DT1781s8SsucOgS4jRK45NAHLmuvPiPPuiju6WvibSDn0lBC55tAELGuuPyPOuyvu6GpBoDn0lBC55tAELGuuPyPOuyvu6GpBoDn0lBC55tAELGuuPyPOuyvu6GpBoDn0lBC55tAELGuuPyPOuyvu6GpBoDn0lBC55tAELGuuPyPOuyvu6GpBoDn0lBC55tAELGuuPyPOuyvu6GpBoDn0lBC55tAELGuuPyPOuyvu6GpBoDn0lBC55tAELGuuPyO+mgzWgUBz6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMlgHAs2hp4TINYcmYFlz/Rnx1WSwDgSaQ08JkWsOTcCy5voz4qvJYB0INIeeEiLXHJqAZc31Z8RXk8E6EGgOPSVErjk0Acua68+IryaDdSDQHHpKiFxzaAKWNdefEV9NButAoDn0lBC55tAELGuuPyO+mgzWgUBz6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMlgHAs2hp4TINYcmYFlz/Rnx1WSwDgSaQ08JkWsOTcCy5voz4qvJYB0INIeeEiLXHJqAZc31Z8RXk8E6EGgOPSVErjk0Acua68+IryaDdSDQHHpKiFxzaAKWNdefEV9NButAoDn0lBC55tAELGuuPyO+mgzWgUBz6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMlgHAs2hp4TINYcmYFlz/Rnx1WSwDgSaQ08JkWsOTcCy5voz4qvJYB0INIeeEiLXHJqAZc31Z8RXk8E6EGgOPSVErjk0Acua68+IryaDdSDQHHpKiFxzaAKWNdefEV9NButAoDn0lBC55tAELGuuPyO+mgzWgUBz6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMlgHAs2hp4TINYcmYFlz/Rnx1WSwDgSaQ08JkWsOTcCy5voz4qvJYB0INIeeEiLXHJqAZc31Z8RXk8E6EGgOPSVErjk0Acua68+IryaDdSDQHHpKiFxzaAKWNdefEV9NButAoDn0lBC55tAELGuuPyO+mgzWgUBz6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMlgHAs2hp4TINYcmYFlz/Rnx1WSwDgSaQ08JkWsOTcCy5voz4qvJYB0INIeeEiLXHJqAZc31Z8RXk8E6EGgOPSVErjk0Acua68+IryaDdSDQHHpKiFxzaAKWNdefEV9NButAoDn0lBC55tAELGuuPyO+mgzWgUBz6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMlgHAs2hp4TINYcmYFlz/Rnx1WSwDgSaQ08JkWsOTcCy5voz4qvJYB0INIeeEiLXHJqAZc31Z8RXk8E6EGgOPSVErjk0Acua68+IryaDdSDQHHpKiFxzaAKWNdefEV9NButAoDn0lBC55tAELGuuPyO+mgzWgUBz6Ckhcs2hCVjWXH9GfDUZrAOB5tBTQuSaQxOwrLn+jPhqMlgHAs2hp4TINYcmYFlz/Rnx1WSwjvwEaunP38TuiLNQR45AESgEJj+Bnl/Or0DX+lP1b8uauKsatGhyEgLdz/kVKEAkNDkJge4HgQIEfMiMgAAAFKlJREFURpOTEOh+EChAYDQ5CYHuB4ECBEaTkxDofjI+ZLJI7JzDOUeTkw48DzRBfrP7A5+gEYA4ZCjQxYlYRHZ+t6J9Zz51svy1yO9MDSDQICBQr0SqueeqUnIFINAgIFCvIFCIBAINAgL1CgKFSCDQICBQryBQiAQCDUIQga44/BHv6IdbbG8moqKqB5QcYoNAgxBGoIcvTzan1ketOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFDwL9PO3vrvdbr/3V59MX3r49z/o/n93+/IBX4ZA93cTAg0MAgWvAn341rbh6o8nL97bPtv9H4G66CYEGhgECj4F+vDN7dW/+pfiwe9+tN3eHL9qCvQwEOj+bkKggUGg4FOgt7bffL95eHf7zHgrHoG67iYEGhgECh4F+tmNq2+3j798pX78+Vs3ttvvv1/NTgv+h+r/z7ab8N2rpVhf/vjG9ptvm1+IQPd3EwINDAIFjwK9a04uf1/9/7Mb9R7Rm7MC7V8tBfrnxU/DaSsC3d9NCDQwCBT8CbRQ5Hi/55evbH/wye7hr7df/8eZg0ijVw17tisNAt3bTQg0MAgU/Am03Wo3aOeklS8nAh29any6XWkQ6N5uQqCBQaDgU6DlTHJXCrHi5WJO2kjxsxvF7HIs0PGrk6NObMIL3YRAA4NAIcAM1BBoe1pouZU+FejwVQS6tpsQaGAQKITaB1oq8stX9gl07tXRsiLQvd2EQAODQCHUUfhakeZe0alAp68OQaD7uwmBBgaBQqDzQNuNdGNOOrMJP3l1tKwIdG83IdDAIFAIdCXS52/Wx9nrHZvVDs6Zo/CTV0fLikD3dhMCDQwCBd/Xwr/0D8WD371Vnx7/5SvbZwqlfnyjnGvWh4nq/7fngZqvItC13YRAA4NAwe/dmH7VHRd6qb5As77WaFvewu6z6kqj+v/1lUjmqwh0fTch0MAgUPB8P9Df//33CiN+o7onU0l9tftPq8f/9UY5+6z+P7gWvnoVga7vJgQaGAQK3JE+CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQKCDQICNQTUWuOQAGBBgGBeiJqzREoINAgIFBPRK05AgUEGgQE6omoNUeggECDgEA9EbXmCBQQaBAQqCei1hyBAgINAgL1RNSaI1BAoEFAoJ6IWnMECgg0CAjUE1FrjkABgQYBgXoias0RKCDQICBQT0StOQIFBBoEBOqJqDVHoIBAg4BAPRG15ggUEGgQEKgnotYcgQICDQIC9UTUmiNQQKBBQKCeiFpzBAoINAgI1BNRa45AAYEGAYF6ImrNESgg0CAgUE9ErTkCBQQaBATqiag1R6CAQIOAQD0RteYIFBBoEBCoJ6LWHIECAg0CAvVE1JojUECgQUCgnohacwQK+Qk0Ti8J7EJ004rl8bs4AYlac89VPSBwiE1+AgUACIQmJyFQAEgKTU5CoACQFJqchEABICk0OQmBAkBSaHISAgWApNDkJAQKAEmhyUkIFACSQpOTECgAJIUmJyFQAEgKTU5CoACQFJqchEABICk0OQmBAkBSaHISAgWApNDkJAQKAEmhyUkIFACSQpOTECgAJIUmJyFQAEgKTU5CoACQFJqchEABICk0OQmBAkBSaHISAgWApNDkJAQKAEmhyUkIFACSQpOTECgAJIUmJyFQAEgKTU5CoACQFJqchEABICk0OQmBAkBSaHISAgWApNDkJAQKAEmhyUkIFACSQpOTECgAJIUmJyFQAEgKTU7aAMDhxG7Y84CqJMdeIUu+8pXYS5AcpGRCGimJ3a/nAZK8kq98JfYSJAcpmUBKzgsIdCW0xgRSMoGUnBcQ6EpojQmkZAIpOS8g0JXQGhNIyQRScl5AoCuhNSaQkgmk5LyAQFdCa0wgJRNIyXkBga6E1phASiaQkvMCAgUAsASBAgBYgkABACxBoAAAliBQAABLECgAgCUIFADAEgQKAGAJAp3w5Svbmu/91b+s/eTX/9HPMkXmsxvbjpuxFyYVPn/ru9VK8slhbzdXjnvbZ30tFYQFgU7oBLrdXv3xyk8i0PPCw7dWriQINEsQ6IRuTf/dWyt1kbFAnzlwnnVeePjm9mq1gfK7Hx24kiDQLEGgE4w1/e52lRER6Lnh1vab7zcP724PSg4CzRIEOsFY04t5RjW7+G0xzdh+o9rbdW/78sc3tt98u/233BdWbOB+//3d+RHore3Nz364vfo/73b/9cb2Gz+dfWaQtOz47MbVt9vHX75SP+7Xg12/cvRJaFaO4vmrP0ag2YBAJ5gavFut6b9q9naVj+9t/7zok2c+af9t9w9evXmeBPqXVdAv36oif3vumUHSsuOuGdbvq/8b60G3kphJqFeOKj/bf51nVs4jCHSCqcHKHPe2V8s51ceVGO5t6y229t8vX9n+4JPdw1+XG/vnR6BFzEXI5fGTz98sZTB9ZpC03Gi3TAzM9cBYSfokVCvHvTJBD29l+mvlPIJAJwwFWjy+tX25fFx3zb3GCO2/7VzkbvGmjAXaHYQvxXCr+n/xZJmXe+UPc88YScuNdqvdwFwPupXDTEK1ctRPPHwTgeYCAp0wEWjJ7//bv//hthZoPRlr/n34ZtNK5STt/Ai01EBjEUOX5jMlXdJyoyv03TopLw/Xgz4Duz4J5Wda8d5FoLmAQCdMBfr5D/tzICcC7dRS9ke2Ah1twh8gUDNpudHNQA2BGutBL1AjCbVA6xWEg0jZgEAnDM83aQ4TXf3+X/5Dswn/bPPKs/Wbz6VASykOBTp+ZpC03BjumKj33gwFWq8kZhLKlaPdoEGg2YBAJ4yPwpd7rJrJ5pxAjb1hCLR7Zpi07Bhsg9cCNfeKNivHIAnMQLMEgU4wNFjMK252vVH9MBboQBAItHtmmLTsMM8DrQQ6/EUx+u3arEbsA80QBDrB0OCvSjm0a/29bX2AdSDQ7jqU2hoIdDcUaJ20/DCuRPr8zTJEcz0YC7RKAkfhswSBTmg1+PB3P6rORqk3xMqTHOcEWswunnm/usDkJjPQ8SZ8m7T8KK+Ff+kfdvUNE+qLKPr1YLgJ3yShWjmqE70e/orzQLMBgU4w78ZUbZbda07g+XV9gvhQoLt7zSk+P8h6E75Lyfwho+kzg6RlyMNfdRl5qb58s18PjJWkT0K9ctzlSqS8QKATjPuBNtOu3/5wu/3GjwdbZ8ZxgPoa6J/uEOjgNCYzaVny+7//3ra8zr29aWy/HvQrh5GE9lr473ItfE4gUAAASxAoAIAlCBQAwBIECgBgCQIFALAEgQIAWIJAAQAsQaAAAJYgUAAASxAoAIAlCBQAwBIECgBgCQIFALAEgYLJ0WZz3fjxi2ubR35ZPPnYnWhLBJAwCBRMTjabS8Mfr+ysBXr7D+8M/gXIDQQKJqevllPOjqPNhTesBdp+jAksZAsChQHH1ZyzodiCP4P7EChkDwKFAfcvG7o7Ge4RXQkChexBoDCk3mpvH5vb8+u/CYFC5iBQGHLSb8MXs9HqiFJnwA+e32wuPH3nuPJqsX1/5fS9xzebR7/d+vHBa5eLN3z1F+Xj403Flfbf8esAGYBAYYix3/O4mYw2Aj19tXbhI6+1Av2j5+pnLv6yeX/D07tZgQ5eB8gABAojWm2Wwhxsgx8V5ruzO32ndGgt0M2FP72ze/BqM78s/FhOLj99pzHkeBN+/DqAehAojGg33MsH9cZ8bcDux+NeoNUhpka03edaBY8EOnkdQD0IFEZ0p4Iet4eQagN2P9aXJxnb+vWxpu718hsu7SYCnbwOoB4ECmOak5d6zVUGNKx31Aq0m1EWP5tWrJU5FOj0dQD1IFAY05ixPwm08l150L15Q38U3vi53KLvKd8wFOj0dQD1IFCYcDzwHwIFWAKBwoT7l4u5pyHMVqDtJviSQEc7NicCZccn5AYChQnVYfWT/lD54j5QU6DdSU8dk32g7PiE3ECgMKWU59H4mM/MUXhToMY1oI0rR0fhJ68DqAeBwpTyIqNr/X1EFs8DHQi0vw1Jc/hpeh7o8HUA9SBQmOFocJynO5FzfCXSQKDl6xdfL+aX727a91944/Qj89/h6wDqQaAwQzFbNG4L2l4Lf9Rc+f5v5gXaX+te+/GkfHip/3f8OoB6ECjMcPqqebXl8t2Y6te7vaMPXnu80OOTrzefu11o+NKd/t/x6wDaQaCwGi4kAqhBoHAg3d2VuZQdoAGBwoEct8fOu8PxAOcdBAoHUnjzwneK+efty1yICVCDQOFQTi43B9Ev8jc5ACoQKBzMp+/UB9E5ggRQg0ABACxBoAAAliBQAABLECgAgCUIFADAEgQKAGAJAgUAsASBAgBYgkABACxBoAAAliBQAABLECgAgCUIFADAEgQKAGDJ/w9gPRIpNsYS9AAAAABJRU5ErkJggg==" width="672" /></p>
-<pre class="r"><code>k.dcond_effect &lt;- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Darrel&quot;], 
-           data_graph$cond[data_graph$vignette == &quot;Darrel&quot;]) %&gt;% 
-  tidy()
-
-k.dcond_GI &lt;- prop.test(t(k.d_table[1:2, 1:2])) %&gt;% 
-  tidy()
-
-k.dcond_GI_v &lt;- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, 1:2]))$statistic, 
-         n = sum(t(k.d_table[1:2, 1:2])),
-         r = 2, c = 2) 
-
-k.dcond_GK &lt;- prop.test(t(k.d_table[1:2, c(1,3)])) %&gt;% 
-  tidy()
-
-k.dcond_GK_v &lt;- v.chi.sq(x2 = prop.test(t(k.d_table[1:2, c(1,3)]))$statistic, 
-         n = sum(t(k.d_table[1:2, c(1,3)])),
-         r = 2, c = 2) </code></pre>
-<p>In the Darrel vignette, people made different attributions in the different conditions X^2(2) = 492.12, p &lt;.0001. The likelihood that people attributed Darrel’s identification to his knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (0.62) than in the ignorance condition (0.23; Cramer’s <span class="math inline">\(V\)</span> = .39, 95% CI [.35, .44], <span class="math inline">\(\chi^2\)</span>(1) = 301.21, <span class="math inline">\(p\)</span> &lt; .001). The likelihood that people attributed Darrel’s identification to his knowledge also differed in the reasonableness and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (0.7than in the Gettier condition (0.62; Cramer’s <span class="math inline">\(V\)</span> = .08, 95% CI [.05, .13], <span class="math inline">\(\chi^2\)</span>(1) = 13.88, <span class="math inline">\(p\)</span> &lt; .001).</p>
-<pre class="r"><code>k.econd_effect &lt;- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Emma&quot;], 
-           data_graph$cond[data_graph$vignette == &quot;Emma&quot;]) %&gt;% 
-  tidy()
-
-k.econd_GI &lt;- prop.test(t(k.e_table[1:2, 1:2])) %&gt;% 
-  tidy()
-
-k.econd_GI_v &lt;- v.chi.sq(x2 = prop.test(t(k.e_table[1:2, 1:2]))$statistic, 
-         n = sum(t(k.e_table[1:2, 1:2])),
-         r = 2, c = 2) 
-
-k.econd_GK &lt;- prop.test(t(k.e_table[1:2, c(1,3)])) %&gt;% 
-  tidy()
-
-k.econd_GK_v &lt;- v.chi.sq(x2 = prop.test(t(k.e_table[1:2, c(1,3)]))$statistic, 
-         n = sum(t(k.e_table[1:2, c(1,3)])),
-         r = 2, c = 2) </code></pre>
-<p>In the Emma vignette, the pattern was similar. People made different attributions in the different conditions X^2(2) = 188.08, p &lt;.0001. The likelihood that people attributed Emma’s identification to her knowledge differed in the ignorance and Gettier conditions such that people were more likely to attribute knowledge in the Gettier condition (0.17) than in the ignorance condition (0.1; Cramer’s <span class="math inline">\(V\)</span> = .11, 95% CI [.07, .15], <span class="math inline">\(\chi^2\)</span>(1) = 22.80, <span class="math inline">\(p\)</span> &lt; .001). The likelihood of knowledge attribution also differed in the knowledge and Gettier conditions such that people were more likely to attribute knowledge in the knowledge condition (0.34) than in the Gettier condition (0.17; Cramer’s<span class="math inline">\(V\)</span> = .19, 95% CI [.15, .24], <span class="math inline">\(\chi^2\)</span>(1) = 70.90, <span class="math inline">\(p\)</span> &lt; .001).</p>
-<pre class="r"><code>k.gcond_effect &lt;- stats::chisq.test(data_graph$know_vas_combined[data_graph$vignette == &quot;Gerald&quot;], 
-           data_graph$cond[data_graph$vignette == &quot;Gerald&quot;]) %&gt;% 
-  tidy()
-
-k.gcond_GI &lt;- prop.test(t(k.e_table[1:2, 1:2])) %&gt;% 
-  tidy()
-
-k.gcond_GI_v &lt;- v.chi.sq(x2 = prop.test(t(k.g_table[1:2, 1:2]))$statistic, 
-         n = sum(t(k.e_table[1:2, 1:2])),
-         r = 2, c = 2) 
-
-k.gcond_GK &lt;- prop.test(t(k.e_table[1:2, c(1,3)])) %&gt;% 
-  tidy()
-
-k.gcond_GK_v &lt;- v.chi.sq(x2 = prop.test(t(k.g_table[1:2, c(1,3)]))$statistic, 
-         n = sum(t(k.e_table[1:2, c(1,3)])),
-         r = 2, c = 2) </code></pre>
-<p>In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(2) = 399.5, p &lt;.0001. As with Darrel and Emma, the likelihood that people attributed Gerald’s identification to his knowledge differed such that people were more likely to attribute knowledge in the Gettier condition (0.17) than in the ignorance condition (0.1; Cramer’s <span class="math inline">\(V\)</span> = .31, 95% CI [.27, .36], <span class="math inline">\(\chi^2\)</span>(1) = 189.46, <span class="math inline">\(p\)</span> &lt; .001). In addition, people were more likely to attribute knowledge to Gerald in the knowledge condition (0.34) than in the Gettier condition (0.17; Cramer’s <span class="math inline">\(V\)</span> = .14, 95% CI [.10, .19], <span class="math inline">\(\chi^2\)</span>(1) = 40.14, <span class="math inline">\(p\)</span> &lt; .001).</p>
-<p>Although the pattern of results was the same for all three vignettes, Cramer’s V shows that the likelihood differences varied by vignette. For example, the likelihood difference between the Gettier condition and ignorance condition was much smaller in the Emma vignette than in the Darrel and Gerald vignettes. The likelihood difference between the Gettier and knowledge conditions was much smaller in the Darrel vignette than in the Emma and Gerald vignettes.</p>
 <pre class="r"><code>mutate(tidy(k.model.6H), model = &quot;Model 6H&quot;) %&gt;% 
   full_join(
    mutate(tidy(k.model.6G), model = &quot;Model 6G&quot;), 
@@ -9948,7 +10004,8 @@ NA
 </tbody>
 </table>
 <p><em>Reasonableness attributions</em></p>
-<p>To determine whether participants made different judgments about vignette subjects’ reasonableness as a function of the vignette’s knowledge condition, we estimated a series of logistic regressions, just as with the previous analyses that focused on knowledge attribution as a dependent variable. Like with those analyses, we analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject was rated as reasonable and 1 means the subject was rated as unreasonable. List-wise deletion was used to handle missing data. A baseline intercept-only model was estimated initially and models with random intercepts for vignette, person_code, and data collection site were added sequentially, followed by a model with covariates, and then a model with knowledge condition. Then, models with interactions were estimated to better understand whether the effect of condition on reasonableness differed as a function of vignette, sampling type, and measurement type. Compared to the baseline model (AIC = 4484), a model with a random intercept for vignette (AIC = 4464.71) explained more variance. For all vignettes, the great majority of people rated subjects as reasonable. However, the rates differed slightly by vignette. Collapsing across conditions, more people rated Emma unreasonable than Gerald, and more people rated Gerald as unreasonable than Darrel. Pseudo Rsqaured values suggest that vignette accounts for a small portion of the random variance in reasonableness attributions (between 0.3% to 1.5%).</p>
+<p>As a secondary dependent measurement, judgments of reasonableness were predicted in a series of logistic regression models paralleling those for knowledge attributions. Compared to a baseline intercept-only model (Model 1, AIC = 4484), a model with a random intercept for vignette (Model 2, AIC = 4464.71) explained more variance. The likelihood of the protagonist being judged as reasonable varied by vignette; although, overall participants were far more likely to respond that the protagonist was reasonable than unreasonable in all three vignettes. Pseudo-<em>R</em><sup>2</sup> values suggest that vignette accounted for a small portion of the random variance in reasonableness judgements (between 0.3% to 1.5%). Collapsing across conditions, participants were more likely to judge Emma as unreasonable than Gerald. Participants were more likely to judge Gerald as unreasonable than Darrel.</p>
+<p>A model with a random intercept for vignette nested within participant (AIC = 4466.71) explained similar amounts of variance as Model 2. The model with a random intercept for vignette nested in participant nested in data collection site (Model 4, AIC = 4468.7) did not explain more variance than previous models; Pseudo-<em>R</em><sup>2</sup> values suggest that this model accounted for 0.3% to 1.5% of the random variance in knowledge attributions. In Model 5, covariates were added as fixed effects (AIC = 4397.01). Relative to Model 4, this model was more useful in explaining variance in judgements of reasonableness (Psuedo-<em>R</em><sup>2</sup> = 0.007% - 0.033%). Compensation was associated with reasonableness; participants who were compensated were more likely to judge the protagonist as reasonable. Education was also associated with reasonableness. As the participant’s years of education decreased, the likelihood that they would judge the protagonist as reasonable increased. Finally, we estimated a model including knowledge condition as a fixed effect (Model 6, AIC = 4351.3). This model performed better than Model 5 and revealed an effect of condition on reasonableness judgment. Participants were more likely to judge the protagonist in the knowledge condition vignette as reasonable than the protagonists in the other two conditions. (see Table X). Protagonists in the ignorance condition vignette were less likely to be judged as reasonable than protagonists in the knowledge and Gettier condition vignettes. Pseudo-<em>R</em><sup>2</sup> values suggest that condition accounted for 0.9% to 4.3% of the fixed effect variance in knowledge attributions.</p>
 <pre class="r"><code>table(r.data_graph$reason_vas_combined, 
            r.data_graph$vignette) %&gt;% 
   kable(caption = &quot;Reasonableness by Vignette&quot;) %&gt;% 
@@ -10003,9 +10060,6 @@ Unreasonable
 </tr>
 </tbody>
 </table>
-<p>A model with a random intercept for vignette nested within participant (AIC = 4466.71) explained similar amounts of variance to a model with a random intercept for vignette alone. Pseudo Rsqaured values suggest that this model accounts for 0.3% to 1.5% of the random variance in knowledge attributions. Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = 4468.7049319). The addition of data collection site was not useful relative to the previous model. Pseudo Rsqaured values suggest that this model accounts for 0.3% to 1.5% of the random variance in knowledge attributions.</p>
-<p>Next, covariates were added to the model as fixed effects (AIC = 4397.01). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. Compensation was associated with reasonableness; participants who were compensated were more likely to judge the subject as reasonable. Education was also associated with reasonableness. The fewer years of education people had the more likely they were to judge the subject as reasonable.</p>
-<p>Finally, a model was estimated that included knowledge condition as a fixed effect (AIC = 4351.3). This model performed better than the previous model, suggesting that there was an effect of vignette condition on reasonableness. Although in all conditions, most people rated the subject as reasonable, both the knowledge condition and the ignorance condition differed from the Gettier condition (see Table X). In the ignorance condition, people were more likely to rate the subject reasonable than in the Gettier condition. In the knowledge condition, people were less likely to rate the subject reasonable than in the Gettier condition. Pseudo Rsqaured values suggest that condition accounts for 0.9% to 4.3% of the fixed effect variance in knowledge attributions.</p>
 <pre class="r"><code>r.d_table %&gt;% 
   kable(cpation = &quot;Reasonableness by Condition&quot;) %&gt;% 
   kable_styling()</code></pre>
@@ -10057,7 +10111,6 @@ Unreasonable
 </tbody>
 </table>
 <p><em>Does the effect of condition differ by vignette?</em></p>
-<p>To test whether the effect of condition varied by vignette, a model was estimated that included an interaction between vignette and subject (AIC = 4331.89). This model explained more variance than the model without the interaction term. As shown in Figure X, although the general pattern is the same for all vignettes, the magnitudes of differences varied by vignette. Pseudo Rsqaured values suggest that the interaction between condition and vignette accounts for 1.7% to 7.6% of the random variance in knowledge attributions.</p>
 <pre class="r"><code>tidy(r.model.6A) %&gt;% 
   clean_variable_names() %&gt;% 
   kable(caption = &quot;Interaction of Condition and Vignette on Reasonableness&quot;) %&gt;% 
@@ -10495,7 +10548,6 @@ r.dcond_GK_v &lt;- v.chi.sq(x2 = prop.test(t(r.d_table[1:2, c(1,3)]))$statistic,
 <pre><code>## Warning: The size of the effect combined with the degrees of freedom is too
 ## small to determine a lower confidence limit for the &#39;alpha.lower&#39; (or the (1/2)
 ## (1-&#39;conf.level&#39;) symmetric) value specified (set to zero).</code></pre>
-<p>In the Darrel vignette, people made different attributions in the different conditions X^2(2) = 492.12, p &lt;.0001. The likelihood that people rated Darrel reasonable differed in the ignorance and Gettier conditions such that people were more likely to rate Darrel reasonable in the Gettier condition (0.97) than in the ignorance condition (0.91; Cramer’s <span class="math inline">\(V\)</span> = .11, 95% CI [.07, .16], <span class="math inline">\(\chi^2\)</span>(1) = 25.77, <span class="math inline">\(p\)</span> &lt; .001). The likelihood that people rated Darrel reasonable did not differ in the knowledge and Gettier conditions (Cramer’s <span class="math inline">\(V\)</span> = .01, 95% CI [.02, .05], <span class="math inline">\(\chi^2\)</span>(1) = 0.07, <span class="math inline">\(p\)</span> = .791).</p>
 <pre class="r"><code>r.econd_effect &lt;- stats::chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Emma&quot;], 
            r.data_graph$cond[r.data_graph$vignette == &quot;Emma&quot;]) %&gt;% 
   tidy()
@@ -10515,7 +10567,6 @@ r.econd_GI_v &lt;- v.chi.sq(x2 = prop.test(t(r.e_table[1:2, 1:2]))$statistic,
 r.econd_GK_v &lt;- v.chi.sq(x2 = prop.test(t(r.e_table[1:2, c(1,3)]))$statistic, 
          n = sum(t(r.e_table[1:2, c(1,3)])),
          r = 2, c = 2) </code></pre>
-<p>In the Emma vignette, people rated Emma’s reasonableness differently across conditions X^2(2) = 18.45, p = 0.0001. The likelihood that people rated Emma reasonable did not differ in the ignorance and Gettier conditions (Cramer’s <span class="math inline">\(V\)</span> = .00, 95% CI [.02, .03], <span class="math inline">\(\chi^2\)</span>(1) = 0.00, <span class="math inline">\(p\)</span> = .968). The likelihood that people rated Emma reasonable differed in the the knowledge and Gettier conditions such that people were more likely to rate Emma reasonable in the knowledge in the knowledge condition (0.94) than in the Gettier condition (0.9; Cramer’s<span class="math inline">\(V\)</span> = .08, 95% CI [.05, .13], <span class="math inline">\(\chi^2\)</span>(1) = 13.89, <span class="math inline">\(p\)</span> &lt; .001).</p>
 <pre class="r"><code>r.gcond_effect &lt;- stats::chisq.test(r.data_graph$reason_vas_combined[r.data_graph$vignette == &quot;Gerald&quot;], 
            r.data_graph$cond[r.data_graph$vignette == &quot;Gerald&quot;]) %&gt;% 
   tidy()
@@ -10538,346 +10589,11 @@ r.gcond_GK_v &lt;- v.chi.sq(x2 = prop.test(t(r.g_table[1:2, c(1,3)]))$statistic,
 <pre><code>## Warning: The size of the effect combined with the degrees of freedom is too
 ## small to determine a lower confidence limit for the &#39;alpha.lower&#39; (or the (1/2)
 ## (1-&#39;conf.level&#39;) symmetric) value specified (set to zero).</code></pre>
-<p>In the Gerald vignette,the overall pattern was the same. People made different attributions in the different conditions X^2(2) = 8.3, p = 0.016. People were more likely to rate Gerald reasonable in the Gettier condition (0.94) than in the ignorance condition (0.92; Cramer’s <span class="math inline">\(V\)</span> = .04, 95% CI [.02, .09], <span class="math inline">\(\chi^2\)</span>(1) = 3.93, <span class="math inline">\(p\)</span> = .047). There was no difference between the knowledge and Gettier conditions (0.94; Cramer’s <span class="math inline">\(V\)</span> = .01, 95% CI [.02, .06], <span class="math inline">\(\chi^2\)</span>(1) = 0.28, <span class="math inline">\(p\)</span> = .595).</p>
-<p><em>Does the effect of knowledge condition differ in participants recruited through Mturk?</em></p>
-<p>To test whether the effect of condition on reasonableness differed as a function of how participants were recruited, we estimated a model that included an interaction between condition and recruitment type (AIC = 4329.37). As with knowledge attributions, this model performed better than a model without the condition by recruitment type interaction, but the interaction between condition and recruitment type was not significant. There was no evidence that the effect of condition differed as a function of how participants were recruited.</p>
-<pre class="r"><code>tidy(r.model.6B) %&gt;% 
-  clean_variable_names() %&gt;% 
-  kable(caption = &quot;Interaction of Condition and Participant Recruitment Type on Reasonableness&quot;) %&gt;% 
-  kable_styling()</code></pre>
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<caption>
-Interaction of Condition and Participant Recruitment Type on Reasonableness
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-effect
-</th>
-<th style="text-align:left;">
-group
-</th>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-estimate
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-statistic
-</th>
-<th style="text-align:right;">
-p.value
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
--1.9343405
-</td>
-<td style="text-align:right;">
-0.2763278
-</td>
-<td style="text-align:right;">
--7.0001671
-</td>
-<td style="text-align:right;">
-0.0000000
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-compensation
-</td>
-<td style="text-align:right;">
--0.1191860
-</td>
-<td style="text-align:right;">
-0.1013767
-</td>
-<td style="text-align:right;">
--1.1756741
-</td>
-<td style="text-align:right;">
-0.2397251
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-age
-</td>
-<td style="text-align:right;">
-0.0140873
-</td>
-<td style="text-align:right;">
-0.0045070
-</td>
-<td style="text-align:right;">
-3.1256268
-</td>
-<td style="text-align:right;">
-0.0017743
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-gender
-</td>
-<td style="text-align:right;">
-0.1772880
-</td>
-<td style="text-align:right;">
-0.0916149
-</td>
-<td style="text-align:right;">
-1.9351452
-</td>
-<td style="text-align:right;">
-0.0529725
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-education
-</td>
-<td style="text-align:right;">
--0.0697932
-</td>
-<td style="text-align:right;">
-0.0140127
-</td>
-<td style="text-align:right;">
--4.9807108
-</td>
-<td style="text-align:right;">
-0.0000006
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-condIgnorance
-</td>
-<td style="text-align:right;">
-0.3370635
-</td>
-<td style="text-align:right;">
-0.1013486
-</td>
-<td style="text-align:right;">
-3.3257846
-</td>
-<td style="text-align:right;">
-0.0008817
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-condKnowledge
-</td>
-<td style="text-align:right;">
--0.3778312
-</td>
-<td style="text-align:right;">
-0.1177921
-</td>
-<td style="text-align:right;">
--3.2076097
-</td>
-<td style="text-align:right;">
-0.0013384
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-turkTRUE
-</td>
-<td style="text-align:right;">
--1.3474315
-</td>
-<td style="text-align:right;">
-0.3771209
-</td>
-<td style="text-align:right;">
--3.5729435
-</td>
-<td style="text-align:right;">
-0.0003530
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-condIgnorance:turkTRUE
-</td>
-<td style="text-align:right;">
-0.7045530
-</td>
-<td style="text-align:right;">
-0.4327972
-</td>
-<td style="text-align:right;">
-1.6279056
-</td>
-<td style="text-align:right;">
-0.1035449
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-condKnowledge:turkTRUE
-</td>
-<td style="text-align:right;">
-0.3820945
-</td>
-<td style="text-align:right;">
-0.5199004
-</td>
-<td style="text-align:right;">
-0.7349379
-</td>
-<td style="text-align:right;">
-0.4623773
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ran_pars
-</td>
-<td style="text-align:left;">
-site
-</td>
-<td style="text-align:left;">
-sd__(Intercept)
-</td>
-<td style="text-align:right;">
-0.0669107
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ran_pars
-</td>
-<td style="text-align:left;">
-participant
-</td>
-<td style="text-align:left;">
-sd__(Intercept)
-</td>
-<td style="text-align:right;">
-0.0000052
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ran_pars
-</td>
-<td style="text-align:left;">
-vignette
-</td>
-<td style="text-align:left;">
-sd__(Intercept)
-</td>
-<td style="text-align:right;">
-0.2256232
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-</tbody>
-</table>
-<p><em>Does the effect of knowledge condition differ as a function of how attributions were measured?</em></p>
-<p>To test whether the effect of condition on reasonableness differed as a function of measurement type, we estimated a model that included an interaction between condition and measurement type (AIC = 4349.04). As with knowledge attributions, this model did not perform better than a model without the interaction. There was no evidence that the effect of condition differed depending on how reasonableness was measured.</p>
+<p>To test whether the effect of condition on reasonableness judgments varied by vignette, a model was estimated that included an interaction between vignette and condition (Model 6a, AIC = 4331.89). This model explained more variance than the model without the interaction term. As shown in Figure X, although the general pattern is the same for all vignettes, the magnitudes of differences vary by vignette. Pseudo-R2 values suggest that the interaction between condition and vignette accounts for 1.7% to 7.6% of the random variance in knowledge attributions.<br />
+</p>
+<p>The likelihood that participants judged the protagonist as reasonable varied by condition in response to the Darrel vignette, <em>X</em><sup>2</sup>(2) = 492.12, p &lt;.0001, Emma vignette <em>X</em><sup>2</sup>(2) = 18.45, p = 0.0001, and Gerald vignette <em>X</em><sup>2</sup>(2) = 8.3, p = 0.016. Participants were more likely to judge Darrel to be reasonable in the Gettier condition vignette (0.97) than in the ignorance condition (0.91; Cramer’s <span class="math inline">\(V\)</span> = .11, 95% CI [.07, .16], <span class="math inline">\(\chi^2\)</span>(1) = 25.77, <span class="math inline">\(p\)</span> &lt; .001), but reasonable judgments did not differ between particiapnts responding to the knowledge and Gettier conditions (Cramer’s <span class="math inline">\(V\)</span> = .01, 95% CI [.02, .05], <span class="math inline">\(\chi^2\)</span>(1) = 0.07, <span class="math inline">\(p\)</span> = .791). The same pattern of results appeared in response to the Gerald vignette; participants were more likely to judge Gerald as reasonable when responding to the Gettier condition vignette (0.94) as opposed to the ignorance condition (0.92; Cramer’s <span class="math inline">\(V\)</span> = .04, 95% CI [.02, .09], <span class="math inline">\(\chi^2\)</span>(1) = 3.93, <span class="math inline">\(p\)</span> = .047), but the knowledge and Gettier vignettes produced similar rates of reasonableness judgments, (0.94; Cramer’s <span class="math inline">\(V\)</span> = .01, 95% CI [.02, .06], <span class="math inline">\(\chi^2\)</span>(1) = 0.28, <span class="math inline">\(p\)</span> = .595). </p>
+<p>The condition by vignette interaction in predicting judgements of reasonableness appears to have emerged because of the condition differences produced by the Emma vignette. While participants were equally likely to judge Emma as reasonable in the Gettier and ignorance conditions, (Cramer’s <span class="math inline">\(V\)</span> = .00, 95% CI [.02, .03], <span class="math inline">\(\chi^2\)</span>(1) = 0.00, <span class="math inline">\(p\)</span> = .968), participants were more likely to judge Emma as reasonable in response to the knowledge condition vignette (0.94) than in response to the the Gettier condition vignette (0.9; Cramer’s<span class="math inline">\(V\)</span> = .08, 95% CI [.05, .13], <span class="math inline">\(\chi^2\)</span>(1) = 13.89, <span class="math inline">\(p\)</span> &lt; .001). Thus, condition differences were found between the Gettier and ignorance versions of the Darrel and Gerald vignettes, but not the Emma vignette, and between the Gettier and knowledge versions of the Emma vignette, but not the Darrel and Gerald vignettes.<br />
+</p>
 <pre class="r"><code>mutate(tidy(r.model.6C), model = &quot;Model 6C&quot;) %&gt;%  
   full_join(
     mutate(tidy(r.model.6B), model = &quot;Model 6B&quot;), 
@@ -12763,91 +12479,12 @@ NA
 </tr>
 </tbody>
 </table>
-<p><em>Luck</em></p>
-<p>We estimated a series of logistic regressions. We analyzed responses originally reported on continuous and binary scales together, using a variable where 0 means the subject’s identification was attributed to their luck and 1 means the subject’s identification was attributed to their ability. List-wise deletion was used to handle missing data. First, a baseline intercept-only model was estimated. Then, models with random intercepts for vignette, person_code, and data collection site were added sequentially. Compared to the baseline model (AIC = 11269.61), a model with a random intercept for vignette (AIC = 10613.78) explained more variance. People tended to attribute luck differently in each vignette. For Darrel, people were more likely to attribute ability over luck. For Emma, people were more likely to attribute luck over ability. For Gerald, people showed a slight tendency to attribute luck over ability. Pseudo Rsqaured values suggest that vignette accounts for 8.1% to 9.7% of the random variance in luck attributions.</p>
-<pre class="r"><code>tidy(l.model.2) %&gt;% 
-  clean_variable_names() %&gt;% 
-  kable(caption = &quot;Explaining Variance in Luck Attributions with a Random Intercept for Vignette&quot;) %&gt;% 
-  kable_styling()</code></pre>
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<caption>
-Explaining Variance in Luck Attributions with a Random Intercept for Vignette
-</caption>
-<thead>
-<tr>
-<th style="text-align:left;">
-effect
-</th>
-<th style="text-align:left;">
-group
-</th>
-<th style="text-align:left;">
-term
-</th>
-<th style="text-align:right;">
-estimate
-</th>
-<th style="text-align:right;">
-std.error
-</th>
-<th style="text-align:right;">
-statistic
-</th>
-<th style="text-align:right;">
-p.value
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-fixed
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
--0.0821985
-</td>
-<td style="text-align:right;">
-0.3434611
-</td>
-<td style="text-align:right;">
--0.239324
-</td>
-<td style="text-align:right;">
-0.8108543
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ran_pars
-</td>
-<td style="text-align:left;">
-vignette
-</td>
-<td style="text-align:left;">
-sd__(Intercept)
-</td>
-<td style="text-align:right;">
-0.5935358
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-NA
-</td>
-</tr>
-</tbody>
-</table>
-<p>A model with a random intercept for vignette nested within participant (AIC = 10615.78) explained similar amounts of variance to a model with a random intercept for vignette alone. Pseudo Rsqaured values suggest that this model accounts for 8.1% to 9.7% of the random variance in knowledge attributions. Next, a model with a random intercept for vignette nested in participant nested in data collection site was estimated (AIC = 10617.7816321). The addition of data collection site was not useful relative to the previous model. Pseudo Rsqaured values suggest that this model accounts for 8.1% to 9.7% of the random variance in knowledge attributions. Next, covariates were added to the model as fixed effects (AIC = 10486.62). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. There was an association between years of education and luck attributions. People who had fewer years of education were more likely to attribute luck rather than ability.</p>
+<p><em>Luck Attributions</em></p>
+<p>As another secondary dependent measure, attributions of luck were predicted in a series of multilevel logistic regressions models. These models were fit in the same fashion as the models focused on the other dependent variables, with one notable difference: trails in which the participant did not correctly answer the first part of our two-part luck attribution measure were excluded. That is, trials in which people thought that the protagonist of the vignette was not correct in their identification were excluded from luck attribution analyses (<em>n</em> = 572; 6.24%).<br />
+Compared to the baseline intercept-only model (Model 1, AIC = 11269.61), a model with a random intercept for vignette (Model 2, AIC = 10613.78) explained more variance. The likelihood that outcomes were attributed to luck varied according to vignette, with Pseudo-<em>R</em><sup>2</sup> values indicating that vignette accounted for for 8.1% to 9.7% of the random variance.While the Darrel vignette produced more attributions to ability than luck, the Emma vignette produced more attributions to luck than ability.<br />
+A model with a random intercept for vignette nested within participant (Model 3, AIC = 10615.78) explained similar amounts of variance as the previous model (Pseudo-<em>R</em><sup>2</sup> = 0.081% - 0.097). The model with a random intercept for vignette nested in participant nested in data collection site (Model 4, AIC = 10617.7816321) accounted for the same proportion of random variance (Pseudo-<em>R</em><sup>2</sup> =0.081% to 0.097).</p>
+<p>[HM stopped here]</p>
+<p>Next, covariates were added to the model as fixed effects (Model 5, AIC = 10486.62). Relative to the model without covariates, this model was more useful in explaining variance in knowledge attribution. There was an association between years of education and luck attributions. People who had fewer years of education were more likely to attribute luck rather than ability.</p>
 <pre class="r"><code>tidy(l.model.5) %&gt;% 
   clean_variable_names() %&gt;% 
   kable(caption = &quot;Explaining Variance in Luck Attributions with Random Intercepts for Vignette/Participant/Site and Covariates&quot;) %&gt;% 

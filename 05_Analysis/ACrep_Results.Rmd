@@ -14,7 +14,7 @@ This script generates text for the results section of the ACREP / PSA004 Stage 2
 
 # Run the analysis script
 
-```{r, child = '../05_Analysis/ACrep_Analysis_V2.Rmd', include = FALSE, results = FALSE}
+```{r, child = 'ACrep_Analysis_V2.Rmd', include = FALSE, results = FALSE}
 ```
 
 # Set up 
