@@ -2020,7 +2020,7 @@ r.squaredGLMM(k.model.6G)
 ```
 
   - Model 6 AIC: `r AIC(k.model.6)`
-  - Model 6F AIC: `r AIC(k.model.6G)`
+  - Model 6G AIC: `r AIC(k.model.6G)`
   - Interpretation: this model is "better" than the original, in that the AIC is lower, indicating lower error in predicting the outcome. This result isn't too surprising because we've added two new predictors. 
   - There do appear to be order effects for both predictors. 
 
