@@ -337,9 +337,6 @@ luck_vas_trials_dropped_pct <- final_luck %>%
 
 ```{r}
 use_data %>% 
-  select(un_region, compensation, sampled_population, group_data, 
-         in_person, deviation_issues, full_sample_size, 
-         final_sample_size) %>% 
   arrange(-final_sample_size) %>% 
   mutate(site_id = row_number()) %>% 
   select(site_id, everything()) %>% 
