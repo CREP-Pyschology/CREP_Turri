@@ -555,7 +555,7 @@ ggplot(final_long, aes(know_vas)) +
   xlab("Knowledge Attribution Visual Analogue Score")
 ```
 
-## Descriptives and Demograhics
+## Descriptives and Demographics
 
 ```{r}
 # total lab count
