@@ -1721,7 +1721,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">ACrep_Results.Rmd</h1>
 <h4 class="author">Hannah Moshontz, running Erin Buchanan’s Analysis Script</h4>
-<h4 class="date">Last Updated 2022-01-31</h4>
+<h4 class="date">Last Updated 2022-02-03</h4>
 
 </div>
 
@@ -1835,8 +1835,8 @@ div.tocify {
 <div id="examine-the-distributions" class="section level2">
 <h2>Examine the Distributions</h2>
 </div>
-<div id="descriptives-and-demograhics" class="section level2">
-<h2>Descriptives and Demograhics</h2>
+<div id="descriptives-and-demographics" class="section level2">
+<h2>Descriptives and Demographics</h2>
 </div>
 <div id="analysis-overview" class="section level2">
 <h2>Analysis Overview</h2>
@@ -2603,8 +2603,8 @@ luck_vas_trials_dropped_pct &lt;- final_luck %&gt;%
 <div id="method-figures-and-tables" class="section level3">
 <h3>Method figures and tables</h3>
 <pre class="r"><code>use_data %&gt;% 
-  select(un_region, compensation, sampled_population, group_data, 
-         in_person, deviation_issues, full_sample_size, 
+  select(lab_code, person_code, language, un_region, program_comp, comp, sampled_population, group_data, 
+         in_person, extensions, deviation_issues, full_sample_size, 
          final_sample_size) %&gt;% 
   arrange(-final_sample_size) %&gt;% 
   mutate(site_id = row_number()) %&gt;% 
@@ -2622,10 +2622,22 @@ Data Collection Site Information
 Site id
 </th>
 <th style="text-align:left;">
+Lab code
+</th>
+<th style="text-align:left;">
+Person code
+</th>
+<th style="text-align:left;">
+Language
+</th>
+<th style="text-align:left;">
 Un region
 </th>
 <th style="text-align:left;">
-Compensation
+Program comp
+</th>
+<th style="text-align:left;">
+Comp
 </th>
 <th style="text-align:left;">
 Sampled population
@@ -2635,6 +2647,9 @@ Group data
 </th>
 <th style="text-align:left;">
 In person
+</th>
+<th style="text-align:left;">
+Extensions
 </th>
 <th style="text-align:left;">
 Deviation issues
@@ -2653,13 +2668,28 @@ Final sample size
 1
 </td>
 <td style="text-align:left;">
+b6c8ec
+</td>
+<td style="text-align:left;">
+adaccbbc254a881db6c19b3224887bcc
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Money
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Community
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -2682,10 +2712,22 @@ No
 2
 </td>
 <td style="text-align:left;">
+60ca61
+</td>
+<td style="text-align:left;">
+2c70764140dc2267dc65e463842c75dd
+</td>
+<td style="text-align:left;">
+Hungarian
+</td>
+<td style="text-align:left;">
 Eastern Europe
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -2695,6 +2737,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -2711,13 +2756,28 @@ No
 3
 </td>
 <td style="text-align:left;">
+6d2b97
+</td>
+<td style="text-align:left;">
+de5a43985156a022e44511202ccd5449
+</td>
+<td style="text-align:left;">
+Romanian
+</td>
+<td style="text-align:left;">
 Eastern Europe
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -2740,10 +2800,22 @@ Some changes on wording
 4
 </td>
 <td style="text-align:left;">
+069afd
+</td>
+<td style="text-align:left;">
+04aec6c128a6d0c7b156124a782a2e17
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -2753,6 +2825,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Yes
+</td>
+<td style="text-align:left;">
+Measurement extension
 </td>
 <td style="text-align:left;">
 No
@@ -2769,10 +2844,22 @@ No
 5
 </td>
 <td style="text-align:left;">
+07cc8d
+</td>
+<td style="text-align:left;">
+053921f004965238755a0b08414ad61f
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -2782,6 +2869,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+Julie/expertise extension
 </td>
 <td style="text-align:left;">
 Informed consent states, “The purpose of this study is to examine participants’ assessment of what they think another person knows or believes”
@@ -2798,13 +2888,28 @@ Informed consent states, “The purpose of this study is to examine participants
 6
 </td>
 <td style="text-align:left;">
+2f579c
+</td>
+<td style="text-align:left;">
+ec35cfeaedd64eccef16c265b2ba179f
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
+</td>
+<td style="text-align:left;">
+just_reward
 </td>
 <td style="text-align:left;">
 Unclear
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -2827,13 +2932,28 @@ No
 7
 </td>
 <td style="text-align:left;">
+7fc76a
+</td>
+<td style="text-align:left;">
+8ceb72b59172af0d6a8d657e76ec4ce8
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Australia and New Zealand
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -2856,10 +2976,22 @@ No
 8
 </td>
 <td style="text-align:left;">
+6898ef
+</td>
+<td style="text-align:left;">
+bfe85dfa8a47470e2600b4bae1dfe4c1
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-None
+no_reward
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -2869,6 +3001,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+Julie + experience
 </td>
 <td style="text-align:left;">
 NA
@@ -2885,13 +3020,28 @@ NA
 9
 </td>
 <td style="text-align:left;">
+c89c37
+</td>
+<td style="text-align:left;">
+7898bca2938d7b6d8a82093ddffb15dc
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -2914,10 +3064,22 @@ No
 10
 </td>
 <td style="text-align:left;">
+098ad3
+</td>
+<td style="text-align:left;">
+d547b0fe851b1f8786fce767e3d89f50
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -2927,6 +3089,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Unclear
+</td>
+<td style="text-align:left;">
+Julie/expertise extension
 </td>
 <td style="text-align:left;">
 No
@@ -2943,10 +3108,22 @@ No
 11
 </td>
 <td style="text-align:left;">
+12c361
+</td>
+<td style="text-align:left;">
+82d647ec9366dd067a092145d7d8ee7b
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern Europe
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -2956,6 +3133,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+None
 </td>
 <td style="text-align:left;">
 No
@@ -2972,13 +3152,28 @@ No
 12
 </td>
 <td style="text-align:left;">
+cfff8c
+</td>
+<td style="text-align:left;">
+71289e5ce6b2abe28c0d25bdce7c14a0
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3001,10 +3196,22 @@ No
 13
 </td>
 <td style="text-align:left;">
+086a2b
+</td>
+<td style="text-align:left;">
+bfe85dfa8a47470e2600b4bae1dfe4c1
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-Sweets
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3014,6 +3221,9 @@ No
 </td>
 <td style="text-align:left;">
 Yes
+</td>
+<td style="text-align:left;">
+Julie extension
 </td>
 <td style="text-align:left;">
 We only changed the measure for the question “Peter knows/only believes…”. The original measure was a binary question, we used a slide control with a scale from 1 to 100 to measure this question.
@@ -3030,13 +3240,28 @@ We only changed the measure for the question “Peter knows/only believes…”.
 14
 </td>
 <td style="text-align:left;">
+6c0ba6
+</td>
+<td style="text-align:left;">
+c22875ee12b4cdfb8843ead3b8e1ddf8
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3059,10 +3284,22 @@ Informed consent stated that “This study is on what people think another perso
 15
 </td>
 <td style="text-align:left;">
+78a818
+</td>
+<td style="text-align:left;">
+d547b0fe851b1f8786fce767e3d89f50
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3072,6 +3309,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Unclear
+</td>
+<td style="text-align:left;">
+Julie/expertise extension
 </td>
 <td style="text-align:left;">
 No
@@ -3088,13 +3328,28 @@ No
 16
 </td>
 <td style="text-align:left;">
+aba0ac
+</td>
+<td style="text-align:left;">
+8ee3ca908c989e3f6342994da802c3bd
+</td>
+<td style="text-align:left;">
+Russian
+</td>
+<td style="text-align:left;">
 Eastern Europe
 </td>
 <td style="text-align:left;">
-Course Credit
+credit
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3117,13 +3372,28 @@ No
 17
 </td>
 <td style="text-align:left;">
+8e07d1
+</td>
+<td style="text-align:left;">
+fd5a38067cf64a3e10ae8e92f015be4e
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3146,10 +3416,22 @@ No
 18
 </td>
 <td style="text-align:left;">
+053396
+</td>
+<td style="text-align:left;">
+bfe85dfa8a47470e2600b4bae1dfe4c1
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-Money
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3159,6 +3441,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+Julie + experience
 </td>
 <td style="text-align:left;">
 NA
@@ -3175,10 +3460,22 @@ NA
 19
 </td>
 <td style="text-align:left;">
+9c8799
+</td>
+<td style="text-align:left;">
+c6e892a926333f0840a81af6fa74a6c6
+</td>
+<td style="text-align:left;">
+Slovak
+</td>
+<td style="text-align:left;">
 Eastern Europe
 </td>
 <td style="text-align:left;">
-None
+no_reward
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Both
@@ -3188,6 +3485,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+“General Decision-Making Scale (GDMS; Bavolár, &amp; Orosová, 2015) was added at the end of the replication study”
 </td>
 <td style="text-align:left;">
 No
@@ -3204,10 +3504,22 @@ No
 20
 </td>
 <td style="text-align:left;">
+855e89
+</td>
+<td style="text-align:left;">
+b975583369996d9136088dbe211abfcf
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3217,6 +3529,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+None
 </td>
 <td style="text-align:left;">
 Changed from using Qualtrics to SoSciSurvey according to their IRB materials. None of our data we have from them should be from Qualtrics though. So, this shouldn’t matter for our purposes.
@@ -3233,13 +3548,28 @@ Changed from using Qualtrics to SoSciSurvey according to their IRB materials. No
 21
 </td>
 <td style="text-align:left;">
+9db02f
+</td>
+<td style="text-align:left;">
+5f4f444af13a37ac3598f3f4f613f560
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3262,13 +3592,28 @@ No
 22
 </td>
 <td style="text-align:left;">
+cff0fe
+</td>
+<td style="text-align:left;">
+f19f790831cbe3722ccd98fd63d3d902
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit for Students, Nothing for Community
+just_reward
+</td>
+<td style="text-align:left;">
+Mixed
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3291,7 +3636,19 @@ Consent stated that, “The purpose of this study is to gain information on what
 23
 </td>
 <td style="text-align:left;">
+0df1c5
+</td>
+<td style="text-align:left;">
+20e15d6f0eb0520239a9f7921b1ee905
+</td>
+<td style="text-align:left;">
+Turkish
+</td>
+<td style="text-align:left;">
 Western Asia
+</td>
+<td style="text-align:left;">
+just_reward
 </td>
 <td style="text-align:left;">
 Unclear
@@ -3304,6 +3661,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+Cognitive Style Indicator (CSI) - added after main study procedures Measurement extension
 </td>
 <td style="text-align:left;">
 No
@@ -3320,10 +3680,22 @@ No
 24
 </td>
 <td style="text-align:left;">
+466ec1
+</td>
+<td style="text-align:left;">
+25c0099bdeb9900e64b3f1e17ea9cf32
+</td>
+<td style="text-align:left;">
+Polish
+</td>
+<td style="text-align:left;">
 Eastern Europe
 </td>
 <td style="text-align:left;">
-None
+just_reward
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Unclear
@@ -3333,6 +3705,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Unclear
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3349,13 +3724,28 @@ No
 25
 </td>
 <td style="text-align:left;">
+c1e6b4
+</td>
+<td style="text-align:left;">
+a5e2ba5c7fcf9a90c4bc1b5ed666f57b
+</td>
+<td style="text-align:left;">
+Polish
+</td>
+<td style="text-align:left;">
 Eastern Europe
 </td>
 <td style="text-align:left;">
-None
+no_reward
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3378,13 +3768,28 @@ No
 26
 </td>
 <td style="text-align:left;">
+f6d5a9
+</td>
+<td style="text-align:left;">
+ccc20a00466f0c4077f924733e9a3789
+</td>
+<td style="text-align:left;">
+Norwegian
+</td>
+<td style="text-align:left;">
 Northern Europe
 </td>
 <td style="text-align:left;">
-Sweets
+sweets
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3407,13 +3812,28 @@ No
 27
 </td>
 <td style="text-align:left;">
+ea9aea
+</td>
+<td style="text-align:left;">
+bc3266a9a2dc0de236029a38f1e0d4b9
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3436,10 +3856,22 @@ No
 28
 </td>
 <td style="text-align:left;">
+ee46af
+</td>
+<td style="text-align:left;">
+3b4e9381f4aafb032e37c0d5fa732aba
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Southeastern Asia
 </td>
 <td style="text-align:left;">
-Course Credit
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3449,6 +3881,9 @@ Yes
 </td>
 <td style="text-align:left;">
 Yes
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Informed consent states, “The aim of this study is to examine individual differences in perception of certainty regarding events andobjects.”
@@ -3465,10 +3900,19 @@ Informed consent states, “The aim of this study is to examine individual diffe
 29
 </td>
 <td style="text-align:left;">
+f3a68b
+</td>
+<td style="text-align:left;">
+64ba90ce7822b9c898df033ebb8c2c18
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-Unclear
+both_questions
 </td>
 <td style="text-align:left;">
 Unclear
@@ -3478,6 +3922,12 @@ Unclear
 </td>
 <td style="text-align:left;">
 Unclear
+</td>
+<td style="text-align:left;">
+Unclear
+</td>
+<td style="text-align:left;">
+None
 </td>
 <td style="text-align:left;">
 No
@@ -3494,10 +3944,22 @@ No
 30
 </td>
 <td style="text-align:left;">
+7fe877
+</td>
+<td style="text-align:left;">
+d4c4b2302987480f7ce2084927489e4e
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3507,6 +3969,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Yes
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Informed consent stated that “You are being asked to participate in a research study. The purpose of this research is toexamine how people attend to, perceive, interpret,and remember social stimuli (e.g., humans,faces, bodies, conversations, interactions, etc.). Specifically, we are interested in how a person’s group membership or how information you might learn about a person or group might influence how you evaluatethose people or groups.” - which deviates from how other participants were informed about the study
@@ -3523,10 +3988,22 @@ Informed consent stated that “You are being asked to participate in a research
 31
 </td>
 <td style="text-align:left;">
+a6aefd
+</td>
+<td style="text-align:left;">
+bfe85dfa8a47470e2600b4bae1dfe4c1
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-Sweets
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3536,6 +4013,9 @@ No
 </td>
 <td style="text-align:left;">
 Yes
+</td>
+<td style="text-align:left;">
+Julie extension
 </td>
 <td style="text-align:left;">
 They say that they deviate by using a VAS for reasonableness and luck/ability, but those were part of the main procedure and are not deviations. I think they mean that it deviates from the original study rather than from the RRR protocol
@@ -3552,13 +4032,28 @@ They say that they deviate by using a VAS for reasonableness and luck/ability, b
 32
 </td>
 <td style="text-align:left;">
+0eb4a7
+</td>
+<td style="text-align:left;">
+ecb1153cd73ee30290a753fb74358c19
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3581,13 +4076,28 @@ Informed consent states, “Dr.Chartier is conducting a study on how we attribut
 33
 </td>
 <td style="text-align:left;">
+c7b55a
+</td>
+<td style="text-align:left;">
+1300dd2a365669443e58645538040b7e
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern Europe
 </td>
 <td style="text-align:left;">
-None
+no_reward
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3610,10 +4120,22 @@ Informed consent states, “The aim of this study is to investigate people’s i
 34
 </td>
 <td style="text-align:left;">
+cb060d
+</td>
+<td style="text-align:left;">
+6109cf70459f0edc57ccb89cf26d66ef
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-None
+no_reward
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Unclear
@@ -3623,6 +4145,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Unclear
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3639,10 +4164,22 @@ No
 35
 </td>
 <td style="text-align:left;">
+1c0a06
+</td>
+<td style="text-align:left;">
+3e1f2a5e94450c8371562c74671ace76
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Australia and New Zealand
 </td>
 <td style="text-align:left;">
-Lottery
+lottery
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Unclear
@@ -3652,6 +4189,9 @@ No
 </td>
 <td style="text-align:left;">
 Yes
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Confusing language about randomization is used in the wiki of the OSF, but they also state that they did the correct full randomization method. We should follow up with David.
@@ -3668,13 +4208,28 @@ Confusing language about randomization is used in the wiki of the OSF, but they 
 36
 </td>
 <td style="text-align:left;">
+e53cc5
+</td>
+<td style="text-align:left;">
+d5450db323eeab9cf7bd57ecc95d3454
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3697,10 +4252,22 @@ Informed consent differs according to their ethics approval: “This study is on
 37
 </td>
 <td style="text-align:left;">
+c13d3a
+</td>
+<td style="text-align:left;">
+bfe85dfa8a47470e2600b4bae1dfe4c1
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-Lottery
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3710,6 +4277,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+Julie + experience
 </td>
 <td style="text-align:left;">
 NA
@@ -3726,13 +4296,28 @@ NA
 38
 </td>
 <td style="text-align:left;">
+d6a41e
+</td>
+<td style="text-align:left;">
+63947e8c9e47bc0056f78f402f3898f1
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
 </td>
 <td style="text-align:left;">
-Course Credit
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3755,13 +4340,28 @@ No
 39
 </td>
 <td style="text-align:left;">
+d47b47
+</td>
+<td style="text-align:left;">
+a5e2ba5c7fcf9a90c4bc1b5ed666f57b
+</td>
+<td style="text-align:left;">
+Polish
+</td>
+<td style="text-align:left;">
 Eastern Europe
 </td>
 <td style="text-align:left;">
-None
+no_reward
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3784,13 +4384,28 @@ No
 40
 </td>
 <td style="text-align:left;">
+20a1ff
+</td>
+<td style="text-align:left;">
+10fe64c77bdcdd1f63c4f6f6767bd834
+</td>
+<td style="text-align:left;">
+Chinese
+</td>
+<td style="text-align:left;">
 Eastern Asia
 </td>
 <td style="text-align:left;">
-Money
+money
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Community
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3813,7 +4428,19 @@ No
 41
 </td>
 <td style="text-align:left;">
+a3e428
+</td>
+<td style="text-align:left;">
+4f86a6d4b553a44559cde3ceba92b330
+</td>
+<td style="text-align:left;">
+French
+</td>
+<td style="text-align:left;">
 Western Europe
+</td>
+<td style="text-align:left;">
+just_reward
 </td>
 <td style="text-align:left;">
 Unclear
@@ -3830,6 +4457,9 @@ Unclear
 <td style="text-align:left;">
 No
 </td>
+<td style="text-align:left;">
+No
+</td>
 <td style="text-align:right;">
 58
 </td>
@@ -3842,13 +4472,28 @@ No
 42
 </td>
 <td style="text-align:left;">
+87d100
+</td>
+<td style="text-align:left;">
+47cce7454402254dd1e56c7338d2ca3b
+</td>
+<td style="text-align:left;">
+Portuguese
+</td>
+<td style="text-align:left;">
 Southern Europe
 </td>
 <td style="text-align:left;">
-Course Credit for Students, Nothing for Community
+both_questions
+</td>
+<td style="text-align:left;">
+Mixed
 </td>
 <td style="text-align:left;">
 Both
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
@@ -3871,10 +4516,22 @@ No
 43
 </td>
 <td style="text-align:left;">
+905904
+</td>
+<td style="text-align:left;">
+bfe85dfa8a47470e2600b4bae1dfe4c1
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-Sweets
+just_reward
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3884,6 +4541,9 @@ No
 </td>
 <td style="text-align:left;">
 Yes
+</td>
+<td style="text-align:left;">
+Julie extension
 </td>
 <td style="text-align:left;">
 “Note that the luck/ability probe has been changed compared to the RRR due to comprehension difficulties. The single question has been split into two questions: a right/wrong probe and a luck/ability probe where the selected answer from the right/wrong probe is filled in. See the Materials wiki for details.” … They note this as a deviation; however, we ALL ended up making this change to in the SSS.
@@ -3900,10 +4560,22 @@ Yes
 44
 </td>
 <td style="text-align:left;">
+2c2ba6
+</td>
+<td style="text-align:left;">
+82d647ec9366dd067a092145d7d8ee7b
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern Europe
 </td>
 <td style="text-align:left;">
-Course Credit
+both_questions
+</td>
+<td style="text-align:left;">
+Yes
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3913,6 +4585,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+None
 </td>
 <td style="text-align:left;">
 No
@@ -3929,10 +4604,22 @@ NA
 45
 </td>
 <td style="text-align:left;">
+612ed8
+</td>
+<td style="text-align:left;">
+bfe85dfa8a47470e2600b4bae1dfe4c1
+</td>
+<td style="text-align:left;">
+German
+</td>
+<td style="text-align:left;">
 Western Europe
 </td>
 <td style="text-align:left;">
-None
+lottery
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 Undergraduates
@@ -3942,6 +4629,9 @@ No
 </td>
 <td style="text-align:left;">
 No
+</td>
+<td style="text-align:left;">
+Julie + experience
 </td>
 <td style="text-align:left;">
 NA
@@ -3958,7 +4648,19 @@ NA
 46
 </td>
 <td style="text-align:left;">
+f7f855
+</td>
+<td style="text-align:left;">
+b6bab6f7c2e61741dcdc1689c30fc5fb
+</td>
+<td style="text-align:left;">
+English
+</td>
+<td style="text-align:left;">
 Northern America
+</td>
+<td style="text-align:left;">
+both_questions
 </td>
 <td style="text-align:left;">
 Unclear
@@ -3971,6 +4673,9 @@ Unclear
 </td>
 <td style="text-align:left;">
 Unclear
+</td>
+<td style="text-align:left;">
+No
 </td>
 <td style="text-align:left;">
 No
