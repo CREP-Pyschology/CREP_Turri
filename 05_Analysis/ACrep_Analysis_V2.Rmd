@@ -265,7 +265,8 @@ write.csv(purposeDF_wide_missing, "./04_Data/data/purpose_needs_wide.csv", row.n
   - Delete cases that should not be used 
 
 ```{r} 
-lab_sheet <- import("./04_Data/data/lab_sheet.xlsx")
+lab_sheet <- import("./04_Data/data/lab_sheet_un_region_update.csv") %>%
+  select(-un_region2)
 
 nrow(full_long)
 
