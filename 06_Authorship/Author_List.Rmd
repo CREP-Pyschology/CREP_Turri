@@ -14,95 +14,139 @@ knitr::opts_chunk$set(echo = FALSE)
 library(gsheet)
 library(rio)
 library(flextable)
+library(dplyr)
 ```
 
 ```{r}
 #grab tenzing information
 lab_gsheet <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1A_GoD3y6t0FTdrVCUPHlXorZxLxeEC-o2B3Ieg5wqcc/edit?usp=sharing")
 
+colnames(lab_gsheet) <- c("tier", "first", "middle", "last", "full_name", 
+                          "b_check", "s_check", "j_check", "p_admin", 
+                          "conceptualization", "writing_original", 
+                          "writing_review", "data_curation", "analysis", 
+                          "funding", "supervision", "investigation", "methodology", 
+                          "resources", "translation", "software", "validation", 
+                          "visualization", "email", "affiliation", "PSA_ID", 
+                          "ammps_account", "author_stage1", "author_stage2", 
+                          "data_check", "community_check", "funding_check", "orcid", 
+                          "corresponding")
+
+#grab author survey
+author <- import("author_survey.csv")
+
+#clean up author survey
+colnames(author) <- c("name", "id", "PSA_ID", "section", "section_id", "section_sis_id",
+                      "submitted", "attempt", "overview", "score1", "full_name", 
+                      "score2", "citation_name", "score3", "email", "score4", 
+                      "students", "score5", "ammps_note", "score6", "credit", 
+                      "score7", "credit_write", "score8", "institution", 
+                      "score9", "department", "score10", "country", "score11",
+                      "cois", "score12", "ammps_check", "score13", "data", "score14", 
+                      "community", "score15", "inperson", "score16", "individual", 
+                      "score17", "recruitment", "score18", "compensation", 
+                      "score19", "datacollect", "score20", "qualtrics", "score21", 
+                      "extensions", "score22", "covid", "score23", "funding_report",
+                      "score24", paste("old", 1:35, sep = ""))
+
+
+author <- author[ , !grepl("old|score|section", colnames(author))]
+
+#sort by date and eliminate duplicates
+author <- author[order(author$submitted, decreasing = T) , ]
+author <- author[!duplicated(author$PSA_ID), ]
+author$PSA_ID <- as.character(author$PSA_ID)
+
+#merge with main data 
+alldata <- lab_gsheet %>% 
+  full_join(author, by = c("PSA_ID" = "PSA_ID"))
 ```
 
 ## Fill in Missing PSA_IDs
 
 ```{r}
 # check for blank PSA_IDs
-lab_gsheet$`Full Name`[is.na(lab_gsheet$`PSA ID`)]
+alldata$full_name.x[is.na(alldata$PSA_ID)]
 ```
 
 ## Check for Duplicated IDs 
 
 ```{r}
 # make sure not duplicated PSAID
-if (sum(duplicated(lab_gsheet$`PSA ID`)) > 0){
-  lab_gsheet$`Full Name`[duplicated(lab_gsheet$`PSA ID`)]
+# remember that NAs are considered duplicates 
+if (sum(duplicated(alldata$PSA_ID)) > 0){
+  alldata$full_name.x[duplicated(alldata$PSA_ID)]
 }
 ```
 
+## Fix Names
 
+```{r}
+flextable(
+  alldata %>% filter(full_name.x != full_name.y) %>% select(full_name.x, full_name.y, PSA_ID)
+)
+```
 
-## Add stuff here from the quiz we are collecting 
+## Fix Emails
 
-first middle last, department, affiliation, country, email 
-
-credit from google sheet and translate that into sentences 
+```{r}
+flextable(
+  alldata %>% filter(email.x != email.y) %>% select(email.x, email.y, PSA_ID)
+)
+```
 
 ## Order
 
-Hall, Schmidt
-Admin Team (alpha)
-3+ credit
-2 credit
-Buchanan, Moshontz 
+```{r}
+alldata$credit_total <- apply(alldata %>% select(p_admin, conceptualization, 
+                                               writing_original, writing_review,
+                                               data_curation, analysis, 
+                                               funding, supervision, 
+                                               investigation, methodology, 
+                                               resources, translation, 
+                                               software, validation, 
+                                               visualization), 1, sum, na.omit = T)
 
+author_order <- c(
+  #first Hall, Schmidt, Wagge, Lewis, Weissgerber, Kiunke
+  "1729", "139", "47", "22", "1817", "1751", 
+  # 3+ credit and community
+  alldata %>% filter(credit_total > 2) %>% filter(community == "Yes") %>% arrange(desc(credit_total)) %>% pull(PSA_ID), 
+  # 3+ credit
+  alldata %>% filter(credit_total > 2) %>% arrange(desc(credit_total)) %>%  pull(PSA_ID), 
+  # 2 credit and community
+  alldata %>% filter(credit_total > 1) %>% filter(community == "Yes") %>% pull(PSA_ID), 
+  # 2 credit 
+  alldata %>% filter(credit_total > 1) %>% pull(PSA_ID)
+)
 
-Make a list of COIs
-Make a list of funding 
+# remove duplicates and NAs
+author_order <- na.omit(author_order)
+author_order <- author_order[!duplicated(author_order)]
+author_order <- c(author_order[!(author_order %in% c("14", "175"))], "14", "175") # Buchanan, Moshontz 
+```
 
 ## Authorship
 
 ```{r}
 # print out authorship 
-
-# take out double spaces made by concat in gsheet
-combined_sheet$`Full Name` <- gsub("  ", " ", combined_sheet$`Full Name`)
-combined_sheet$`Full Affiliation` <- gsub("; ;", "", combined_sheet$`Full Affiliation`)
-combined_sheet$`Full Affiliation` <- gsub(";$", "", combined_sheet$`Full Affiliation`)
-
-ordered_author <- combined_sheet
-
-# fill in collab + RR admin team
-ordered_author[ordered_author$PSA_ID %in% admin_team , c("SPAML_RR", "collab_agree")] <- 1
-  
-# drop people who didn't fill out stuff
-ordered_author <- subset(ordered_author, 
-                         SPAML_RR > 0 &
-                           collab_agree > 0)
-
-# randomize 2 rest are in order 
-set.seed(5843902)
-  # get rows with 2
-  rows_2 <- ordered_author$PSA_ID[grep("^2", ordered_author$Tier)]
-  # randomize
-  rows_2 <- sample(rows_2, length(rows_2), replace = FALSE)
-  # author PSA ID order
-  PSA_ID_sorted <- c(lab_gsheet$PSA_ID[lab_gsheet$Tier == 1], #tier 1
-      lab_gsheet$PSA_ID[lab_gsheet$Tier == 1.1], #tier 1.1
-      lab_gsheet$PSA_ID[lab_gsheet$Tier == 1.2], #tier 1.2
-      rows_2, #tier 2
-      lab_gsheet$PSA_ID[lab_gsheet$Tier == 3])
-  # put back together
-  ordered_author <- ordered_author[match(PSA_ID_sorted, ordered_author$PSA_ID), ]
-  
-  
-ordered_author$full <- paste(ordered_author$`Full Name`, 
-                             ordered_author$`Full Affiliation`, 
-                             ordered_author$`Email address`, 
-                             sep = ", ")
-
-
+ordered_author <- 
+  alldata %>% 
+  filter(PSA_ID %in% author_order) %>% 
+  arrange(match(PSA_ID, author_order)) %>% 
+  mutate(full_survey = paste(full_name.x, department, institution, country, email.x, sep = ", "), 
+         full_ours = paste(full_name.x, affiliation, email.x, sep = ", "))
 ```
 
-`r paste(ordered_author$full, collapse = "  \n")`
+### Using Survey
+
+`r paste(ordered_author$full_survey, collapse = "  \n")`
+
+### Using Our Data
+
+`r paste(ordered_author$full_ours, collapse = "  \n")`
+
+### Create Upload CSV 
 
 ## Credit
 
@@ -157,3 +201,14 @@ ordered_author$credit <- gsub(" ,", "", ordered_author$credit)
 ```
 
 `r paste(ordered_author$credit, collapse = "  \n")`
+
+## COIs
+
+## Funding 
+
+## Acknowledgement List 
+
+one thing but not enough 
+people who don't fill out survey 
+
+print out the credit ones that are really off 

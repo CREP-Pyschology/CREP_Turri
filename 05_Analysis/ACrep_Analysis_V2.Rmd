@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 options(scipen = 15)
 
 #note -- may need to change the working directory if you default to project
@@ -42,6 +42,7 @@ library(dplyr)
 library(ggmosaic)
 library(MOTE)
 library(flextable)
+library(RColorBrewer)
 ```
 
 ## Import the Data
@@ -329,7 +330,14 @@ table(full_long$lab_id, full_long$comp, useNA = "ifany")
 # deal with not sures 
 table(full_long$comp, useNA = "ifany")
 
+# if they wrote not sure 
+# and didn't pick one of the compensation options
+# then they did not get compensated
 full_long$comp[full_long$comp == "Not Sure" & is.na(full_long$comp_type)] <- "No"
+
+# if they wrote note sure
+# but then picked a compensation option
+# then the answer is yes 
 full_long$comp[full_long$comp == "Not Sure" & !is.na(full_long$comp_type)] <- "Yes"
 
 #add turk variable
@@ -402,7 +410,7 @@ describe(full_long$age[!duplicated(full_long$id)])
 nrow(full_long)
 # number of participants
 length(unique(full_long$id))
-# number of data collection spot
+# number of data collection locations
 length(unique(full_long$person_code))
 ```
 
@@ -441,8 +449,6 @@ full_long$age_exclusion[full_long$lab_country %in% age18] <- full_long$age[full_
 full_long$age_exclusion[full_long$lab_country %in% age19] <- full_long$age[full_long$lab_country %in% age19] < 19
 
 full_long$age_exclusion[full_long$lab_country %in% age21] <- full_long$age[full_long$lab_country %in% age21] < 21
-
-full_long$age_exclusion[is.na(full_long$age_exclusion)] <- TRUE
 
 full_long$age_exclusion[full_long$age > 100] <- TRUE
 ```
@@ -497,8 +503,6 @@ We will also exclude participants who self-report their understanding of the tes
 summary(full_long$language)
 
 full_long$lang_exclusion <- full_long$language == "not very well" | full_long$language == "not well at all" 
-
-full_long$lang_exclusion[is.na(full_long$lang_exclusion)] <- TRUE
 ```
 
 ### Total Exclusions
@@ -506,21 +510,32 @@ full_long$lang_exclusion[is.na(full_long$lang_exclusion)] <- TRUE
 In this section, we provide the total (data point) exclusions for each particular screening item plus a table with all exclusions forever. 
 
 ```{r}
-full_long$total_exclusion <- apply(full_long[ , grep("exclusion", colnames(full_long))], 1, sum)
+# exclusions individually
+table(full_long$age_exclusion, useNA = "ifany") / 3
+table(full_long$lang_exclusion, useNA = "ifany") / 3
+table(full_long$studyans_exclusion, useNA = "ifany") / 3
+table(full_long$previous_exclusion, useNA = "ifany") / 3
+table(full_long$purpose_exclusion, useNA = "ifany") / 3 
 
-table(full_long$age_exclusion)
-table(full_long$lang_exclusion)
-table(full_long$studyans_exclusion)
-table(full_long$previous_exclusion)
-table(full_long$purpose_exclusion)
-table(full_long$total_exclusion)
+# for these, NA means they should be excluded
+full_long$age_exclusion[is.na(full_long$age_exclusion)] <- TRUE
+full_long$lang_exclusion[is.na(full_long$lang_exclusion)] <- TRUE
+full_long$studyans_exclusion[is.na(full_long$studyans_exclusion)] <- TRUE
+
+# for these, NA means no answer which is ok 
+full_long$previous_exclusion[is.na(full_long$previous_exclusion)] <- FALSE
+full_long$purpose_exclusion[is.na(full_long$purpose_exclusion)] <- FALSE
+
+full_long$total_exclusion <- apply(full_long[ , grep("exclusion", colnames(full_long))], 1, sum, na.rm = T)
+
+table(full_long$total_exclusion, useNA = "ifany") / 3
 
 # multiway table of all exclusions 
 exclusions <- as.data.frame(table(full_long$age_exclusion, 
                                   full_long$lang_exclusion, 
                                   full_long$previous_exclusion,
                                   full_long$purpose_exclusion, 
-                                  full_long$studyans_exclusion))
+                                  full_long$studyans_exclusion, useNA = "ifany"))
 colnames(exclusions) <- c("Age", "Language", "Previous", "Purpose", "Comprehension", "Frequency")
 exclusions$Num_Participants <- exclusions$Frequency / 3
 
@@ -550,7 +565,7 @@ final_long$bin_order <- droplevels(final_long$bin_order)
 
 # visualize the problem 
 ggplot(final_long, aes(know_vas)) + 
-  geom_histogram() + 
+  geom_histogram(color = "black", fill = "white") + 
   facet_grid(cond~vignette*bin_order) +  
   theme_classic() + 
   ylab("Frequency") + 
@@ -745,7 +760,7 @@ Please note that the VAS is scored in the opposite direction of the BIN scales, 
 
 ```{r}
 ## knowledge
-table(final_long$know_bin)
+table(final_long$know_bin, useNA = "ifany")
 
 ## split data 
 final_long$know_vas_binned <- final_long$know_vas
@@ -766,11 +781,11 @@ final_long$know_vas_combined_source <- ifelse(is.na(final_long$know_vas_binned),
                                      "Binary", 
                                      "VAS")
 
-table(final_long$know_vas_combined)
-table(final_long$know_vas_combined_source)
+table(final_long$know_vas_combined, useNA = "ifany")
+table(final_long$know_vas_combined_source, useNA = "ifany")
 
 ## reasonable
-table(final_long$reason_bin)
+table(final_long$reason_bin, useNA = "ifany")
 
 ## split data 
 final_long$reason_vas_binned <- final_long$reason_vas
@@ -791,11 +806,11 @@ final_long$reason_vas_combined_source <- ifelse(is.na(final_long$reason_vas_binn
                                      "Binary", 
                                      "VAS")
 
-table(final_long$reason_vas_combined)
-table(final_long$reason_vas_combined_source)
+table(final_long$reason_vas_combined, useNA = "ifany")
+table(final_long$reason_vas_combined_source, useNA = "ifany")
 
 ## luck
-table(final_luck$luck_bin)
+table(final_luck$luck_bin, useNA = "ifany")
 
 ## split data 
 final_luck$luck_vas_binned <- final_luck$luck_vas
@@ -816,8 +831,8 @@ final_luck$luck_vas_combined_source <- ifelse(is.na(final_luck$luck_vas_binned),
                                      "Binary", 
                                      "VAS")
 
-table(final_luck$luck_vas_combined)
-table(final_luck$luck_vas_combined_source)
+table(final_luck$luck_vas_combined, useNA = "ifany")
+table(final_luck$luck_vas_combined_source, useNA = "ifany")
 ```
 
 ### Gender Other
@@ -830,6 +845,9 @@ final_long$gender2 <- factor(final_long$gender,
 
 final_luck$gender2 <- factor(final_luck$gender,
                              levels = c("female", "male"))
+
+table(final_long$gender, useNA = "ifany")
+table(final_long$gender2, useNA = "ifany")
 ```
 
 ## Data Checks
@@ -851,7 +869,7 @@ table(final_long$person_code, final_long$reason_vas_combined, useNA = "ifany")
 
 table(final_luck$person_code, final_luck$luck_vas_combined, useNA = "ifany")
 
-table(final_long$person_code, final_long$education)
+table(final_long$person_code, final_long$education, useNA = "ifany")
 
 tapply(final_long$age, final_long$person_code, mean, na.rm = T)
 ```
@@ -960,7 +978,7 @@ r.squaredGLMM(k.model.4)
 ```
 
   - Model 2 AIC: `r AIC(k.model.2)`
-  - Model 3 AIC: `r AIC(k.model.2)`
+  - Model 3 AIC: `r AIC(k.model.3)`
   - Model 4 AIC: `r AIC(k.model.4)`
   - Interpretation: the inclusion of lab ID isn't really useful, as the AIC is higher for this model. The variance parameter for lab is also very small. 
   - This model accounts for approximately the same random variance.
@@ -980,12 +998,17 @@ k.model.5 <- glmer(know_vas_combined ~ (1|vignette/id/person_code) +
 summary(k.model.5)
 
 r.squaredGLMM(k.model.5)
+
+tapply(k.model.5@frame$age, k.model.5@frame$know_vas_combined, mean, na.rm = T)
+tapply(k.model.5@frame$education, k.model.5@frame$know_vas_combined, mean, na.rm = T)
 ```
 
   - Model 4 AIC: `r AIC(k.model.4)`
   - Model 5 AIC: `r AIC(k.model.5)`
   - Interpretation: this model is better than the vignette random intercept only model.
-  - No covariates predicted the outcome variable. 
+  - Age is a negative predictor of knows/believes, such that as age increases, we are more likely to pick knows. 
+  - Education is a positive predictor, so that as education increases we are more likely to pick believes.
+  - The fixed effects are very small ~ .001. 
   
 ### Model 6
 
@@ -1013,7 +1036,7 @@ r.squaredGLMM(k.model.6)
   - In Gettier, participants are slightly more likely to say believes.
   - In Ignorance, participants are *way* more likely to say believes (so that's why this condition is different from Gettier).
   - In Knowledge, participants are more like to say knows (also why this is different from Gettier). 
-  - This effect accounts for 13-15% of the fixed effect variance. 
+  - This effect accounts for 12-15% of the fixed effect variance. 
 
 ### Model 6A
 
@@ -1039,9 +1062,10 @@ data_graph$know_vas_combined <- factor(data_graph$know_vas_combined,
 #graph the three way binary 
 ggplot(data_graph) +
   geom_mosaic(aes(x = product(know_vas_combined, cond, vignette), 
-                  fill = know_vas_combined)) + 
-  scale_fill_manual(name = "Knowledge Choice",
-                    values = c("gray", "black")) + 
+                  fill = know_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Knowledge Choice", 
+                    direction = -1) + 
+  theme(text = element_text(size = 15)) + 
   scale_x_productlist(breaks = c(0.13,.5,.87),
     labels = c("Darrel", "Emma", "Gerald")) + 
   theme_classic() + 
@@ -1140,8 +1164,6 @@ v.chi.sq(x2 = prop2$statistic,
 Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
 
 ```{r}
-
-
 k.model.6B <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*turk,
@@ -1282,6 +1304,10 @@ summary(r.model.5)
 
 table(r.model.5@frame$comp, r.model.5@frame$reason_vas_combined)
 
+table(r.model.5@frame$gender2, r.model.5@frame$reason_vas_combined)
+
+tapply(r.model.5@frame$education, r.model.5@frame$reason_vas_combined, mean, na.rm = T)
+
 r.squaredGLMM(r.model.5)
 ```
 
@@ -1290,7 +1316,8 @@ r.squaredGLMM(r.model.5)
   - Interpretation: this model is better than the vignette random intercept only model.
   - Coefficients:
     - The compensated participants were more likely to say reasonable (they are also a much larger group).
-    - Education is a negative coefficient indicating that the less educate a person_code listed, the more likely they were to pick reasonable. 
+    - Gender - females are more likely to pick reasonable (13:1 odds) versus men (11:1 odds)
+    - Education is a negative coefficient indicating that the less education a person listed, the more likely they were to pick reasonable. 
   
 ### Model 6
 
@@ -1343,9 +1370,9 @@ r.data_graph$reason_vas_combined <- factor(r.data_graph$reason_vas_combined,
 #graph the three way binary 
 ggplot(r.data_graph) +
   geom_mosaic(aes(x = product(reason_vas_combined, cond, vignette), 
-                  fill = reason_vas_combined)) + 
-  scale_fill_manual(name = "Reasonable Choice",
-                    values = c("gray", "black")) + 
+                  fill = reason_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Reason Choice", 
+                    direction = -1) + 
   scale_x_productlist(breaks = c(0.13,.5,.87),
     labels = c("Darrel", "Emma", "Gerald")) + 
   theme_classic() + 
@@ -1526,7 +1553,7 @@ r.squaredGLMM(l.model.2)
   - Coefficients: interpretation overall of random intercept, which effectively tells us regardless of condition, which way the participants lean toward answering. See the table printed out to help understand these values. 
     - Darrel: People are more likely to pick ability 
     - Emma: People are more likely to pick luck
-    - Gerald: lPeople are more even, but lean toward luck 
+    - Gerald: People are more even, but lean toward luck 
     - The results here indicate what we were seeing with the "continuous" data as well - that there's a big difference in the way they respond to vignettes
   - This vignette accounts for 8 to 10 percent of the random variance. 
   
@@ -1586,6 +1613,9 @@ summary(l.model.5)
 
 table(l.model.5@frame$luck_vas_combined, l.model.5@frame$comp)
 
+tapply(l.model.5@frame$age, l.model.5@frame$luck_vas_combined, mean, na.rm = T)
+tapply(l.model.5@frame$education, l.model.5@frame$luck_vas_combined, mean, na.rm = T)
+
 r.squaredGLMM(l.model.5)
 ```
 
@@ -1593,6 +1623,8 @@ r.squaredGLMM(l.model.5)
   - Model 5 AIC: `r AIC(l.model.5)`
   - Interpretation: this model is better than the vignette random intercept only model.
   - Coeffients:
+    - Compensation: when people are compensated they are more likely to pick luck.   
+    - Age: older individuals are more likely to pick ability. 
     - Education: this effect indicates that people who select lower education levels are more likely to select luck versus ability. The variance accounted for is small. 
     
 ### Model 6
@@ -1621,7 +1653,7 @@ r.squaredGLMM(l.model.6)
   - In Gettier, people are more likely to chose luck.
   - In Ignorance, people are more likely to chose ability.
   - In Knowledge, people are more likely to chose ability. 
-  - This effect accounts for 4-5% of the fixed effect variance. 
+  - This effect accounts for 5-6% of the fixed effect variance. 
 
 ### Model 6A
 
@@ -1647,9 +1679,9 @@ l.data_graph$luck_vas_combined <- factor(l.data_graph$luck_vas_combined,
 #graph the three way binary 
 ggplot(l.data_graph) +
   geom_mosaic(aes(x = product(luck_vas_combined, cond, vignette), 
-                  fill = luck_vas_combined)) + 
-  scale_fill_manual(name = "Luck Choice",
-                    values = c("gray", "black")) + 
+                  fill = luck_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Luck Choice", 
+                    direction = -1) + 
   scale_x_productlist(breaks = c(0.13,.5,.87),
     labels = c("Darrel", "Emma", "Gerald")) + 
   theme_classic() + 
@@ -1792,9 +1824,9 @@ l.data_graph$luck_vas_combined <- factor(l.data_graph$luck_vas_combined,
 #graph the three way binary 
 ggplot(l.data_graph) +
   geom_mosaic(aes(x = product(luck_vas_combined, cond, luck_vas_combined_source), 
-                  fill = luck_vas_combined)) + 
-  scale_fill_manual(name = "Luck Choice",
-                    values = c("gray", "black")) + 
+                  fill = luck_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Luck Choice", 
+                    direction = -1) + 
   scale_x_productlist(breaks = c(0.13,.87),
     labels = c("Binary", "VAS")) + 
   theme_classic() + 
@@ -1809,8 +1841,8 @@ ggplot(l.data_graph) +
 
 ```{r}
 # overall binary
-chisq.test(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "Binary"],
-           l.data_graph$cond[l.data_graph$luck_vas_combined_source == "Binary"])
+# chisq.test(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "Binary"],
+#            l.data_graph$cond[l.data_graph$luck_vas_combined_source == "Binary"])
 
 #HM getting error -- 
 #Error in names(attr(result$observed, "dimnames")) <- c(dname_x, dname_y) : 
@@ -1840,9 +1872,9 @@ v.chi.sq(x2 = prop2$statistic,
 - Gettier more likely to say Luck than Knowledge 
 
 ```{r}
-# overall VAS
-chisq.test(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "VAS"],
-           l.data_graph$cond[l.data_graph$luck_vas_combined_source == "VAS"])
+# # overall VAS
+# chisq.test(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "VAS"],
+#            l.data_graph$cond[l.data_graph$luck_vas_combined_source == "VAS"])
 
 v_table <- table(l.data_graph$luck_vas_combined[l.data_graph$luck_vas_combined_source == "VAS"],
            l.data_graph$cond[l.data_graph$luck_vas_combined_source == "VAS"])
@@ -1911,9 +1943,9 @@ table(l2.data_graph$know_vas_combined, l2.data_graph$cond, l2.data_graph$luck_va
 #graph the three way binary 
 ggplot(l2.data_graph) +
   geom_mosaic(aes(x = product(know_vas_combined, cond, luck_vas_combined), 
-                  fill = know_vas_combined)) + 
-  scale_fill_manual(name = "Knows Choice",
-                    values = c("gray", "black")) + 
+                  fill = know_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Knowledge Choice", 
+                    direction = -1) +  
   scale_x_productlist(breaks = c(0.13,.87),
     labels = c("Luck", "Ability")) + 
   theme_classic() + 
@@ -1931,7 +1963,8 @@ ggplot(l2.data_graph) +
 
 # luck
 l_table <- table(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Luck"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Luck"])
-chisq.test(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Luck"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Luck"])
+
+# chisq.test(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Luck"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Luck"])
 
 # prop tests
 prop1 <- prop.test(t(l_table[1:2, 1:2]))
@@ -1948,7 +1981,8 @@ v.chi.sq(x2 = prop2$statistic,
 
 # ability
 a_table <- table(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Ability"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Ability"])
-chisq.test(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Ability"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Ability"])
+
+# chisq.test(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Ability"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Ability"])
 
 # prop tests
 prop1 <- prop.test(t(a_table[1:2, 1:2]))
@@ -2151,7 +2185,6 @@ THAT_TABLE <- THAT_TABLE %>%
   left_join(FINAL_N, by = c("person_code" = "person_code"))
 
 flextable(THAT_TABLE)
-
 
 FULL_N_project <- 
   full_long_project %>% 
