@@ -15,6 +15,7 @@ library(gsheet)
 library(rio)
 library(flextable)
 library(dplyr)
+set.seed(89088934)
 ```
 
 ```{r}
@@ -27,7 +28,8 @@ colnames(lab_gsheet) <- c("tier", "first", "middle", "last", "full_name",
                           "writing_review", "data_curation", "analysis", 
                           "funding", "supervision", "investigation", "methodology", 
                           "resources", "translation", "software", "validation", 
-                          "visualization", "email", "affiliation", "PSA_ID", 
+                          "visualization", "email", "email_nouse", "email_check",
+                          "affiliation", "PSA_ID", 
                           "ammps_account", "author_stage1", "author_stage2", 
                           "data_check", "community_check", "funding_check", "orcid", 
                           "corresponding")
@@ -47,10 +49,10 @@ colnames(author) <- c("name", "id", "PSA_ID", "section", "section_id", "section_
                       "score17", "recruitment", "score18", "compensation", 
                       "score19", "datacollect", "score20", "qualtrics", "score21", 
                       "extensions", "score22", "covid", "score23", "funding_report",
-                      "score24", paste("old", 1:35, sep = ""))
+                      "score24", paste("old", 1:34, sep = ""), "total_score")
 
 
-author <- author[ , !grepl("old|score|section", colnames(author))]
+author <- author[ , !grepl("old|^score|section", colnames(author))]
 
 #sort by date and eliminate duplicates
 author <- author[order(author$submitted, decreasing = T) , ]
@@ -60,6 +62,11 @@ author$PSA_ID <- as.character(author$PSA_ID)
 #merge with main data 
 alldata <- lab_gsheet %>% 
   full_join(author, by = c("PSA_ID" = "PSA_ID"))
+
+# add in admin team since some of us can't take the survey
+# just make sure these people mark the google sheet as the right info
+admin_id <- c("1729", "139", "47", "22", "1817", "1751", "14", "175")
+alldata$attempt[alldata$PSA_ID %in% admin_id] <- 1 
 ```
 
 ## Fill in Missing PSA_IDs
@@ -129,6 +136,30 @@ author_order <- c(author_order[!(author_order %in% c("14", "175"))], "14", "175"
 ## Authorship
 
 ```{r}
+# fill in admin "survey"
+# we are using email and name from our curated sheet
+# then department institution country from the survey
+alldata$department[alldata$PSA_ID %in% admin_id] <- 
+  c("Analytics", "Psychology", "Psychology", "Psychology", 
+    "Psychology", "Psychology", "Psychology", "Psychology")
+
+alldata$institution[alldata$PSA_ID %in% admin_id] <- 
+  c("Harrisburg University of Science and Technology", 
+    "Southern Illinois University Carbondale", 
+    "Universität Kassel", 
+    "Ashland University", 
+    "University of Wisconsin-Madison", 
+    "Southern Illinois University Carbondale", 
+    "Avila University", 
+    "Universität Kassel")
+
+
+alldata$country[alldata$PSA_ID %in% admin_id] <- 
+  c("USA", "USA", "Germany", "USA", "USA", "USA", "USA", "Germany")
+```
+
+
+```{r}
 # print out authorship 
 ordered_author <- 
   alldata %>% 
@@ -136,6 +167,9 @@ ordered_author <-
   arrange(match(PSA_ID, author_order)) %>% 
   mutate(full_survey = paste(full_name.x, department, institution, country, email.x, sep = ", "), 
          full_ours = paste(full_name.x, affiliation, email.x, sep = ", "))
+
+# just check this to make sure you shouldn't exclude
+ordered_author %>% filter(total_score == 0)
 ```
 
 ### Using Survey
@@ -146,69 +180,25 @@ ordered_author <-
 
 `r paste(ordered_author$full_ours, collapse = "  \n")`
 
+### Final People Who Did the Survey
+
+`r paste(ordered_author$full_survey[!is.na(ordered_author$attempt)], collapse = "  \n")`
+
 ### Create Upload CSV 
 
 ## Credit
 
+## COIs
+
 ```{r}
-ordered_author$Conceptualization <- ifelse(ordered_author$Conceptualization == TRUE, "Conceptualization", "")
-
-ordered_author$`Data curation` <- ifelse(ordered_author$`Data curation` == TRUE, "Data Curation", "")
-
-ordered_author$`Formal analysis` <- ifelse(ordered_author$`Formal analysis` == TRUE, "Formal Analysis", "")
-
-ordered_author$`Funding acquisition` <- ifelse(ordered_author$`Funding acquisition` == TRUE, "Funding Acquisition", "")
-
-ordered_author$Investigation <- ifelse(ordered_author$Investigation == TRUE, "Investigation", "")
-
-ordered_author$Methodology <- ifelse(ordered_author$Methodology == TRUE, "Methodology", "")
-
-ordered_author$`Project administration` <- ifelse(ordered_author$`Project administration` == TRUE, "Project Administration", "")
-
-ordered_author$Resources <- ifelse(ordered_author$Resources == TRUE, "Resources", "")
-
-ordered_author$Software <- ifelse(ordered_author$Software == TRUE, "Software", "")
-
-ordered_author$Supervision <- ifelse(ordered_author$Supervision == TRUE, "Supervision", "")
-
-ordered_author$Validation <- ifelse(ordered_author$Validation == TRUE, "Validation", "")
-
-ordered_author$Visualization <- ifelse(ordered_author$Visualization == TRUE, "Visualization", "")
-
-ordered_author$`Writing - original draft` <- ifelse(ordered_author$`Writing - original draft` == TRUE, "Writing - Original Draft", "")
-
-ordered_author$`Writing - review & editing` <- ifelse(ordered_author$`Writing - review & editing` == TRUE, "Writing - Review & Editing", "")
-
-ordered_author$credit <- paste(paste(ordered_author$`Full Name`, ": ", sep = ""), 
-                               ordered_author$Conceptualization, 
-                               ordered_author$`Data curation`, 
-                               ordered_author$`Formal analysis`, 
-                               ordered_author$`Funding acquisition`, 
-                               ordered_author$Investigation, 
-                               ordered_author$Methodology,
-                               ordered_author$`Project administration`, 
-                               ordered_author$Resources, 
-                               ordered_author$Software, 
-                               ordered_author$Supervision, 
-                               ordered_author$Validation, 
-                               ordered_author$Visualization, 
-                               ordered_author$`Writing - original draft`, 
-                               ordered_author$`Writing - review & editing`, 
-                               sep = ", ")
-
-
-ordered_author$credit <- gsub(" ,", "", ordered_author$credit)
+flextable(ordered_author %>% select(PSA_ID, full_name.x, cois))
 ```
 
-`r paste(ordered_author$credit, collapse = "  \n")`
-
-## COIs
 
 ## Funding 
 
+```{r}
+flextable(ordered_author %>% select(PSA_ID, full_name.x, funding_report))
+```
+
 ## Acknowledgement List 
-
-one thing but not enough 
-people who don't fill out survey 
-
-print out the credit ones that are really off 
