@@ -4,6 +4,8 @@ ACrep_Analysis_V2_cache
 ACrep_Analysis_V2_files
 temp_acrep_cache
 temp_acrep_files
+ACrep_Results_cache
+ACrep_Results_files
 
 # History files
 .Rhistory
