@@ -6,7 +6,7 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
@@ -49,8 +49,8 @@ colnames(author) <- c("name", "id", "PSA_ID", "section", "section_id", "section_
                       "score17", "recruitment", "score18", "compensation", 
                       "score19", "datacollect", "score20", "qualtrics", "score21", 
                       "extensions", "score22", "covid", "score23", "funding_report",
-                      "score24", paste("old", 1:34, sep = ""), "total_score")
-
+                      "score24", "old1", "old2", "old3", "old4", "score25", "score26", 
+                      "total_score")
 
 author <- author[ , !grepl("old|^score|section", colnames(author))]
 
@@ -73,7 +73,10 @@ alldata$attempt[alldata$PSA_ID %in% admin_id] <- 1
 
 ```{r}
 # check for blank PSA_IDs
-alldata$full_name.x[is.na(alldata$PSA_ID)]
+flextable(
+  alldata %>% filter(is.na(PSA_ID)) %>% 
+  select(full_name.x, email.x, email.y)
+) %>% autofit() %>% fit_to_width(7.5)
 ```
 
 ## Check for Duplicated IDs 
@@ -83,23 +86,44 @@ alldata$full_name.x[is.na(alldata$PSA_ID)]
 # remember that NAs are considered duplicates 
 if (sum(duplicated(alldata$PSA_ID)) > 0){
   alldata$full_name.x[duplicated(alldata$PSA_ID)]
+  
+  alldata$PSA_ID[duplicated(alldata$PSA_ID)]
 }
+```
+
+## Find Missing People
+
+```{r}
+alldata %>% filter(is.na(first)) %>% select(PSA_ID, full_name.y)
+
+alldata <- 
+  alldata %>% 
+  filter(PSA_ID != "272") %>%  #asked to be removed
+  filter(PSA_ID != "513") #asked to be removed 
+  
 ```
 
 ## Fix Names
 
 ```{r}
+# check what they wrote in canvas versus what we have 
 flextable(
   alldata %>% filter(full_name.x != full_name.y) %>% select(full_name.x, full_name.y, PSA_ID)
-)
+) %>% autofit() %>% fit_to_width(7.5)
+
+# check what we have in canvas matches the name in our worksheet
+flextable(
+  alldata %>% filter(full_name.x != name) %>% select(full_name.x, name, PSA_ID)
+) %>% autofit() %>% fit_to_width(7.5)
 ```
 
 ## Fix Emails
 
 ```{r}
+# check what they said in canvas versus what we have 
 flextable(
   alldata %>% filter(email.x != email.y) %>% select(email.x, email.y, PSA_ID)
-)
+) %>% autofit() %>% fit_to_width(7.5)
 ```
 
 ## Order
@@ -153,11 +177,9 @@ alldata$institution[alldata$PSA_ID %in% admin_id] <-
     "Avila University", 
     "Universität Kassel")
 
-
 alldata$country[alldata$PSA_ID %in% admin_id] <- 
   c("USA", "USA", "Germany", "USA", "USA", "USA", "USA", "Germany")
 ```
-
 
 ```{r}
 # print out authorship 
@@ -169,36 +191,69 @@ ordered_author <-
          full_ours = paste(full_name.x, affiliation, email.x, sep = ", "))
 
 # just check this to make sure you shouldn't exclude
-ordered_author %>% filter(total_score == 0)
+ordered_author %>% filter(total_score < 10)
 ```
-
-### Using Survey
-
-`r paste(ordered_author$full_survey, collapse = "  \n")`
-
-### Using Our Data
-
-`r paste(ordered_author$full_ours, collapse = "  \n")`
 
 ### Final People Who Did the Survey
 
-`r paste(ordered_author$full_survey[!is.na(ordered_author$attempt)], collapse = "  \n")`
+`r paste(ordered_author$full_survey[!is.na(ordered_author$attempt)], collapse = "  \n\n")`
 
 ### Create Upload CSV 
 
 ## Credit
 
+```{r}
+alldata <- 
+  alldata %>% mutate(credit_name = paste(substr(full_name.x, 1, 1), ". ", 
+                                         middle, " ", last, sep = "")) %>% 
+  mutate(credit_name = gsub("NA", "", credit_name)) %>% 
+  mutate(credit_name = gsub("  ", " ", credit_name))
+```
+  
+`r paste(alldata %>% filter(conceptualization) %>% pull(credit_name), collapse = ", ")` contributed to the conceptualization of the project. 
+
+`r paste(alldata %>% filter(writing_original) %>% pull(credit_name), collapse = ", ")` wrote the original draft of this report.
+
+`r paste(alldata %>% filter(writing_review) %>% pull(credit_name), collapse = ", ")` edited, reviewed, and revised the draft of this report.
+
+`r paste(alldata %>% filter(data_curation) %>% pull(credit_name), collapse = ", ")` contributed to the data curation.
+
+`r paste(alldata %>% filter(analysis) %>% pull(credit_name), collapse = ", ")` contributed to the analysis of the data.
+
+`r paste(alldata %>% filter(funding) %>% pull(credit_name), collapse = ", ")` secured funding for this project. 
+
+`r paste(alldata %>% filter(supervision) %>% pull(credit_name), collapse = ", ")` was invovled in supervision for this project including supervision of student led teams.
+
+`r paste(alldata %>% filter(investigation) %>% pull(credit_name), collapse = ", ")` contributed to the data collection and investigation. 
+
+`r paste(alldata %>% filter(methodology) %>% pull(credit_name), collapse = ", ")` contributed to methodology for the project.
+
+`r paste(alldata %>% filter(resources) %>% pull(credit_name), collapse = ", ")` contributed to resources for this project.
+
+`r paste(alldata %>% filter(translation) %>% pull(credit_name), collapse = ", ")` contributed to the translation for materials for this project. 
+
+`r paste(alldata %>% filter(software) %>% pull(credit_name), collapse = ", ")` contributed survey software and coding for this project.
+
+`r paste(alldata %>% filter(validation) %>% pull(credit_name), collapse = ", ")` contributed validation of the analyses. 
+
+`r paste(alldata %>% filter(visualization) %>% pull(credit_name), collapse = ", ")` contributed to the visualization of data and analyses. 
+
 ## COIs
 
 ```{r}
-flextable(ordered_author %>% select(PSA_ID, full_name.x, cois))
+flextable(ordered_author %>% select(PSA_ID, full_name.x, cois)) %>% autofit() %>% fit_to_width(7.5)
 ```
-
 
 ## Funding 
 
 ```{r}
-flextable(ordered_author %>% select(PSA_ID, full_name.x, funding_report))
+#table(alldata$funding_report)
+alldata$funding_report2 <- gsub("-|I do not have.*|N.A.*|n\\/a.*|N\\/A.*|^NA|^na|^NO|^No|^no", NA, alldata$funding_report)
+alldata$funding_report2[alldata$funding_report2 == ""] <- NA
+
+alldata$funding_report2[!is.na(alldata$funding_report2)] <- paste(alldata$full_name.x[!is.na(alldata$funding_report2)], ": ", alldata$funding_report2[!is.na(alldata$funding_report2)], sep = "")
 ```
+
+`r paste(na.omit(alldata$funding_report2), collapse = "  \n\n")`
 
 ## Acknowledgement List 
