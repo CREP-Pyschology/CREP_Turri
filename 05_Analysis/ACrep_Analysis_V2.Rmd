@@ -272,17 +272,22 @@ lab_sheet <- import("../04_Data/data/lab_sheet_un_region_update.csv") %>%
 
 nrow(full_long)
 
+setdiff(unique(full_long$lab_id), lab_sheet$lab_code)
+full_long$lab_id <- as.character(full_long$lab_id)
+full_long$lab_id[full_long$lab_id == "855e89"] <- "8.55E+91"
+full_long$lab_id[full_long$lab_id == "053396"] <- "53396"
+
 # delete test and do not use cases
 full_long <- subset(full_long, lab_id %in% lab_sheet$lab_code[lab_sheet$use == "Yes"])
 
 nrow(full_long)
 
-full_long$lab_id <- droplevels(full_long$lab_id)
+#full_long$lab_id <- droplevels(full_long$lab_id)
 ```
 
 ### Deal with compensation issues:
 
-  - Deal with compensation for labs with no information because they didn't see that question 
+  - Deal with compensation for labs with no information because they didn't see that question
   
 ```{r}
 # deal with compensation questions
@@ -307,7 +312,7 @@ colnames(lab_comp_max) <- c("lab_code", "comp", "Percent")
 table(lab_sheet$compensation, useNA = "ifany")
 lab_sheet$comp <- lab_sheet$compensation
 lab_sheet$comp <- gsub("Course Credit for Students, Nothing for Community", "Mixed", lab_sheet$comp)
-lab_sheet$comp <- gsub("Course Credit|Lottery|Money|Sweets", "Yes", lab_sheet$comp)
+lab_sheet$comp <- gsub("Course Credit|Lottery|Money|Sweets|Course Credit, Money", "Yes", lab_sheet$comp)
 lab_sheet$comp <- gsub("None", "No", lab_sheet$comp)
 
 table(lab_sheet$comp, useNA = "ifany")
@@ -399,7 +404,7 @@ full_long$education[full_long$education_level == "Master’s degree (M.A., M.S.)
 full_long$education[full_long$education_level == "Graduate or professional degree (J.D., Ph.D., M.D.)" & !is.na(full_long$education_level)] <-  18 #>17 group
 
 # PRT lab bach = 15, master = 17, PHD = 21
-full_long$education[full_long$education_level == "4-year college degree (B.A., B.S.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 15
+full_long$education[full_long$education_level == "4-year college degree (B.A., B.S.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 14
 full_long$education[full_long$education_level == "Master’s degree (M.A., M.S.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 17
 full_long$education[full_long$education_level == "Graduate or professional degree (J.D., Ph.D., M.D.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <-  18 #> 17 group 
 
@@ -440,17 +445,14 @@ tapply(full_long$age, full_long$lab_country, min, na.rm = T)
 # exclude based on age
 full_long$age_exclusion <- NA
 
-age18 <- c("AUT", "AUS", "CAN", "CHE", "DEU", "GBR", "GRC", "HUN", "NOR", "NZL", "POL", "PRT", "ROU", "RUS", "SGP", "TUR", "TWN", "USA")
-age19 <- c("SVK")
-age21 <- c("ARE")
+# everyone under 18
+full_long$age_exclusion <- full_long$age < 18
 
-full_long$age_exclusion[full_long$lab_country %in% age18] <- full_long$age[full_long$lab_country %in% age18] < 18
-
-full_long$age_exclusion[full_long$lab_country %in% age19] <- full_long$age[full_long$lab_country %in% age19] < 19
-
-full_long$age_exclusion[full_long$lab_country %in% age21] <- full_long$age[full_long$lab_country %in% age21] < 21
-
+# everyone over 100 
 full_long$age_exclusion[full_long$age > 100] <- TRUE
+
+# TWN age of majority is 20 at time of study
+full_long$age_exclusion[full_long$lab_country %in% "TWN"] <- full_long$age[full_long$lab_country %in% "TWN"] < 20
 ```
 
 ### Previous Knowledge/Participation of Study 
@@ -467,6 +469,14 @@ nrow(full_long)
 length(unique(full_long$id))
 
 colnames(full_long)[(ncol(full_long)-1):ncol(full_long)] <- c("previous_exclusion", "previous_nonsense")
+
+full_long$previous_exclusion[full_long$previous == ""] <- FALSE
+full_long$previous_nonsense[full_long$previous == ""] <- FALSE
+full_long$previous_exclusion[is.na(full_long$previous)] <- FALSE
+full_long$previous_nonsense[is.na(full_long$previous)] <- FALSE
+full_long$previous_exclusion[nchar(full_long$previous) < 2] <- FALSE
+full_long$previous_nonsense[nchar(full_long$previous) < 2] <- FALSE
+
 ```
 
 ### Comprehension Questions 
@@ -493,6 +503,27 @@ nrow(full_long)
 length(unique(full_long$id))
 
 colnames(full_long)[(ncol(full_long)-1):ncol(full_long)] <- c("purpose_exclusion", "purpose_nonsense")
+
+full_long$purpose_exclusion[full_long$purpose == ""] <- FALSE
+full_long$purpose_nonsense[full_long$purpose == ""] <- FALSE
+full_long$purpose_exclusion[is.na(full_long$purpose)] <- FALSE
+full_long$purpose_nonsense[is.na(full_long$purpose)] <- FALSE
+full_long$purpose_exclusion[nchar(full_long$purpose) < 2] <- FALSE
+full_long$purpose_nonsense[nchar(full_long$purpose) < 2] <- FALSE 
+
+# missing_purpose <- 
+#   full_long %>% 
+#        filter(is.na(purpose_exclusion)) %>% 
+#        select(purpose, id, survey_lang) %>% 
+#        unique() 
+# write.csv(missing_purpose, "../04_Data/data/aus_update_purpose.csv", row.names = F)
+# 
+# missing_previous <- 
+#     full_long %>% 
+#        filter(is.na(previous_exclusion)) %>% 
+#        select(previous, id, survey_lang) %>% 
+#        unique() 
+# write.csv(missing_previous, "../04_Data/data/aus_update_previous.csv", row.names = F)
 ```
 
 ### Language Proficiency 
@@ -872,6 +903,11 @@ table(final_luck$person_code, final_luck$luck_vas_combined, useNA = "ifany")
 table(final_long$person_code, final_long$education, useNA = "ifany")
 
 tapply(final_long$age, final_long$person_code, mean, na.rm = T)
+
+full_long %>% 
+  group_by(person_code) %>% 
+  summarize(NA_age = sum(is.na(age)), NotNA_age = sum(!is.na(age)),
+            NA_gender = sum(is.na(gender)), NotNA_gender = sum(!is.na(gender))) 
 ```
 
 ### Check for Reverse Coding 
@@ -2104,6 +2140,49 @@ r.squaredGLMM(k.model.6H)
   - Model 6F AIC: `r AIC(k.model.6H)`
   - Interpretation: This model is not better than a model with just the order effects.
   - There is no interaction between condition and order effects. 
+  
+## Darrel Analysis
+
+```{r}
+# 1 is right 2 is wrong 
+# get people who missed dareel
+darrel_exclude <- full_long$id[full_long$vignette == "Darrel" & 
+                                 full_long$compr == 2]
+full_long$darrel_exclusion <-FALSE
+full_long$darrel_exclusion[full_long$id %in% darrel_exclude] <- TRUE
+
+# percent correct
+table(full_long$darrel_exclusion[!duplicated(full_long$id)]) / length(unique(full_long$id))
+
+darrel_DF <- subset(full_long, darrel_exclusion == FALSE)
+darrel_DF <- subset(darrel_DF, vignette_order == "DGE" | 
+                      vignette_order == "DEG")
+darrel_DF <- subset(darrel_DF, vignette == "Darrel")
+
+nrow(darrel_DF)
+
+# add to this DF
+darrel_DF$know_vas_binned <- darrel_DF$know_vas
+darrel_DF$know_vas_binned[darrel_DF$know_vas_binned <= 40] <- 2
+darrel_DF$know_vas_binned[darrel_DF$know_vas_binned > 40 & 
+                             darrel_DF$know_vas_binned < 60] <- NA
+darrel_DF$know_vas_binned[darrel_DF$know_vas_binned >= 60] <- 1
+darrel_DF$know_vas_combined <- ifelse(is.na(darrel_DF$know_vas_binned), 
+                                     darrel_DF$know_bin, 
+                                     darrel_DF$know_vas_binned)
+
+darrel_only <- chisq.test(darrel_DF$cond, darrel_DF$know_vas_combined)
+MOTE_darrel <- v.chi.sq(
+  x2 = darrel_only$statistic,
+  n = sum(darrel_only$observed),
+  r = 2,
+  c = 3,
+  a = .05
+)
+
+MOTE_darrel$estimate
+MOTE_darrel$statistic
+```
 
 ## Lab Information
 

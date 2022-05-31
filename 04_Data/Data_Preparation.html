@@ -61,6 +61,7 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
 .main-container {
   max-width: 940px;
@@ -81,6 +82,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -166,7 +170,7 @@ pre code {
 
 <h1 class="title toc-ignore">Data_Preparation</h1>
 <h4 class="author">Felix Kiunke … with minor EMB &amp; HM adjustments</h4>
-<h4 class="date">Last Update 2021-11-15</h4>
+<h4 class="date">Last Update 2022-05-31</h4>
 
 </div>
 
@@ -191,9 +195,9 @@ pre code {
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-## ✓ tibble  3.1.5     ✓ dplyr   1.0.7
-## ✓ tidyr   1.1.4     ✓ stringr 1.4.0
-## ✓ readr   2.0.2     ✓ forcats 0.5.1</code></pre>
+## ✓ tibble  3.1.6     ✓ dplyr   1.0.8
+## ✓ tidyr   1.2.0     ✓ stringr 1.4.0
+## ✓ readr   2.1.1     ✓ forcats 0.5.1</code></pre>
 <pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
@@ -587,8 +591,6 @@ d.turk &lt;- d.turk.raw %&gt;%
 <pre><code>##         converted &#39;education_level&#39; from character to ordered factor (0 new NA)</code></pre>
 <pre><code>##         converted &#39;language&#39; from character to ordered factor (0 new NA)</code></pre>
 <pre class="r"><code>#### Import 87d100 ####
-
-
 d.87d100.raw &lt;- read_survey(&quot;../04_data/data/87d100_with_order.csv&quot;) %&gt;% 
   glimpse()</code></pre>
 <pre><code>## 
@@ -867,9 +869,268 @@ d.87d100.raw &lt;- read_survey(&quot;../04_data/data/87d100_with_order.csv&quot;
 #   group_by(name) %&gt;%
 #   summarize(min=min(value), max=max(value))
 
-
-# Cleanup
-rm(d.turk.raw, d.87d100.raw, add_cond_order, recode_ethnicity)</code></pre>
+#### Import fg64rd ####
+d.fg64rd.raw &lt;- read_survey(&quot;../04_data/data/fg64rd_with_order.csv&quot;) %&gt;% 
+  glimpse()</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_character(),
+##   IPAddress = col_logical(),
+##   Progress = col_double(),
+##   `Duration (in seconds)` = col_double(),
+##   Finished = col_logical(),
+##   RecipientLastName = col_logical(),
+##   RecipientFirstName = col_logical(),
+##   RecipientEmail = col_logical(),
+##   ExternalReference = col_logical(),
+##   LocationLatitude = col_logical(),
+##   LocationLongitude = col_logical(),
+##   g_knows_1 = col_double(),
+##   g_reasonable_1 = col_double(),
+##   g_ability_1 = col_double(),
+##   e_knows_1 = col_double(),
+##   e_reasonable_1 = col_double(),
+##   e_ability_1 = col_double(),
+##   d_knows_1 = col_double(),
+##   d_reasonable_1 = col_double(),
+##   d_ability_1 = col_double(),
+##   age = col_double()
+##   # ... with 1 more columns
+## )
+## ℹ Use `spec()` for the full column specifications.</code></pre>
+<pre><code>## Rows: 165
+## Columns: 66
+## $ StartDate               &lt;chr&gt; &quot;6/4/20 21:12&quot;, &quot;6/10/20 7:30&quot;, &quot;6/5/20 2:10&quot;,…
+## $ EndDate                 &lt;chr&gt; &quot;6/4/20 21:40&quot;, &quot;6/10/20 7:36&quot;, &quot;6/5/20 2:30&quot;,…
+## $ Status                  &lt;chr&gt; &quot;IP Address&quot;, &quot;IP Address&quot;, &quot;IP Address&quot;, &quot;IP …
+## $ IPAddress               &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ Progress                &lt;dbl&gt; 100, 100, 98, 100, 100, 100, 98, 100, 100, 100…
+## $ `Duration (in seconds)` &lt;dbl&gt; 1720, 383, 1234, 456, 926, 921, 615, 650, 3353…
+## $ Finished                &lt;lgl&gt; TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, FALSE, TR…
+## $ RecordedDate            &lt;chr&gt; &quot;6/4/20 21:40&quot;, &quot;6/10/20 7:36&quot;, &quot;6/12/20 2:31&quot;…
+## $ ResponseId              &lt;chr&gt; &quot;R_BXjEFRC53MLkxi1&quot;, &quot;R_25urEUIQLdWDSJL&quot;, &quot;R_2…
+## $ RecipientLastName       &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ RecipientFirstName      &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ RecipientEmail          &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ ExternalReference       &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ LocationLatitude        &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ LocationLongitude       &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ DistributionChannel     &lt;chr&gt; &quot;anonymous&quot;, &quot;anonymous&quot;, &quot;anonymous&quot;, &quot;anonym…
+## $ UserLanguage            &lt;chr&gt; &quot;EN&quot;, &quot;EN&quot;, &quot;EN&quot;, &quot;EN&quot;, &quot;EN&quot;, &quot;EN&quot;, &quot;EN&quot;, &quot;EN&quot;…
+## $ consent                 &lt;chr&gt; &quot;I agree to participate in this study&quot;, &quot;I agr…
+## $ g_knows_1               &lt;dbl&gt; 0, -99, 90, 0, 70, 49, 9, 50, 66, 20, 69, 100,…
+## $ g_fake                  &lt;chr&gt; &quot;fake&quot;, &quot;real&quot;, &quot;fake&quot;, &quot;real&quot;, &quot;real&quot;, &quot;real&quot;…
+## $ g_reasonable_1          &lt;dbl&gt; 0, 0, 7, 0, 20, 0, 6, 0, 27, 20, 0, 0, 11, 19,…
+## $ g_right                 &lt;chr&gt; &quot;right&quot;, &quot;right&quot;, &quot;wrong&quot;, &quot;right&quot;, &quot;right&quot;, &quot;…
+## $ g_ability_1             &lt;dbl&gt; 0, -99, 57, 0, 70, 49, 16, 0, 26, 10, 93, 30, …
+## $ g_situation             &lt;chr&gt; &quot;Gerald knows that the house he is pointing at…
+## $ e_knows_1               &lt;dbl&gt; 100, 75, 90, 100, 90, 99, 96, 100, 68, 90, 68,…
+## $ e_fake                  &lt;chr&gt; &quot;diamonds&quot;, &quot;diamonds&quot;, &quot;diamonds&quot;, &quot;cubic zir…
+## $ e_reasonable_1          &lt;dbl&gt; 15, 0, 11, 0, 20, 1, 15, 35, 65, 50, 17, 0, 21…
+## $ e_right                 &lt;chr&gt; &quot;right&quot;, &quot;right&quot;, &quot;right&quot;, &quot;wrong&quot;, &quot;wrong&quot;, &quot;…
+## $ e_ability_1             &lt;dbl&gt; 10, 90, 32, 0, 80, 50, 81, 100, 69, 10, 76, 10…
+## $ e_situation             &lt;chr&gt; &quot;Emma feels like she knows that she chose a ne…
+## $ d_knows_1               &lt;dbl&gt; 0, 75, 100, 100, 100, 100, 87, 0, 72, 80, 100,…
+## $ d_fake                  &lt;chr&gt; &quot;ground squirrel&quot;, &quot;prairie dog&quot;, &quot;ground squi…
+## $ d_reasonable_1          &lt;dbl&gt; 0, 25, 7, 0, 22, 0, 18, 0, 20, 30, 42, 0, 13, …
+## $ d_right                 &lt;chr&gt; &quot;right&quot;, &quot;wrong&quot;, &quot;right&quot;, &quot;right&quot;, &quot;right&quot;, &quot;…
+## $ d_ability_1             &lt;dbl&gt; 100, 5, 17, 0, 25, 0, 15, 0, 25, 20, 6, 28, 23…
+## $ d_situation             &lt;chr&gt; &quot;Darrel knows that the animal he saw is a red …
+## $ age                     &lt;dbl&gt; 29, 21, 30, 36, 34, 30, 27, 18, 37, 19, 21, 30…
+## $ gender                  &lt;chr&gt; &quot;Female&quot;, &quot;Female&quot;, &quot;Female&quot;, &quot;Female&quot;, &quot;Femal…
+## $ gender_3_TEXT           &lt;dbl&gt; -99, -99, -99, -99, -99, -99, -99, -99, -99, -…
+## $ country_now             &lt;chr&gt; &quot;Other (please specify):&quot;, &quot;Other (please spec…
+## $ country_now_2_TEXT      &lt;chr&gt; &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;, &quot;Austra…
+## $ country_birth           &lt;chr&gt; &quot;Other (please specify):&quot;, &quot;Other (please spec…
+## $ country_birth_2_TEXT    &lt;chr&gt; &quot;Australia&quot;, &quot;Australia&quot;, &quot;Australia&quot;, &quot;Austra…
+## $ ethnicity               &lt;chr&gt; &quot;White/European&quot;, &quot;White/European&quot;, &quot;White/Eur…
+## $ ethnicity_7_TEXT        &lt;chr&gt; &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;Pol…
+## $ lvl_edu                 &lt;chr&gt; &quot;High school diploma (or GED)&quot;, &quot;High school d…
+## $ english                 &lt;chr&gt; &quot;Very well&quot;, &quot;Very well&quot;, &quot;Very well&quot;, &quot;Very w…
+## $ enjoy_study             &lt;chr&gt; &quot;3&quot;, &quot;4&quot;, &quot;3&quot;, &quot;3&quot;, &quot;4&quot;, &quot;2&quot;, &quot;3&quot;, &quot;1. I enjoy…
+## $ nervous_study           &lt;chr&gt; &quot;4&quot;, &quot;9&quot;, &quot;9&quot;, &quot;10. I was not nervous during t…
+## $ difficult_study         &lt;chr&gt; &quot;6&quot;, &quot;9&quot;, &quot;7&quot;, &quot;10. I did not find the study t…
+## $ boring_study            &lt;chr&gt; &quot;6&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;10. I did not find the st…
+## $ tiring_study            &lt;chr&gt; &quot;8&quot;, &quot;8&quot;, &quot;10. I did not find the study task t…
+## $ quickly_study           &lt;chr&gt; &quot;4&quot;, &quot;1. I was able to adjust to the study tas…
+## $ regularly_study         &lt;chr&gt; &quot;5. Not sure&quot;, &quot;3&quot;, &quot;3&quot;, &quot;2&quot;, &quot;9&quot;, &quot;4&quot;, &quot;5. No…
+## $ selfcons_study          &lt;chr&gt; &quot;2&quot;, &quot;4&quot;, &quot;4&quot;, &quot;10. I was not at all self-cons…
+## $ motivated_study         &lt;chr&gt; &quot;3&quot;, &quot;3&quot;, &quot;1. I was strongly motivated to help…
+## $ important_study         &lt;chr&gt; &quot;4&quot;, &quot;5. Not sure&quot;, &quot;1. I believe that my part…
+## $ aim_study               &lt;chr&gt; &quot;4&quot;, &quot;3&quot;, &quot;1. I was trying to work out the aim…
+## $ comments_study          &lt;chr&gt; &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;-99&quot;, &quot;-99…
+## $ purpose_study           &lt;chr&gt; &quot;-99&quot;, &quot;-99&quot;, &quot;I think the purpose of this stu…
+## $ similar_study           &lt;chr&gt; &quot;-99&quot;, &quot;-99&quot;, &quot;No, I haven&#39;t.&quot;, &quot;yes many REP …
+## $ FL_40_DO                &lt;chr&gt; &quot;FL_49|FL_43|FL_55&quot;, &quot;FL_55|FL_49|FL_43&quot;, &quot;FL_…
+## $ FL_41_DO                &lt;chr&gt; &quot;FL_64&quot;, &quot;FL_62&quot;, &quot;FL_64&quot;, &quot;FL_66&quot;, &quot;FL_62&quot;, &quot;…
+## $ FL_50_DO                &lt;chr&gt; &quot;FL_68&quot;, &quot;FL_70&quot;, &quot;FL_68&quot;, &quot;FL_69&quot;, &quot;FL_69&quot;, &quot;…
+## $ FL_56_DO                &lt;chr&gt; &quot;FL_72&quot;, &quot;FL_73&quot;, &quot;FL_72&quot;, &quot;FL_71&quot;, &quot;FL_72&quot;, &quot;…
+## $ FL_76_DO                &lt;chr&gt; &quot;debrief_2&quot;, &quot;debrief_3&quot;, &quot;debrief_3&quot;, &quot;debrie…</code></pre>
+<pre class="r"><code>d.fg64rd &lt;- d.fg64rd.raw %&gt;%
+  # Replace -99 with NA in all columns
+  mutate(across(everything(), na_if, -99)) %&gt;%
+  recode_ethnicity() %&gt;%
+  select(vignette_order=FL_40_DO,
+         case=ResponseId,
+         d_cond=FL_56_DO,
+         d_know_vas=d_knows_1, d_compr=d_fake, d_reason_vas=d_reasonable_1,
+         d_ri_wr=d_right, d_luck_vas=d_ability_1, d_know_alt=d_situation,
+         g_cond=FL_41_DO,
+         g_know_vas=g_knows_1, g_compr=g_fake, g_reason_vas=g_reasonable_1,
+         g_ri_wr=g_right, g_luck_vas=g_ability_1, g_know_alt=g_situation,
+         e_cond=FL_50_DO,
+         e_know_vas=e_knows_1, e_compr=e_fake, e_reason_vas=e_reasonable_1,
+         e_ri_wr=e_right, e_luck_vas=e_ability_1, e_know_alt=e_situation,
+         
+         purpose=purpose_study, previous=similar_study,
+         sx_enjoy=enjoy_study, sx_nervous=nervous_study, sx_difficult=difficult_study,
+         sx_boring=boring_study, sx_tiring=tiring_study, sx_speed=quickly_study,
+         sx_experience=regularly_study, sx_selfconscious=selfcons_study,
+         sx_motivation=motivated_study, sx_contribution=important_study,
+         sx_goal=aim_study, sx_comments=comments_study,
+         
+         age, gender, gender_other=gender_3_TEXT,
+         country=country_now, birth_country=country_birth, education_level=lvl_edu,
+         language=english, 
+         ethn_selected, ethn_wh, ethn_bl, ethn_lat, ethn_as_sea_pac,
+         ethn_sa, ethn_none, ethn_other, ethn_other_text,
+         
+         start=StartDate, # TODO: timezones
+         end=EndDate, duration=`Duration (in seconds)`,
+         consent) %&gt;% #this captures credit
+  mutate(across(c(start, end),
+                as.POSIXct, format=&quot;%m/%d/%Y %H:%M&quot;, tz=&quot;America/Denver&quot;)) %&gt;%
+  mutate(d_cond = fct_recode(d_cond, K=&quot;FL_71&quot;, G=&quot;FL_72&quot;, I=&quot;FL_73&quot;),
+         g_cond = fct_recode(g_cond, K=&quot;FL_62&quot;, G=&quot;FL_66&quot;, I=&quot;FL_64&quot;),
+         e_cond = fct_recode(e_cond, K=&quot;FL_68&quot;, G=&quot;FL_70&quot;, I=&quot;FL_69&quot;)) %&gt;%
+  mutate(vignette_order = vignette_order %&gt;%
+           str_replace(&quot;FL_55&quot;, &quot;D&quot;) %&gt;% str_replace(&quot;FL_43&quot;, &quot;G&quot;) %&gt;%
+           str_replace(&quot;FL_49&quot;, &quot;E&quot;) %&gt;% str_replace_all(fixed(&quot;|&quot;), &quot;&quot;)) %&gt;%
+  add_cond_order() %&gt;%
+  mutate(lab_id = &quot;fg64rd&quot;, id = paste0(&quot;q_fg64rd_&quot;, case), #setting values for all participants
+         source = &quot;Qualtrics&quot;,
+         bin_order = &quot;normal&quot;, scale=&quot;vas&quot;) %&gt;%
+  mutate_at(vars(starts_with(&quot;sx_&quot;), -&quot;sx_comments&quot;), ~as.integer(sub(&quot;\\..*&quot;, &quot;&quot;, .))) %&gt;%
+  mutate(consent = consent == &quot;I agree to participate in this study&quot;) %&gt;%
+  mutate(survey_lang = &quot;eng&quot;) %&gt;%
+  # knowledge/reasonable VAS scales were coded reversely in the fg64rd survey!
+  mutate(across(ends_with(c(&quot;_know_vas&quot;, &quot;_reason_vas&quot;)), ~(100-.))) %&gt;%
+  mutate(d_compr = factor(d_compr, c(&quot;ground squirrel&quot;,&quot;prairie dog&quot;), labels=c(&quot;real&quot;, &quot;fake&quot;)),
+         g_compr = factor(g_compr, c(&quot;real&quot;,&quot;fake&quot;), labels=c(&quot;real&quot;, &quot;fake&quot;)),
+         e_compr = factor(e_compr, c(&quot;diamonds&quot;,&quot;cubic zirconium stones&quot;), labels=c(&quot;real&quot;, &quot;fake&quot;)),
+         d_know_alt = factor(d_know_alt,
+                             c(&quot;Darrel knows that the animal he saw is a red speckled ground squirrel.&quot;,
+                               &quot;Darrel feels like he knows that the animal he saw is a red speckled ground squirrel, but he doesn&#39;t actually know that it is.&quot;),
+                             labels=c(&quot;knows&quot;, &quot;believes&quot;)),
+         g_know_alt = factor(g_know_alt,
+                             c(&quot;Gerald knows that the house he is pointing at is a real house.&quot;,
+                               &quot;Gerald feels like he knows that the house he is pointing at is a real house, but he doesn&#39;t actually know that it is.&quot;),
+                             labels=c(&quot;knows&quot;, &quot;believes&quot;)),
+         e_know_alt = factor(e_know_alt,
+                             c(&quot;Emma knows that she chose a necklace made of diamonds.&quot;,
+                               &quot;Emma feels like she knows that she chose a necklace made of diamonds, but she doesn&#39;t actually know that it is.&quot;),
+                             labels=c(&quot;knows&quot;, &quot;believes&quot;)),
+         across(ends_with(&quot;_ri_wr&quot;), factor, c(&quot;right&quot;, &quot;wrong&quot;), labels=c(&quot;right&quot;, &quot;wrong&quot;)),
+         across(ends_with(&quot;_cond&quot;), as_factor),
+         gender = factor(gender, c(&quot;Female&quot;, &quot;Male&quot;, &quot;Other (please specify):&quot;),
+                         c(&quot;female&quot;, &quot;male&quot;, &quot;other&quot;)),
+         gender_other = as.character(gender_other), # ensure correct type even if always NA
+         education_level = ordered(education_level,
+                                   c(&quot;Less than high school&quot;,
+                                     &quot;High school diploma (or GED)&quot;,
+                                     &quot;Some college or a 2-year college degree (A.A.)&quot;,
+                                     &quot;4-year college degree (B.A., B.S.)&quot;,
+                                     &quot;Master’s degree (M.A., M.S.)&quot;,
+                                     &quot;Graduate or professional degree (J.D., Ph.D., M.D.)&quot;)),
+         language = ordered(tolower(language),
+                            c(&quot;not well at all&quot;, &quot;not very well&quot;, &quot;well&quot;, &quot;very well&quot;)))</code></pre>
+<pre><code>## mutate: changed 2 values (1%) of &#39;g_knows_1&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;g_reasonable_1&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 8 values (5%) of &#39;g_ability_1&#39; (8 new NA)</code></pre>
+<pre><code>##         changed one value (1%) of &#39;e_knows_1&#39; (1 new NA)</code></pre>
+<pre><code>##         changed 6 values (4%) of &#39;e_ability_1&#39; (6 new NA)</code></pre>
+<pre><code>##         changed one value (1%) of &#39;d_knows_1&#39; (1 new NA)</code></pre>
+<pre><code>##         changed one value (1%) of &#39;d_reasonable_1&#39; (1 new NA)</code></pre>
+<pre><code>##         changed one value (1%) of &#39;d_ability_1&#39; (1 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;d_situation&#39; (2 new NA)</code></pre>
+<pre><code>##         changed one value (1%) of &#39;age&#39; (1 new NA)</code></pre>
+<pre><code>##         changed 163 values (99%) of &#39;gender_3_TEXT&#39; (163 new NA)</code></pre>
+<pre><code>##         changed one value (1%) of &#39;country_now&#39; (1 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;country_now_2_TEXT&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;country_birth&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 5 values (3%) of &#39;country_birth_2_TEXT&#39; (5 new NA)</code></pre>
+<pre><code>##         changed 150 values (91%) of &#39;ethnicity_7_TEXT&#39; (150 new NA)</code></pre>
+<pre><code>##         changed 3 values (2%) of &#39;enjoy_study&#39; (3 new NA)</code></pre>
+<pre><code>##         changed 4 values (2%) of &#39;nervous_study&#39; (4 new NA)</code></pre>
+<pre><code>##         changed 3 values (2%) of &#39;difficult_study&#39; (3 new NA)</code></pre>
+<pre><code>##         changed 4 values (2%) of &#39;boring_study&#39; (4 new NA)</code></pre>
+<pre><code>##         changed 3 values (2%) of &#39;tiring_study&#39; (3 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;quickly_study&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;regularly_study&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;selfcons_study&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;motivated_study&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 3 values (2%) of &#39;important_study&#39; (3 new NA)</code></pre>
+<pre><code>##         changed 2 values (1%) of &#39;aim_study&#39; (2 new NA)</code></pre>
+<pre><code>##         changed 148 values (90%) of &#39;comments_study&#39; (148 new NA)</code></pre>
+<pre><code>##         changed 90 values (55%) of &#39;purpose_study&#39; (90 new NA)</code></pre>
+<pre><code>##         changed 89 values (54%) of &#39;similar_study&#39; (89 new NA)</code></pre>
+<pre><code>## mutate: new variable &#39;ethn_wh&#39; (logical) with 3 unique values and 1% NA</code></pre>
+<pre><code>##         new variable &#39;ethn_bl&#39; (logical) with 2 unique values and 1% NA</code></pre>
+<pre><code>##         new variable &#39;ethn_lat&#39; (logical) with 3 unique values and 1% NA</code></pre>
+<pre><code>##         new variable &#39;ethn_as_sea_pac&#39; (logical) with 2 unique values and 1% NA</code></pre>
+<pre><code>##         new variable &#39;ethn_sa&#39; (logical) with 2 unique values and 1% NA</code></pre>
+<pre><code>##         new variable &#39;ethn_none&#39; (logical) with 3 unique values and 1% NA</code></pre>
+<pre><code>##         new variable &#39;ethn_other&#39; (logical) with 3 unique values and 1% NA</code></pre>
+<pre><code>## mutate: new variable &#39;ethn_selected&#39; (double) with 5 unique values and 1% NA</code></pre>
+<pre><code>##         new variable &#39;ethn_other_text&#39; (character) with 12 unique values and 92% NA</code></pre>
+<pre><code>## select: renamed 45 variables (vignette_order, case, d_cond, d_know_vas, d_compr, …) and dropped 18 variables</code></pre>
+<pre><code>## mutate: converted &#39;start&#39; from character to double (0 new NA)</code></pre>
+<pre><code>##         converted &#39;end&#39; from character to double (0 new NA)</code></pre>
+<pre><code>## mutate: converted &#39;d_cond&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;g_cond&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;e_cond&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>## mutate: changed 165 values (100%) of &#39;vignette_order&#39; (0 new NA)</code></pre>
+<pre><code>## mutate: new variable &#39;cond_order&#39; (character) with 7 unique values and 1% NA</code></pre>
+<pre><code>## mutate: new variable &#39;lab_id&#39; (character) with one unique value and 0% NA</code></pre>
+<pre><code>##         new variable &#39;id&#39; (character) with 165 unique values and 0% NA</code></pre>
+<pre><code>##         new variable &#39;source&#39; (character) with one unique value and 0% NA</code></pre>
+<pre><code>##         new variable &#39;bin_order&#39; (character) with one unique value and 0% NA</code></pre>
+<pre><code>##         new variable &#39;scale&#39; (character) with one unique value and 0% NA</code></pre>
+<pre><code>## mutate_at: converted &#39;sx_enjoy&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_nervous&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_difficult&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_boring&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_tiring&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_speed&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_experience&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_selfconscious&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_motivation&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_contribution&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>##            converted &#39;sx_goal&#39; from character to integer (0 new NA)</code></pre>
+<pre><code>## mutate: converted &#39;consent&#39; from character to logical (0 new NA)</code></pre>
+<pre><code>## mutate: new variable &#39;survey_lang&#39; (character) with one unique value and 0% NA</code></pre>
+<pre><code>## mutate: changed 161 values (98%) of &#39;d_know_vas&#39; (0 new NA)</code></pre>
+<pre><code>##         changed 161 values (98%) of &#39;d_reason_vas&#39; (0 new NA)</code></pre>
+<pre><code>##         changed 155 values (94%) of &#39;g_know_vas&#39; (0 new NA)</code></pre>
+<pre><code>##         changed 160 values (97%) of &#39;g_reason_vas&#39; (0 new NA)</code></pre>
+<pre><code>##         changed 161 values (98%) of &#39;e_know_vas&#39; (0 new NA)</code></pre>
+<pre><code>##         changed 160 values (97%) of &#39;e_reason_vas&#39; (0 new NA)</code></pre>
+<pre><code>## mutate: converted &#39;d_compr&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;d_ri_wr&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;d_know_alt&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;g_compr&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;g_ri_wr&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;g_know_alt&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;e_compr&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;e_ri_wr&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;e_know_alt&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;gender&#39; from character to factor (0 new NA)</code></pre>
+<pre><code>##         converted &#39;gender_other&#39; from double to character (0 new NA)</code></pre>
+<pre><code>##         converted &#39;education_level&#39; from character to ordered factor (3 new NA)</code></pre>
+<pre><code>##         converted &#39;language&#39; from character to ordered factor (0 new NA)</code></pre>
+<pre class="r"><code># Cleanup
+rm(d.turk.raw, d.87d100.raw, d.fg64rd.raw, add_cond_order, recode_ethnicity)</code></pre>
 </div>
 <div id="import-wrangle-socscisurvey-data" class="section level2">
 <h2>Import, wrangle SocSciSurvey data</h2>
@@ -1156,7 +1417,7 @@ d.sss.raw &lt;- import(&quot;../04_Data/data/data_sss_final.csv&quot;) %&gt;%
   glimpse()</code></pre>
 <pre><code>## select: dropped one variable (comment)</code></pre>
 <pre><code>## mutate: converted &#39;lab_country&#39; from character to factor (0 new NA)</code></pre>
-<pre><code>## Rows: 69
+<pre><code>## Rows: 70
 ## Columns: 2
 ## $ lab_id      &lt;chr&gt; &quot;fc601a&quot;, &quot;cb060d&quot;, &quot;f3a68b&quot;, &quot;7fc76a&quot;, &quot;c4198b&quot;, &quot;07cc8d&quot;…
 ## $ lab_country &lt;fct&gt; ARE, AUT, AUT, AUS, AUS, CAN, CHE, CHE, DEU, DEU, DEU, DEU…</code></pre>
@@ -1377,7 +1638,7 @@ d.sss &lt;- d.sss %&gt;%
 <pre><code>##         converted &#39;ethn_pac&#39; from character to logical (2812 new NA)</code></pre>
 <pre><code>##         converted &#39;ethn_other&#39; from character to logical (2812 new NA)</code></pre>
 <pre class="r"><code>d.all &lt;- d.sss %&gt;%
-  bind_rows(d.turk, d.87d100) %&gt;%
+  bind_rows(d.turk, d.87d100, d.fg64rd) %&gt;%
   mutate(lab_id = tolower(lab_id)) %&gt;% 
   # ...add in lab country and move it next to the lab_id column
   left_join(lab_countries, by=&quot;lab_id&quot;) %&gt;%
@@ -1402,13 +1663,13 @@ d.sss &lt;- d.sss %&gt;%
   relocate(ethn_as_sea_pac, ethn_sa, ethn_none, .before = ethn_other) %&gt;%
   relocate(education_level, .after = education) %&gt;% 
   glimpse()</code></pre>
-<pre><code>## mutate: changed 8,604 values (90%) of &#39;lab_id&#39; (0 new NA)</code></pre>
+<pre><code>## mutate: changed 8,604 values (89%) of &#39;lab_id&#39; (0 new NA)</code></pre>
 <pre><code>## left_join: added one column (lab_country)</code></pre>
-<pre><code>##            &gt; rows only in x       2</code></pre>
-<pre><code>##            &gt; rows only in y  (    1)</code></pre>
-<pre><code>##            &gt; matched rows     9,520</code></pre>
+<pre><code>##            &gt; rows only in x     336</code></pre>
+<pre><code>##            &gt; rows only in y  (    3)</code></pre>
+<pre><code>##            &gt; matched rows     9,351</code></pre>
 <pre><code>##            &gt;                 =======</code></pre>
-<pre><code>##            &gt; rows total       9,522</code></pre>
+<pre><code>##            &gt; rows total       9,687</code></pre>
 <pre><code>## mutate: converted &#39;lab_id&#39; from character to factor (0 new NA)</code></pre>
 <pre><code>##         converted &#39;vignette_order&#39; from character to factor (0 new NA)</code></pre>
 <pre><code>##         converted &#39;cond_order&#39; from character to factor (0 new NA)</code></pre>
@@ -1422,34 +1683,34 @@ d.sss &lt;- d.sss %&gt;%
 <pre><code>##         new variable &#39;cond_k_know_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
 <pre><code>##         new variable &#39;cond_k_compr&#39; (integer) with 3 unique values and 16% NA</code></pre>
 <pre><code>##         new variable &#39;cond_k_reason_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
-<pre><code>##         new variable &#39;cond_k_reason_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
+<pre><code>##         new variable &#39;cond_k_reason_bin&#39; (integer) with 3 unique values and 89% NA</code></pre>
 <pre><code>##         new variable &#39;cond_k_ri_wr&#39; (integer) with 3 unique values and 17% NA</code></pre>
-<pre><code>##         new variable &#39;cond_k_luck_vas&#39; (double) with 102 unique values and 29% NA</code></pre>
-<pre><code>##         new variable &#39;cond_k_luck_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
+<pre><code>##         new variable &#39;cond_k_luck_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
+<pre><code>##         new variable &#39;cond_k_luck_bin&#39; (integer) with 3 unique values and 89% NA</code></pre>
 <pre><code>##         new variable &#39;cond_k_know_alt&#39; (integer) with 3 unique values and 17% NA</code></pre>
 <pre><code>##         new variable &#39;cond_g_know_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
 <pre><code>##         new variable &#39;cond_g_know_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
 <pre><code>##         new variable &#39;cond_g_compr&#39; (integer) with 3 unique values and 16% NA</code></pre>
 <pre><code>##         new variable &#39;cond_g_reason_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
-<pre><code>##         new variable &#39;cond_g_reason_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
+<pre><code>##         new variable &#39;cond_g_reason_bin&#39; (integer) with 3 unique values and 89% NA</code></pre>
 <pre><code>##         new variable &#39;cond_g_ri_wr&#39; (integer) with 3 unique values and 17% NA</code></pre>
-<pre><code>##         new variable &#39;cond_g_luck_vas&#39; (double) with 102 unique values and 29% NA</code></pre>
-<pre><code>##         new variable &#39;cond_g_luck_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
+<pre><code>##         new variable &#39;cond_g_luck_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
+<pre><code>##         new variable &#39;cond_g_luck_bin&#39; (integer) with 3 unique values and 89% NA</code></pre>
 <pre><code>##         new variable &#39;cond_g_know_alt&#39; (integer) with 3 unique values and 17% NA</code></pre>
-<pre><code>##         new variable &#39;cond_i_know_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
+<pre><code>##         new variable &#39;cond_i_know_vas&#39; (double) with 102 unique values and 27% NA</code></pre>
 <pre><code>##         new variable &#39;cond_i_know_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
 <pre><code>##         new variable &#39;cond_i_compr&#39; (integer) with 3 unique values and 16% NA</code></pre>
 <pre><code>##         new variable &#39;cond_i_reason_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
 <pre><code>##         new variable &#39;cond_i_reason_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
-<pre><code>##         new variable &#39;cond_i_ri_wr&#39; (integer) with 3 unique values and 17% NA</code></pre>
-<pre><code>##         new variable &#39;cond_i_luck_vas&#39; (double) with 102 unique values and 29% NA</code></pre>
-<pre><code>##         new variable &#39;cond_i_luck_bin&#39; (integer) with 3 unique values and 88% NA</code></pre>
+<pre><code>##         new variable &#39;cond_i_ri_wr&#39; (integer) with 3 unique values and 16% NA</code></pre>
+<pre><code>##         new variable &#39;cond_i_luck_vas&#39; (double) with 102 unique values and 28% NA</code></pre>
+<pre><code>##         new variable &#39;cond_i_luck_bin&#39; (integer) with 3 unique values and 89% NA</code></pre>
 <pre><code>##         new variable &#39;cond_i_know_alt&#39; (integer) with 3 unique values and 17% NA</code></pre>
-<pre><code>## mutate: converted &#39;dge_valid&#39; from integer to logical (3575 fewer NA)</code></pre>
+<pre><code>## mutate: converted &#39;dge_valid&#39; from integer to logical (3738 fewer NA)</code></pre>
 <pre><code>##         converted &#39;j_valid&#39; from integer to logical (52 new NA)</code></pre>
 <pre><code>## relocate: columns reordered (id, source, lab_id, case, dge_valid, …)
 ## relocate: columns reordered (id, source, lab_id, case, dge_valid, …)</code></pre>
-<pre><code>## Rows: 9,522
+<pre><code>## Rows: 9,687
 ## Columns: 130
 ## $ id                &lt;chr&gt; &quot;s537&quot;, &quot;s538&quot;, &quot;s540&quot;, &quot;s541&quot;, &quot;s542&quot;, &quot;s543&quot;, &quot;s54…
 ## $ source            &lt;chr&gt; &quot;SoSciSurvey&quot;, &quot;SoSciSurvey&quot;, &quot;SoSciSurvey&quot;, &quot;SoSciS…
@@ -1553,7 +1814,7 @@ d.sss &lt;- d.sss %&gt;%
 ## $ duration          &lt;dbl&gt; 42, 101, 115, 8, 45, 245, 114, 39, 15, 34, 10, 14, …
 ## $ last_page         &lt;int&gt; 13, 25, 43, 4, 7, 46, 2, 4, 4, 11, 4, 5, 43, 1, 3, 4…
 ## $ SPI               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-## $ lab_country       &lt;fct&gt; USA, DEU, USA, USA, USA, TWN, TWN, DEU, DEU, DEU, DE…
+## $ lab_country       &lt;fct&gt; USA, DEU, USA, NA, NA, TWN, TWN, DEU, DEU, DEU, DEU,…
 ## $ cond_k_know_vas   &lt;dbl&gt; 86, 90, 86, NA, NA, 95, NA, NA, NA, 90, NA, 87, 50, …
 ## $ cond_k_know_bin   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 ## $ cond_k_compr      &lt;int&gt; 1, 2, 2, NA, NA, 1, NA, NA, NA, 1, NA, NA, 1, NA, NA…
@@ -1581,8 +1842,8 @@ d.sss &lt;- d.sss %&gt;%
 ## $ cond_i_luck_vas   &lt;dbl&gt; NA, 100, 82, NA, NA, 99, NA, NA, NA, NA, NA, NA, 24,…
 ## $ cond_i_luck_bin   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 ## $ cond_i_know_alt   &lt;int&gt; NA, NA, 1, NA, NA, 1, NA, NA, NA, NA, NA, NA, 1, NA,…</code></pre>
-<div id="removing-duplciate-responses-for-87d100-filling-in-credit-type-for-87d100" class="section level3">
-<h3>Removing duplciate responses for 87d100 &amp; filling in credit type for 87d100</h3>
+<div id="removing-duplicate-responses-for-87d100-filling-in-credit-type-for-87d100" class="section level3">
+<h3>Removing duplicate responses for 87d100 &amp; filling in credit type for 87d100</h3>
 <pre class="r"><code>#create vector of unique ids
 unique_SPI_ids &lt;- d.all %&gt;% 
   filter(lab_id == &quot;87d100&quot;,
@@ -1594,7 +1855,7 @@ unique_SPI_ids &lt;- d.all %&gt;%
   #select the response that was finished first
   slice(1) %&gt;% 
   pull(id)</code></pre>
-<pre><code>## filter: removed 9,401 rows (99%), 121 rows remaining</code></pre>
+<pre><code>## filter: removed 9,566 rows (99%), 121 rows remaining</code></pre>
 <pre><code>## select: dropped 124 variables (dge_valid, j_valid, vignette_order, cond_order, bin_order, …)</code></pre>
 <pre><code>## group_by: one grouping variable (SPI)</code></pre>
 <pre><code>## slice (grouped): removed 25 rows (21%), 96 rows remaining</code></pre>
@@ -1612,8 +1873,8 @@ unique_SPI_ids &lt;- d.all %&gt;%
 d.all &lt;- d.all %&gt;% 
   filter(!(lab_id == &quot;87d100&quot; &amp; !is.na(SPI) &amp; (!(id %in% unique_SPI_ids)))) %&gt;% 
   glimpse()</code></pre>
-<pre><code>## filter: removed 25 rows (&lt;1%), 9,497 rows remaining</code></pre>
-<pre><code>## Rows: 9,497
+<pre><code>## filter: removed 25 rows (&lt;1%), 9,662 rows remaining</code></pre>
+<pre><code>## Rows: 9,662
 ## Columns: 130
 ## $ id                &lt;chr&gt; &quot;s537&quot;, &quot;s538&quot;, &quot;s540&quot;, &quot;s541&quot;, &quot;s542&quot;, &quot;s543&quot;, &quot;s54…
 ## $ source            &lt;chr&gt; &quot;SoSciSurvey&quot;, &quot;SoSciSurvey&quot;, &quot;SoSciSurvey&quot;, &quot;SoSciS…
@@ -1717,7 +1978,7 @@ d.all &lt;- d.all %&gt;%
 ## $ duration          &lt;dbl&gt; 42, 101, 115, 8, 45, 245, 114, 39, 15, 34, 10, 14, …
 ## $ last_page         &lt;int&gt; 13, 25, 43, 4, 7, 46, 2, 4, 4, 11, 4, 5, 43, 1, 3, 4…
 ## $ SPI               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-## $ lab_country       &lt;fct&gt; USA, DEU, USA, USA, USA, TWN, TWN, DEU, DEU, DEU, DE…
+## $ lab_country       &lt;fct&gt; USA, DEU, USA, NA, NA, TWN, TWN, DEU, DEU, DEU, DEU,…
 ## $ cond_k_know_vas   &lt;dbl&gt; 86, 90, 86, NA, NA, 95, NA, NA, NA, 90, NA, 87, 50, …
 ## $ cond_k_know_bin   &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
 ## $ cond_k_compr      &lt;int&gt; 1, 2, 2, NA, NA, 1, NA, NA, NA, 1, NA, NA, 1, NA, NA…
@@ -1748,10 +2009,10 @@ d.all &lt;- d.all %&gt;%
 <pre class="r"><code>#show table of comp before
 tabyl(d.all, comp)</code></pre>
 <pre><code>##  comp    n    percent valid_percent
-##     1 1034 0.10887649    0.18583753
-##     2 3998 0.42097504    0.71854781
-##     3  532 0.05601769    0.09561467
-##    NA 3933 0.41413078            NA</code></pre>
+##     1 1034 0.10701718    0.18583753
+##     2 3998 0.41378597    0.71854781
+##     3  532 0.05506106    0.09561467
+##    NA 4098 0.42413579            NA</code></pre>
 <pre class="r"><code>#ideally we would not be using numeric codes for any of these variables
 d.all &lt;- d.all %&gt;% 
   #create a variable to indicate credit type for folks in this lab
@@ -1766,10 +2027,10 @@ d.all &lt;- d.all %&gt;%
 <pre class="r"><code>#show table of comp after
 tabyl(d.all, comp)</code></pre>
 <pre><code>##  comp    n    percent valid_percent
-##     1 1087 0.11445720    0.19026781
-##     2 4094 0.43108350    0.71661124
-##     3  532 0.05601769    0.09312095
-##    NA 3784 0.39844161            NA</code></pre>
+##     1 1087 0.11250259    0.19026781
+##     2 4094 0.42372180    0.71661124
+##     3  532 0.05506106    0.09312095
+##    NA 3949 0.40871455            NA</code></pre>
 </div>
 </div>
 </div>
@@ -1777,13 +2038,13 @@ tabyl(d.all, comp)</code></pre>
 <h1>Creating final datasets and saving</h1>
 <pre class="r"><code># Correct responses on Darrel+Emma+Gerald comprehension questions
 d.dge_valid = d.all %&gt;% filter(dge_valid)</code></pre>
-<pre><code>## filter: removed 4,541 rows (48%), 4,956 rows remaining</code></pre>
+<pre><code>## filter: removed 4,587 rows (47%), 5,075 rows remaining</code></pre>
 <pre class="r"><code># Correct responses on additional vignette (Julie) comprehension question
 d.add_valid = d.all %&gt;% filter(j_valid)</code></pre>
-<pre><code>## filter: removed 7,786 rows (82%), 1,711 rows remaining</code></pre>
+<pre><code>## filter: removed 7,951 rows (82%), 1,711 rows remaining</code></pre>
 <pre class="r"><code># Correct responses on ALL comprehension questions
 d.all_valid = d.all %&gt;% filter(dge_valid &amp; j_valid)</code></pre>
-<pre><code>## filter: removed 8,344 rows (88%), 1,153 rows remaining</code></pre>
+<pre><code>## filter: removed 8,509 rows (88%), 1,153 rows remaining</code></pre>
 <pre class="r"><code># Long form transformations
 d.all.long &lt;- d.all %&gt;%
   pivot_longer(starts_with(c(&quot;cond_k_&quot;, &quot;cond_g_&quot;, &quot;cond_i_&quot;)),
@@ -1792,9 +2053,9 @@ d.all.long &lt;- d.all %&gt;%
   select(-starts_with(c(&quot;d_&quot;, &quot;g_&quot;, &quot;e_&quot;))) %&gt;%
   mutate(cond = toupper(cond)) %&gt;%
   mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)</code></pre>
-<pre><code>## pivot_longer: reorganized (cond_k_know_vas, cond_k_know_bin, cond_k_compr, cond_k_reason_vas, cond_k_reason_bin, …) into (cond, know_vas, know_bin, compr, reason_vas, …) [was 9497x131, now 28491x114]</code></pre>
+<pre><code>## pivot_longer: reorganized (cond_k_know_vas, cond_k_know_bin, cond_k_compr, cond_k_reason_vas, cond_k_reason_bin, …) into (cond, know_vas, know_bin, compr, reason_vas, …) [was 9662x131, now 28986x114]</code></pre>
 <pre><code>## select: dropped 30 variables (d_cond, d_know_vas, d_know_bin, d_compr, d_reason_vas, …)</code></pre>
-<pre><code>## mutate: changed 28,491 values (100%) of &#39;cond&#39; (0 new NA)</code></pre>
+<pre><code>## mutate: changed 28,986 values (100%) of &#39;cond&#39; (0 new NA)</code></pre>
 <pre><code>## mutate: new variable &#39;vignette&#39; (character) with 4 unique values and 5% NA</code></pre>
 <pre class="r"><code>d.dge_valid.long &lt;- d.dge_valid %&gt;%
   pivot_longer(starts_with(c(&quot;cond_k_&quot;, &quot;cond_g_&quot;, &quot;cond_i_&quot;)),
@@ -1803,9 +2064,9 @@ d.all.long &lt;- d.all %&gt;%
   select(-starts_with(c(&quot;d_&quot;, &quot;g_&quot;, &quot;e_&quot;))) %&gt;%
   mutate(cond = toupper(cond)) %&gt;%
   mutate(vignette = str_sub(vignette_order, str_locate(cond_order, cond)), .after = cond)</code></pre>
-<pre><code>## pivot_longer: reorganized (cond_k_know_vas, cond_k_know_bin, cond_k_compr, cond_k_reason_vas, cond_k_reason_bin, …) into (cond, know_vas, know_bin, compr, reason_vas, …) [was 4956x131, now 14868x114]</code></pre>
+<pre><code>## pivot_longer: reorganized (cond_k_know_vas, cond_k_know_bin, cond_k_compr, cond_k_reason_vas, cond_k_reason_bin, …) into (cond, know_vas, know_bin, compr, reason_vas, …) [was 5075x131, now 15225x114]</code></pre>
 <pre><code>## select: dropped 30 variables (d_cond, d_know_vas, d_know_bin, d_compr, d_reason_vas, …)</code></pre>
-<pre><code>## mutate: changed 14,868 values (100%) of &#39;cond&#39; (0 new NA)</code></pre>
+<pre><code>## mutate: changed 15,225 values (100%) of &#39;cond&#39; (0 new NA)</code></pre>
 <pre><code>## mutate: new variable &#39;vignette&#39; (character) with 3 unique values and 0% NA</code></pre>
 </div>
 <div id="save-data" class="section level1">
