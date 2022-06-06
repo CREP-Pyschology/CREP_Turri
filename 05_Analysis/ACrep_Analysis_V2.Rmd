@@ -487,6 +487,8 @@ full_long$previous_nonsense[nchar(full_long$previous) < 2] <- FALSE
 table(full_long$dge_valid)
 
 full_long$studyans_exclusion <- !(full_long$dge_valid)
+
+table(full_long$compr, full_long$vignette)
 ```
 
 ### Knowledge of Experiment/Hypothesis 
@@ -511,11 +513,11 @@ full_long$purpose_nonsense[is.na(full_long$purpose)] <- FALSE
 full_long$purpose_exclusion[nchar(full_long$purpose) < 2] <- FALSE
 full_long$purpose_nonsense[nchar(full_long$purpose) < 2] <- FALSE 
 
-# missing_purpose <- 
-#   full_long %>% 
-#        filter(is.na(purpose_exclusion)) %>% 
-#        select(purpose, id, survey_lang) %>% 
-#        unique() 
+# missing_purpose <-
+#   full_long %>%
+#        filter(is.na(purpose_exclusion)) %>%
+#        select(purpose, id, survey_lang) %>%
+#        unique()
 # write.csv(missing_purpose, "../04_Data/data/aus_update_purpose.csv", row.names = F)
 # 
 # missing_previous <- 
@@ -866,6 +868,20 @@ table(final_luck$luck_vas_combined, useNA = "ifany")
 table(final_luck$luck_vas_combined_source, useNA = "ifany")
 ```
 
+We recoded knowledge and reasonableness for easier processing in the paper.
+
+```{r}
+table(final_long$know_vas_combined)
+final_long$know_vas_combined <- 3 - final_long$know_vas_combined 
+table(final_long$know_vas_combined)
+
+table(final_long$reason_vas_combined)
+final_long$reason_vas_combined <- 3 - final_long$reason_vas_combined 
+table(final_long$reason_vas_combined)
+```
+
+
+
 ### Gender Other
 
 Because of the small other category, we will simply compare male to female. 
@@ -1093,7 +1109,7 @@ r.squaredGLMM(k.model.6A)
 data_graph <- k.model.6A@frame
 data_graph$know_vas_combined <- factor(data_graph$know_vas_combined,
                                           levels = c(0,1),
-                                          labels = c("Knows", "Believes"))
+                                          labels = c("Believes", "Knows"))
 
 #graph the three way binary 
 ggplot(data_graph) +
@@ -1127,16 +1143,16 @@ k.d_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Darrel"]
 k.d_table
 
 # prop tests
-prop1 <- prop.test(t(k.d_table[1:2, 1:2]))
+prop1 <- prop.test(t(k.d_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(k.d_table[1:2, 1:2])),
+         n = sum(t(k.d_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(k.d_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(k.d_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(k.d_table[1:2, c(1,3)])),
+         n = sum(t(k.d_table[2:1, c(3,1)])),
          r = 2, c = 2)
 ```
 
@@ -1153,16 +1169,16 @@ k.e_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Emma"],
 k.e_table
 
 # prop tests
-prop1 <- prop.test(t(k.e_table[1:2, 1:2]))
+prop1 <- prop.test(t(k.e_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(k.e_table[1:2, 1:2])),
+         n = sum(t(k.e_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(k.e_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(k.e_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(k.e_table[1:2, c(1,3)])),
+         n = sum(t(k.e_table[2:1, c(3,1)])),
          r = 2, c = 2)
 ```
 
@@ -1178,16 +1194,16 @@ k.g_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Gerald"]
 k.g_table
 
 # prop tests
-prop1 <- prop.test(t(k.g_table[1:2, 1:2]))
+prop1 <- prop.test(t(k.g_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(k.g_table[1:2, 1:2])),
+         n = sum(t(k.g_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(k.g_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(k.g_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(k.g_table[1:2, c(1,3)])),
+         n = sum(t(k.g_table[2:1, c(3,1)])),
          r = 2, c = 2)
 ```
 
@@ -1401,7 +1417,7 @@ r.squaredGLMM(r.model.6A)
 r.data_graph <- r.model.6A@frame
 r.data_graph$reason_vas_combined <- factor(r.data_graph$reason_vas_combined,
                                           levels = c(0,1),
-                                          labels = c("Reasonable", "Unreasonable"))
+                                          labels = c("Unreasonable", "Reasonable"))
 
 #graph the three way binary 
 ggplot(r.data_graph) +
@@ -1434,16 +1450,16 @@ r.d_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Da
 r.d_table
 
 # prop tests
-prop1 <- prop.test(t(r.d_table[1:2, 1:2]))
+prop1 <- prop.test(t(r.d_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(r.d_table[1:2, 1:2])),
+         n = sum(t(r.d_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(r.d_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(r.d_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(r.d_table[1:2, c(1,3)])),
+         n = sum(t(r.d_table[2:1, c(3,1)])),
          r = 2, c = 2)
 ```
 
@@ -1460,16 +1476,16 @@ r.e_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Em
 r.e_table
 
 # prop tests
-prop1 <- prop.test(t(r.e_table[1:2, 1:2]))
+prop1 <- prop.test(t(r.e_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(r.e_table[1:2, 1:2])),
+         n = sum(t(r.e_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(r.e_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(r.e_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(r.e_table[1:2, c(1,3)])),
+         n = sum(t(r.e_table[2:1, c(3,1)])),
          r = 2, c = 2)
 ```
 
@@ -1485,16 +1501,16 @@ r.g_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Ge
 r.g_table
 
 # prop tests
-prop1 <- prop.test(t(r.g_table[1:2, 1:2]))
+prop1 <- prop.test(t(r.g_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(r.g_table[1:2, 1:2])),
+         n = sum(t(r.g_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(r.g_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(r.g_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(r.g_table[1:2, c(1,3)])),
+         n = sum(t(r.g_table[2:1, c(3,1)])),
          r = 2, c = 2)
 ```
 
@@ -1955,6 +1971,8 @@ final_luck$know_vas_combined <- ifelse(is.na(final_luck$know_vas_binned),
 
 final_luck$know_vas_combined <- final_luck$know_vas_combined - 1
 
+final_luck$know_vas_combined <- 1 - final_luck$know_vas_combined
+
 k.model.6E <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
                     comp + age + gender2 + education + 
                     cond*luck_vas_combined,
@@ -1969,7 +1987,7 @@ r.squaredGLMM(k.model.6E)
 l2.data_graph <- k.model.6E@frame
 l2.data_graph$know_vas_combined <- factor(l2.data_graph$know_vas_combined, 
                                        levels = 0:1,
-                                       labels = c("Know", "Believes"))
+                                       labels = c("Believes", "Knows"))
 l2.data_graph$luck_vas_combined <- factor(l2.data_graph$luck_vas_combined, 
                                        levels = 0:1,
                                        labels = c("Luck", "Ability"))
@@ -2003,16 +2021,16 @@ l_table <- table(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined
 # chisq.test(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Luck"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Luck"])
 
 # prop tests
-prop1 <- prop.test(t(l_table[1:2, 1:2]))
+prop1 <- prop.test(t(l_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(l_table[1:2, 1:2])),
+         n = sum(t(l_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(l_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(l_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(l_table[1:2, c(1,3)])),
+         n = sum(t(l_table[2:1, c(3,1)])),
          r = 2, c = 2)
 
 # ability
@@ -2021,16 +2039,16 @@ a_table <- table(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined
 # chisq.test(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Ability"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Ability"])
 
 # prop tests
-prop1 <- prop.test(t(a_table[1:2, 1:2]))
+prop1 <- prop.test(t(a_table[2:1, 2:1]))
 prop1
 v.chi.sq(x2 = prop1$statistic, 
-         n = sum(t(a_table[1:2, 1:2])),
+         n = sum(t(a_table[2:1, 2:1])),
          r = 2, c = 2)
 
-prop2 <- prop.test(t(a_table[1:2, c(1,3)]))
+prop2 <- prop.test(t(a_table[2:1, c(3,1)]))
 prop2
 v.chi.sq(x2 = prop2$statistic, 
-         n = sum(t(a_table[1:2, c(1,3)])),
+         n = sum(t(a_table[2:1, c(3,1)])),
          r = 2, c = 2)
 ```
 
@@ -2101,7 +2119,7 @@ data_graph <- k.model.6G@frame
 
 data_graph$know_vas_combined <- factor(data_graph$know_vas_combined, 
                                        levels = c(0,1),
-                                       labels = c("Knows", "Believes"))
+                                       labels = c("Believes", "Knows"))
 
 table(data_graph$know_vas_combined, data_graph$vignette_order)
 
@@ -2145,14 +2163,14 @@ r.squaredGLMM(k.model.6H)
 
 ```{r}
 # 1 is right 2 is wrong 
-# get people who missed dareel
+# get people who missed darrel
 darrel_exclude <- full_long$id[full_long$vignette == "Darrel" & 
                                  full_long$compr == 2]
-full_long$darrel_exclusion <-FALSE
+full_long$darrel_exclusion <- FALSE
 full_long$darrel_exclusion[full_long$id %in% darrel_exclude] <- TRUE
 
 # percent correct
-table(full_long$darrel_exclusion[!duplicated(full_long$id)]) / length(unique(full_long$id))
+darrel_correct <- table(full_long$darrel_exclusion[!duplicated(full_long$id)]) / length(unique(full_long$id))
 
 darrel_DF <- subset(full_long, darrel_exclusion == FALSE)
 darrel_DF <- subset(darrel_DF, vignette_order == "DGE" | 
@@ -2170,6 +2188,8 @@ darrel_DF$know_vas_binned[darrel_DF$know_vas_binned >= 60] <- 1
 darrel_DF$know_vas_combined <- ifelse(is.na(darrel_DF$know_vas_binned), 
                                      darrel_DF$know_bin, 
                                      darrel_DF$know_vas_binned)
+
+darrel_DF$know_vas_combined <- 3 - darrel_DF$know_vas_combined
 
 darrel_only <- chisq.test(darrel_DF$cond, darrel_DF$know_vas_combined)
 MOTE_darrel <- v.chi.sq(
