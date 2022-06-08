@@ -2,12 +2,12 @@
 title: "ACrep_Results.Rmd"
 author: "Hannah Moshontz, running Erin Buchanan's Analysis Script ... final updates by Erin Buchanan"
 date: "Last Updated `r Sys.Date()`"
-output: word_document
-always_allow_html: true
-# output:
-#   html_document:
-#     toc: true
-#     toc_float: true
+# output: word_document
+# always_allow_html: true
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 # Run the analysis script
@@ -404,18 +404,18 @@ k.dcond_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vign
            data_graph$cond[data_graph$vignette == "Darrel"]) %>% 
   tidy()
 
-k.dcond_GI <- prop.test(t(k.d_table[2:1, 2:1])) %>% 
+k.dcond_GI <- prop.test(t(k.d_table[2:1, 1:2])) %>% 
   tidy()
 
-k.dcond_GI_v <- v.chi.sq(x2 = prop.test(t(k.d_table[2:1, 2:1]))$statistic, 
-         n = sum(t(k.d_table[2:1, 2:1])),
+k.dcond_GI_v <- v.chi.sq(x2 = prop.test(t(k.d_table[2:1, 1:2]))$statistic, 
+         n = sum(t(k.d_table[2:1, 1:2])),
          r = 2, c = 2) 
 
-k.dcond_GK <- prop.test(t(k.d_table[2:1, c(3,1)])) %>% 
+k.dcond_GK <- prop.test(t(k.d_table[2:1, c(1,3)])) %>% 
   tidy()
 
-k.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.d_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(k.d_table[2:1, c(3,1)])),
+k.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.d_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k.d_table[2:1, c(1,3)])),
          r = 2, c = 2) 
 
 ```
@@ -425,18 +425,18 @@ k.econd_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vign
            data_graph$cond[data_graph$vignette == "Emma"]) %>% 
   tidy()
 
-k.econd_GI <- prop.test(t(k.e_table[2:1, 2:1])) %>% 
+k.econd_GI <- prop.test(t(k.e_table[2:1, 1:2])) %>% 
   tidy()
 
-k.econd_GI_v <- v.chi.sq(x2 = prop.test(t(k.e_table[2:1, 2:1]))$statistic, 
-         n = sum(t(k.e_table[2:1, 2:1])),
+k.econd_GI_v <- v.chi.sq(x2 = prop.test(t(k.e_table[2:1, 1:2]))$statistic, 
+         n = sum(t(k.e_table[2:1, 1:2])),
          r = 2, c = 2) 
 
-k.econd_GK <- prop.test(t(k.e_table[2:1, c(3,1)])) %>% 
+k.econd_GK <- prop.test(t(k.e_table[2:1, c(1,3)])) %>% 
   tidy()
 
-k.econd_GK_v <- v.chi.sq(x2 = prop.test(t(k.e_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(k.e_table[2:1, c(3,1)])),
+k.econd_GK_v <- v.chi.sq(x2 = prop.test(t(k.e_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k.e_table[2:1, c(1,3)])),
          r = 2, c = 2) 
 
 ```
@@ -446,18 +446,18 @@ k.gcond_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vign
            data_graph$cond[data_graph$vignette == "Gerald"]) %>% 
   tidy()
 
-k.gcond_GI <- prop.test(t(k.g_table[2:1, 2:1])) %>% 
+k.gcond_GI <- prop.test(t(k.g_table[2:1, 1:2])) %>% 
   tidy()
 
-k.gcond_GI_v <- v.chi.sq(x2 = prop.test(t(k.g_table[2:1, 2:1]))$statistic, 
-         n = sum(t(k.g_table[2:1, 2:1])),
+k.gcond_GI_v <- v.chi.sq(x2 = prop.test(t(k.g_table[2:1, 1:2]))$statistic, 
+         n = sum(t(k.g_table[2:1, 1:2])),
          r = 2, c = 2) 
 
-k.gcond_GK <- prop.test(t(k.g_table[2:1, c(3,1)])) %>% 
+k.gcond_GK <- prop.test(t(k.g_table[2:1, c(1,3)])) %>% 
   tidy()
 
-k.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.g_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(k.g_table[2:1, c(3,1)])),
+k.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(k.g_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k.g_table[2:1, c(1,3)])),
          r = 2, c = 2) 
 ```
 
@@ -620,18 +620,18 @@ r.dcond_effect <- stats::chisq.test(data_graph$know_vas_combined[data_graph$vign
            data_graph$cond[data_graph$vignette == "Darrel"]) %>% 
   tidy()
 
-r.dcond_GI <- prop.test(t(r.d_table[2:1, 2:1])) %>% 
+r.dcond_GI <- prop.test(t(r.d_table[2:1, 1:2])) %>% 
   tidy()
 
-r.dcond_GI_v <- v.chi.sq(x2 = prop.test(t(r.d_table[2:1, 2:1]))$statistic, 
-         n = sum(t(r.d_table[2:1, 2:1])),
+r.dcond_GI_v <- v.chi.sq(x2 = prop.test(t(r.d_table[2:1, 1:2]))$statistic, 
+         n = sum(t(r.d_table[2:1, 1:2])),
          r = 2, c = 2) 
 
-r.dcond_GK <- prop.test(t(r.d_table[2:1, c(3,1)])) %>% 
+r.dcond_GK <- prop.test(t(r.d_table[2:1, c(1,3)])) %>% 
   tidy()
 
-r.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(r.d_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(r.d_table[2:1, c(3,1)])),
+r.dcond_GK_v <- v.chi.sq(x2 = prop.test(t(r.d_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(r.d_table[2:1, c(1,3)])),
          r = 2, c = 2) 
 
 ```
@@ -641,18 +641,18 @@ r.econd_effect <- stats::chisq.test(r.data_graph$reason_vas_combined[r.data_grap
            r.data_graph$cond[r.data_graph$vignette == "Emma"]) %>% 
   tidy()
 
-r.econd_GI <- prop.test(t(r.e_table[2:1, 2:1])) %>% 
+r.econd_GI <- prop.test(t(r.e_table[2:1, 1:2])) %>% 
   tidy()
 
-r.econd_GI_v <- v.chi.sq(x2 = prop.test(t(r.e_table[2:1, 2:1]))$statistic, 
-         n = sum(t(r.e_table[2:1, 2:1])),
+r.econd_GI_v <- v.chi.sq(x2 = prop.test(t(r.e_table[2:1, 1:2]))$statistic, 
+         n = sum(t(r.e_table[2:1, 1:2])),
          r = 2, c = 2) 
 
-r.econd_GK <- prop.test(t(r.e_table[2:1, c(3,1)])) %>% 
+r.econd_GK <- prop.test(t(r.e_table[2:1, c(1,3)])) %>% 
   tidy()
 
-r.econd_GK_v <- v.chi.sq(x2 = prop.test(t(r.e_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(r.e_table[2:1, c(3,1)])),
+r.econd_GK_v <- v.chi.sq(x2 = prop.test(t(r.e_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(r.e_table[2:1, c(1,3)])),
          r = 2, c = 2) 
 
 ```
@@ -662,18 +662,18 @@ r.gcond_effect <- stats::chisq.test(r.data_graph$reason_vas_combined[r.data_grap
            r.data_graph$cond[r.data_graph$vignette == "Gerald"]) %>% 
   tidy()
 
-r.gcond_GI <- prop.test(t(r.g_table[2:1, 2:1])) %>% 
+r.gcond_GI <- prop.test(t(r.g_table[2:1, 1:2])) %>% 
   tidy()
 
-r.gcond_GI_v <- v.chi.sq(x2 = prop.test(t(r.g_table[2:1, 2:1]))$statistic, 
-         n = sum(t(r.g_table[2:1, 2:1])),
+r.gcond_GI_v <- v.chi.sq(x2 = prop.test(t(r.g_table[2:1, 1:2]))$statistic, 
+         n = sum(t(r.g_table[2:1, 1:2])),
          r = 2, c = 2) 
 
-r.gcond_GK <- prop.test(t(r.g_table[2:1, c(3,1)])) %>% 
+r.gcond_GK <- prop.test(t(r.g_table[2:1, c(1,3)])) %>% 
   tidy()
 
-r.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(r.g_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(r.g_table[2:1, c(3,1)])),
+r.gcond_GK_v <- v.chi.sq(x2 = prop.test(t(r.g_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(r.g_table[2:1, c(1,3)])),
          r = 2, c = 2) 
 
 ```
@@ -722,18 +722,18 @@ In addition to the hypotheses and research questions outlined in the approved pr
 ```{r darrel first analysis}
 k.d_table_rep <- table(darrel_DF$know_vas_combined, darrel_DF$cond)
 
-k.dcond_GI_rep <- prop.test(t(k.d_table_rep[2:1, 2:1])) %>% 
+k.dcond_GI_rep <- prop.test(t(k.d_table_rep[2:1, 1:2])) %>% 
   tidy()
 
-k.dcond_GI_v_rep <- v.chi.sq(x2 = prop.test(t(k.d_table_rep[2:1, 2:1]))$statistic, 
-         n = sum(t(k.d_table_rep[2:1, 2:1])),
+k.dcond_GI_v_rep <- v.chi.sq(x2 = prop.test(t(k.d_table_rep[2:1, 1:2]))$statistic, 
+         n = sum(t(k.d_table_rep[2:1, 1:2])),
          r = 2, c = 2) 
 
-k.dcond_GK_rep <- prop.test(t(k.d_table_rep[2:1, c(3,1)])) %>% 
+k.dcond_GK_rep <- prop.test(t(k.d_table_rep[2:1, c(1,3)])) %>% 
   tidy()
 
-k.dcond_GK_v_rep <- v.chi.sq(x2 = prop.test(t(k.d_table_rep[2:1, c(3,1)]))$statistic, 
-         n = sum(t(k.d_table_rep[2:1, c(3,1)])),
+k.dcond_GK_v_rep <- v.chi.sq(x2 = prop.test(t(k.d_table_rep[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k.d_table_rep[2:1, c(1,3)])),
          r = 2, c = 2) 
 ```
 
@@ -992,17 +992,17 @@ luck_interaction_cond <-  stats::chisq.test(l2.data_graph$know_vas_combined[l2.d
 luck_interaction_table <- table(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Luck"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Luck"])
 
 
-luck_interaction_cond_GI <-  prop.test(t(luck_interaction_table[2:1, 2:1])) %>% tidy()
+luck_interaction_cond_GI <-  prop.test(t(luck_interaction_table[2:1, 1:2])) %>% tidy()
 
-luck_interaction_cond_GI_v <- v.chi.sq(x2 =  prop.test(t(luck_interaction_table[2:1, 2:1]))$statistic, 
-         n = sum(t(luck_interaction_table[2:1, 2:1])),
+luck_interaction_cond_GI_v <- v.chi.sq(x2 =  prop.test(t(luck_interaction_table[2:1, 1:2]))$statistic, 
+         n = sum(t(luck_interaction_table[2:1, 1:2])),
          r = 2, c = 2)
 
 
-luck_interaction_cond_GK <-  prop.test(t(luck_interaction_table[2:1, c(3,1)])) %>% tidy()
+luck_interaction_cond_GK <-  prop.test(t(luck_interaction_table[2:1, c(1,3)])) %>% tidy()
 
-luck_interaction_cond_GK_v <- v.chi.sq(x2 = prop.test(t(luck_interaction_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(luck_interaction_table[2:1, c(3,1)])),
+luck_interaction_cond_GK_v <- v.chi.sq(x2 = prop.test(t(luck_interaction_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(luck_interaction_table[2:1, c(1,3)])),
          r = 2, c = 2)
 
 #ability
@@ -1014,17 +1014,17 @@ ability_interaction_cond <-  stats::chisq.test(l2.data_graph$know_vas_combined[l
 ability_interaction_table <- table(l2.data_graph$know_vas_combined[l2.data_graph$luck_vas_combined == "Ability"], l2.data_graph$cond[l2.data_graph$luck_vas_combined == "Ability"])
 
 
-ability_interaction_cond_GI <-   prop.test(t(ability_interaction_table[2:1, 2:1])) %>% tidy()
+ability_interaction_cond_GI <-   prop.test(t(ability_interaction_table[2:1, 1:2])) %>% tidy()
 
-ability_interaction_cond_GI_v <- v.chi.sq(x2 = prop.test(t(ability_interaction_table[2:1, 2:1]))$statistic, 
-         n = sum(t(ability_interaction_table[2:1, 2:1])),
+ability_interaction_cond_GI_v <- v.chi.sq(x2 = prop.test(t(ability_interaction_table[2:1, 1:2]))$statistic, 
+         n = sum(t(ability_interaction_table[2:1, 1:2])),
          r = 2, c = 2)
 
 
-ability_interaction_cond_GK <-  prop.test(t(ability_interaction_table [2:1, c(3,1)])) %>% tidy()
+ability_interaction_cond_GK <-  prop.test(t(ability_interaction_table [2:1, c(1,3)])) %>% tidy()
 
-ability_interaction_cond_GK_v <- v.chi.sq(x2 =  prop.test(t(ability_interaction_table[2:1, c(3,1)]))$statistic, 
-         n = sum(t(ability_interaction_table[2:1, c(3,1)])),
+ability_interaction_cond_GK_v <- v.chi.sq(x2 =  prop.test(t(ability_interaction_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(ability_interaction_table[2:1, c(1,3)])),
          r = 2, c = 2)
 
 
