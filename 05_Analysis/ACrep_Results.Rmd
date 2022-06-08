@@ -2,12 +2,12 @@
 title: "ACrep_Results.Rmd"
 author: "Hannah Moshontz, running Erin Buchanan's Analysis Script ... final updates by Erin Buchanan"
 date: "Last Updated `r Sys.Date()`"
-# output: word_document
-# always_allow_html: true
-output:
-  html_document:
-    toc: true
-    toc_float: true
+output: word_document
+always_allow_html: true
+# output:
+#   html_document:
+#     toc: true
+#     toc_float: true
 ---
 
 # Run the analysis script

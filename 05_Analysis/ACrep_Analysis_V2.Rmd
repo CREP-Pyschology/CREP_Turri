@@ -273,16 +273,15 @@ lab_sheet <- import("../04_Data/data/lab_sheet_un_region_update.csv") %>%
 nrow(full_long)
 
 setdiff(unique(full_long$lab_id), lab_sheet$lab_code)
-full_long$lab_id <- as.character(full_long$lab_id)
-full_long$lab_id[full_long$lab_id == "855e89"] <- "8.55E+91"
-full_long$lab_id[full_long$lab_id == "053396"] <- "53396"
+setdiff(lab_sheet$lab_code, unique(full_long$lab_id))
 
 # delete test and do not use cases
 full_long <- subset(full_long, lab_id %in% lab_sheet$lab_code[lab_sheet$use == "Yes"])
 
 nrow(full_long)
+str(full_long$lab_id)
 
-#full_long$lab_id <- droplevels(full_long$lab_id)
+full_long$lab_id <- droplevels(full_long$lab_id)
 ```
 
 ### Deal with compensation issues:
@@ -360,6 +359,7 @@ full_long <- merge(full_long,
                    all.x = T)
 
 table(full_long$person_code)
+nrow(full_long)
 ```
 
 ### Examine Coding for Covariates 
@@ -476,7 +476,6 @@ full_long$previous_exclusion[is.na(full_long$previous)] <- FALSE
 full_long$previous_nonsense[is.na(full_long$previous)] <- FALSE
 full_long$previous_exclusion[nchar(full_long$previous) < 2] <- FALSE
 full_long$previous_nonsense[nchar(full_long$previous) < 2] <- FALSE
-
 ```
 
 ### Comprehension Questions 
@@ -520,11 +519,11 @@ full_long$purpose_nonsense[nchar(full_long$purpose) < 2] <- FALSE
 #        unique()
 # write.csv(missing_purpose, "../04_Data/data/aus_update_purpose.csv", row.names = F)
 # 
-# missing_previous <- 
-#     full_long %>% 
-#        filter(is.na(previous_exclusion)) %>% 
-#        select(previous, id, survey_lang) %>% 
-#        unique() 
+# missing_previous <-
+#     full_long %>%
+#        filter(is.na(previous_exclusion)) %>%
+#        select(previous, id, survey_lang) %>%
+#        unique()
 # write.csv(missing_previous, "../04_Data/data/aus_update_previous.csv", row.names = F)
 ```
 

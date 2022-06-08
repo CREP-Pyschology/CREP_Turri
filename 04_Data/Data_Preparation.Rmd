@@ -445,6 +445,8 @@ lab_countries <- import("../04_data/data/lab_countries.csv") %>%
   mutate(lab_country = as.factor(lab_country)) %>%
   glimpse()
 
+setdiff(na.omit(unique(d.sss.raw$lab_ID)), lab_countries$lab_id)
+setdiff(lab_countries$lab_id, na.omit(unique(d.sss.raw$lab_ID)))
 ```
 
 ```{r}
