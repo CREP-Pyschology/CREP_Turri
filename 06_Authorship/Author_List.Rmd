@@ -74,7 +74,7 @@ alldata$attempt[alldata$PSA_ID %in% admin_id] <- 1
 ```{r}
 # check for blank PSA_IDs
 flextable(
-  alldata %>% filter(is.na(PSA_ID)) %>% 
+  alldata %>% filter(is.na(PSA_ID) | PSA_ID == "None") %>% 
   select(full_name.x, email.x, email.y)
 ) %>% autofit() %>% fit_to_width(7.5)
 ```
@@ -153,8 +153,9 @@ author_order <- c(
 
 # remove duplicates and NAs
 author_order <- na.omit(author_order)
+author_order <- author_order[author_order != "None"]
 author_order <- author_order[!duplicated(author_order)]
-author_order <- c(author_order[!(author_order %in% c("14", "175"))], "14", "175") # Buchanan, Moshontz 
+author_order <- c(author_order[!(author_order %in% c("14", "175"))], "175", "14") # Buchanan, Moshontz 
 ```
 
 ## Authorship
