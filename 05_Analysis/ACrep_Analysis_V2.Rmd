@@ -2161,10 +2161,15 @@ r.squaredGLMM(k.model.6H)
 ## Darrel Analysis
 
 ```{r}
-# 1 is right 2 is wrong 
+# 1 is right 2 is wrong for GK 
+# 1 is wrong 2 is right for I
 # get people who missed darrel
-darrel_exclude <- full_long$id[full_long$vignette == "Darrel" & 
-                                 full_long$compr == 2]
+darrel_exclude <- 
+  c(full_long$id[full_long$vignette == "Darrel" & full_long$compr == 2 & full_long$cond != "Ignorance"], # not ignorance and 2
+    full_long$id[full_long$vignette == "Darrel" & full_long$compr == 1 & full_long$cond == "Ignorance"])
+
+length(unique(na.omit(darrel_exclude)))
+    
 full_long$darrel_exclusion <- FALSE
 full_long$darrel_exclusion[full_long$id %in% darrel_exclude] <- TRUE
 
