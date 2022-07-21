@@ -99,8 +99,7 @@ alldata %>% filter(is.na(first)) %>% select(PSA_ID, full_name.y)
 alldata <- 
   alldata %>% 
   filter(PSA_ID != "272") %>%  #asked to be removed
-  filter(PSA_ID != "513") #asked to be removed 
-  
+  filter(PSA_ID != "513")  #asked to be removed 
 ```
 
 ## Fix Names
