@@ -1,0 +1,748 @@
+---
+title: "Analysis: Logistic with All Exclusions"
+author: "erin buchanan"
+date: "Last Updated `r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 15)
+```
+
+## Update
+
+Note: a good amount of code is eliminated to make this run faster. 
+
+## Libraries
+
+```{r}
+library(rio)
+library(lme4)
+library(lmerTest)
+library(nlme)
+library(MuMIn)
+library(plyr)
+library(psych)
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+library(ggmosaic)
+library(MOTE)
+library(flextable)
+library(RColorBrewer)
+```
+
+## Load Data Clean Up
+
+```{r}
+load("clean_full_long.Rdata")
+load("previousDF_wide.Rdata")
+load("purposeDF_wide.Rdata")
+```
+
+## Study Exclusions
+
+In this section, we will mark each exclusion criteria to be able to denote how many exclusions each participant may have had.
+
+### Majority Age
+
+(1) if the participant is not the majority age of their country or older (unless parent/guardian waiver provided)
+
+In this section, we will exclude all participants who are under 18 or are not the majority age of their country or older.
+
+https://en.wikipedia.org/wiki/Age_of_majority
+
+```{r}
+# table of lab countries
+full_long$lab_country <- droplevels(full_long$lab_country)
+table(full_long$lab_country, useNA = "ifany")
+
+# age information
+summary(full_long$age)
+
+# minimum age by country
+tapply(full_long$age, full_long$lab_country, min, na.rm = T)
+
+# exclude based on age
+full_long$age_exclusion <- NA
+
+# everyone under 18
+full_long$age_exclusion <- full_long$age < 18
+
+# everyone over 100 
+full_long$age_exclusion[full_long$age > 100] <- TRUE
+
+# TWN age of majority is 20 at time of study
+full_long$age_exclusion[full_long$lab_country %in% "TWN"] <- full_long$age[full_long$lab_country %in% "TWN"] < 20
+```
+
+### Previous Knowledge/Participation of Study 
+
+(2) if the participant has taken part in a previous version of this study or in another contributors' replication of the same study
+
+```{r}
+full_long <- merge(full_long,
+                   previousDF_wide[ , c("id", "exclude", "nonsense")], all.x = T) 
+
+# number of rows
+nrow(full_long)
+# number of participants
+length(unique(full_long$id))
+
+colnames(full_long)[(ncol(full_long)-1):ncol(full_long)] <- c("previous_exclusion", "previous_nonsense")
+
+full_long$previous_exclusion[full_long$previous == ""] <- FALSE
+full_long$previous_nonsense[full_long$previous == ""] <- FALSE
+full_long$previous_exclusion[is.na(full_long$previous)] <- FALSE
+full_long$previous_nonsense[is.na(full_long$previous)] <- FALSE
+full_long$previous_exclusion[nchar(full_long$previous) < 2] <- FALSE
+full_long$previous_nonsense[nchar(full_long$previous) < 2] <- FALSE
+```
+
+### Comprehension Questions 
+
+(3) if the participant fails to answer comprehension questions correctly
+
+```{r}
+table(full_long$dge_valid)
+
+full_long$studyans_exclusion <- !(full_long$dge_valid)
+
+table(full_long$compr, full_long$vignette)
+```
+
+### Knowledge of Experiment/Hypothesis 
+
+(4) if the participant correctly and explicitly articulate knowledge of the specific hypotheses or specific conditions of this study when answering the funneled debriefing questions. 
+
+```{r}
+full_long <- merge(full_long,
+                   purposeDF_wide[ , c("id", "exclude", "nonsense")], all.x = T) 
+
+# number of rows
+nrow(full_long)
+# number of participants
+length(unique(full_long$id))
+
+colnames(full_long)[(ncol(full_long)-1):ncol(full_long)] <- c("purpose_exclusion", "purpose_nonsense")
+
+full_long$purpose_exclusion[full_long$purpose == ""] <- FALSE
+full_long$purpose_nonsense[full_long$purpose == ""] <- FALSE
+full_long$purpose_exclusion[is.na(full_long$purpose)] <- FALSE
+full_long$purpose_nonsense[is.na(full_long$purpose)] <- FALSE
+full_long$purpose_exclusion[nchar(full_long$purpose) < 2] <- FALSE
+full_long$purpose_nonsense[nchar(full_long$purpose) < 2] <- FALSE 
+
+# missing_purpose <-
+#   full_long %>%
+#        filter(is.na(purpose_exclusion)) %>%
+#        select(purpose, id, survey_lang) %>%
+#        unique()
+# write.csv(missing_purpose, "../04_Data/data/aus_update_purpose.csv", row.names = F)
+# 
+# missing_previous <-
+#     full_long %>%
+#        filter(is.na(previous_exclusion)) %>%
+#        select(previous, id, survey_lang) %>%
+#        unique()
+# write.csv(missing_previous, "../04_Data/data/aus_update_previous.csv", row.names = F)
+```
+
+### Language Proficiency 
+
+We will also exclude participants who self-report their understanding of the tested language as "not well" or "not well at all". We based this exclusion criteria on a recent study that found that non-native English speakers who self-report as "very well" and "well" tend to score in the "intermediate" and "basic" categories on an English proficiency test respectively, while those who self-report as "not well" and "not at all" tend to score in the "below basic" category (Vickstrom, Shin, Collazo, & Bauman, 2015). All excluded data will be included in the data files on the overall OSF page, along with the particular reason for why they were excluded. 
+
+```{r}
+summary(full_long$language)
+
+full_long$lang_exclusion <- full_long$language == "not very well" | full_long$language == "not well at all" 
+```
+
+### Total Exclusions
+
+In this section, we provide the total (data point) exclusions for each particular screening item plus a table with all exclusions forever. 
+
+```{r}
+# exclusions individually
+table(full_long$age_exclusion, useNA = "ifany") / 3
+table(full_long$lang_exclusion, useNA = "ifany") / 3
+table(full_long$studyans_exclusion, useNA = "ifany") / 3
+table(full_long$previous_exclusion, useNA = "ifany") / 3
+table(full_long$purpose_exclusion, useNA = "ifany") / 3 
+
+# for these, NA means they should be excluded
+full_long$age_exclusion[is.na(full_long$age_exclusion)] <- TRUE
+full_long$lang_exclusion[is.na(full_long$lang_exclusion)] <- TRUE
+full_long$studyans_exclusion[is.na(full_long$studyans_exclusion)] <- TRUE
+
+# for these, NA means no answer which is ok 
+full_long$previous_exclusion[is.na(full_long$previous_exclusion)] <- FALSE
+full_long$purpose_exclusion[is.na(full_long$purpose_exclusion)] <- FALSE
+
+full_long$total_exclusion <- apply(full_long[ , grep("exclusion", colnames(full_long))], 1, sum, na.rm = T)
+
+table(full_long$total_exclusion, useNA = "ifany") / 3
+
+# multiway table of all exclusions 
+exclusions <- as.data.frame(table(full_long$age_exclusion, 
+                                  full_long$lang_exclusion, 
+                                  full_long$previous_exclusion,
+                                  full_long$purpose_exclusion, 
+                                  full_long$studyans_exclusion, useNA = "ifany"))
+colnames(exclusions) <- c("Age", "Language", "Previous", "Purpose", "Comprehension", "Frequency")
+exclusions$Num_Participants <- exclusions$Frequency / 3
+
+exclusions
+
+final_long <- subset(full_long, total_exclusion < 1)
+
+# drop all the levels that no longer exist within the data 
+final_long <- droplevels(final_long)
+
+# total number data points originally
+nrow(full_long) 
+# total number data points now
+nrow(final_long) 
+
+# original number of participants 
+length(unique(full_long$id)) 
+# final number of participants 
+length(unique(final_long$id)) 
+```
+
+## Code We Need
+
+```{r}
+final_long$bin_order <- droplevels(final_long$bin_order)
+
+# drop levels
+final_long$id <- factor(final_long$id)
+final_long$vignette <- factor(final_long$vignette)
+
+# for luck analyses people should be excluded if they get the answer wrong 
+final_long$luck_correct <- FALSE
+
+final_long$ri_wr <- factor(final_long$ri_wr, 
+                           levels = c(1,2),
+                           labels = c("Right", "Wrong"))
+final_long$luck_correct[final_long$cond == "Ignorance" & final_long$ri_wr == "Wrong"] <- TRUE
+final_long$luck_correct[final_long$cond != "Ignorance" & final_long$ri_wr == "Right"] <- TRUE
+
+# subset the wrong answers 
+final_luck <- subset(final_long, luck_correct)
+
+final_long$bin_order <- droplevels(final_long$bin_order)
+```
+
+### Update DV  
+
+In this instance, we do not see any form of linearity or homoscedasticity - the data is clearly skewed or bimodal. Therefore, we decided to split the VAS scale into 40 and below and 60 and above, then combine with the truly binary data, and include this variable to understand if there were differences when the VAS scale did not produce continuous data. 
+
+Please note that the VAS is scored in the opposite direction of the BIN scales, therefore, you will see that the data split corrects this directionality difference. 
+
+```{r}
+## knowledge
+table(final_long$know_bin, useNA = "ifany")
+
+## split data 
+final_long$know_vas_binned <- final_long$know_vas
+final_long$know_vas_binned[final_long$know_vas_binned <= 40] <- 2
+final_long$know_vas_binned[final_long$know_vas_binned > 40 & 
+                             final_long$know_vas_binned < 60] <- NA
+final_long$know_vas_binned[final_long$know_vas_binned >= 60] <- 1
+table(final_long$know_vas_binned, useNA = "ifany")
+
+# no overlap
+table(final_long$know_bin, final_long$know_vas_binned, useNA = "ifany")
+
+final_long$know_vas_combined <- ifelse(is.na(final_long$know_vas_binned), 
+                                     final_long$know_bin, 
+                                     final_long$know_vas_binned)
+
+final_long$know_vas_combined_source <- ifelse(is.na(final_long$know_vas_binned), 
+                                     "Binary", 
+                                     "VAS")
+
+table(final_long$know_vas_combined, useNA = "ifany")
+table(final_long$know_vas_combined_source, useNA = "ifany")
+
+## reasonable
+table(final_long$reason_bin, useNA = "ifany")
+
+## split data 
+final_long$reason_vas_binned <- final_long$reason_vas
+final_long$reason_vas_binned[final_long$reason_vas_binned <= 40] <- 2
+final_long$reason_vas_binned[final_long$reason_vas_binned > 40 & 
+                             final_long$reason_vas_binned < 60] <- NA
+final_long$reason_vas_binned[final_long$reason_vas_binned >= 60] <- 1
+table(final_long$reason_vas_binned, useNA = "ifany")
+
+# no overlap
+table(final_long$reason_bin, final_long$reason_vas_binned, useNA = "ifany")
+
+final_long$reason_vas_combined <- ifelse(is.na(final_long$reason_vas_binned), 
+                                     final_long$reason_bin, 
+                                     final_long$reason_vas_binned)
+
+final_long$reason_vas_combined_source <- ifelse(is.na(final_long$reason_vas_binned), 
+                                     "Binary", 
+                                     "VAS")
+
+table(final_long$reason_vas_combined, useNA = "ifany")
+table(final_long$reason_vas_combined_source, useNA = "ifany")
+
+## luck
+table(final_luck$luck_bin, useNA = "ifany")
+
+## split data 
+final_luck$luck_vas_binned <- final_luck$luck_vas
+final_luck$luck_vas_binned[final_luck$luck_vas_binned <= 40] <- 2
+final_luck$luck_vas_binned[final_luck$luck_vas_binned > 40 & 
+                             final_luck$luck_vas_binned < 60] <- NA
+final_luck$luck_vas_binned[final_luck$luck_vas_binned >= 60] <- 1
+table(final_luck$luck_vas_binned, useNA = "ifany")
+
+# no overlap
+table(final_luck$luck_bin, final_luck$luck_vas_binned, useNA = "ifany")
+
+final_luck$luck_vas_combined <- ifelse(is.na(final_luck$luck_vas_binned), 
+                                     final_luck$luck_bin, 
+                                     final_luck$luck_vas_binned)
+
+final_luck$luck_vas_combined_source <- ifelse(is.na(final_luck$luck_vas_binned), 
+                                     "Binary", 
+                                     "VAS")
+
+table(final_luck$luck_vas_combined, useNA = "ifany")
+table(final_luck$luck_vas_combined_source, useNA = "ifany")
+```
+
+We recoded knowledge and reasonableness for easier processing in the paper.
+
+```{r}
+table(final_long$know_vas_combined)
+final_long$know_vas_combined <- 3 - final_long$know_vas_combined 
+table(final_long$know_vas_combined)
+
+table(final_long$reason_vas_combined)
+final_long$reason_vas_combined <- 3 - final_long$reason_vas_combined 
+table(final_long$reason_vas_combined)
+```
+
+### Gender Other
+
+Because of the small other category, we will simply compare male to female. 
+
+```{r}
+final_long$gender2 <- factor(final_long$gender,
+                             levels = c("female", "male"))
+
+final_luck$gender2 <- factor(final_luck$gender,
+                             levels = c("female", "male"))
+
+table(final_long$gender, useNA = "ifany")
+table(final_long$gender2, useNA = "ifany")
+```
+
+## Final Analysis Knowledge
+
+### Model 1 
+
+Intercept only model to help determine if the addition of random intercepts are useful.
+
+```{r}
+#scores should be 0 and 1 for this analysis 
+final_long$know_vas_combined <- final_long$know_vas_combined - 1
+
+k.model.1 <- glm(know_vas_combined ~ 1,
+               data = final_long,
+               family = binomial,
+               na.action = "na.omit")
+```
+
+### Model 2
+
+Vignette random intercept model:
+
+```{r}
+k.model.2 <- glmer(know_vas_combined ~ (1|vignette),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 3
+
+Vignette nested in participants random intercept:
+
+```{r}
+k.model.3 <- glmer(know_vas_combined ~ (1|vignette/id),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+  
+### Model 4
+
+Vignette nested in participants which is then nested in labs:
+
+```{r}
+k.model.4 <- glmer(know_vas_combined ~ (1|vignette/id/person_code),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+  
+### Model 5
+
+Addition of the covariates added to the vignette random intercept model. 
+
+```{r}
+k.model.5 <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                   comp + age + gender2 + education,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+  
+### Model 6
+
+The previous model of covariates plus the variable of focus: condition.
+
+```{r}
+k.model.6 <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                   comp + age + gender2 + education + 
+                   cond,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 6A
+
+Does the vignette interact with the condition?
+
+```{r}
+k.model.6A <- glmer(know_vas_combined ~ (1 | vignette/id/person_code) + 
+                   comp + age + gender2 + education + 
+                   cond*vignette,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+```{r}
+data_graph <- k.model.6A@frame
+data_graph$know_vas_combined <- factor(data_graph$know_vas_combined,
+                                          levels = c(0,1),
+                                          labels = c("Believes", "Knows"))
+
+# overall darrel
+k.d_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Darrel"], 
+           data_graph$cond[data_graph$vignette == "Darrel"])
+
+# overall emma
+k.e_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Emma"], 
+           data_graph$cond[data_graph$vignette == "Emma"])
+
+# overall gerald
+k.g_table <- table(data_graph$know_vas_combined[data_graph$vignette == "Gerald"], 
+           data_graph$cond[data_graph$vignette == "Gerald"])
+```
+
+### Model 6B
+
+Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
+
+```{r}
+k.model.6B <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+  
+## Final Analysis Reasonableness
+
+### Model 1 
+
+Intercept only model to help determine if the addition of random intercepts are useful.
+
+```{r}
+#scores should be 0 and 1 for this analysis 
+final_long$reason_vas_combined <- final_long$reason_vas_combined - 1
+
+r.model.1 <- glm(reason_vas_combined ~ 1,
+               data = final_long,
+               family = binomial,
+               na.action = "na.omit")
+```
+
+### Model 2
+
+Vignette random intercept model:
+
+```{r}
+r.model.2 <- glmer(reason_vas_combined ~ (1|vignette),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+  
+### Model 3
+
+Vignette nested in participants random intercept:
+
+```{r}
+r.model.3 <- glmer(reason_vas_combined ~ (1|vignette/id),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 4
+
+Vignette nested in participants which is then nested in labs:
+
+```{r}
+r.model.4 <- glmer(reason_vas_combined ~ (1|vignette/id/person_code),
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 5
+
+Addition of the covariates added to the vignette random intercept model. 
+
+```{r}
+r.model.5 <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                   comp + age + gender2 + education,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+  
+### Model 6
+
+The previous model of covariates plus the variable of focus: condition.
+
+```{r}
+r.model.6 <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                   comp + age + gender2 + education + 
+                   cond,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 6A
+
+Does the vignette interact with the condition?
+
+```{r}
+r.model.6A <- glmer(reason_vas_combined ~ (1 | vignette/id/person_code) + 
+                   comp + age + gender2 + education + 
+                   cond*vignette,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+```{r}
+r.data_graph <- r.model.6A@frame
+r.data_graph$reason_vas_combined <- factor(r.data_graph$reason_vas_combined,
+                                          levels = c(0,1),
+                                          labels = c("Unreasonable", "Reasonable"))
+
+# overall darrel
+r.d_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Darrel"], 
+           r.data_graph$cond[r.data_graph$vignette == "Darrel"])
+
+# overall emma
+r.e_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Emma"], 
+           r.data_graph$cond[r.data_graph$vignette == "Emma"])
+
+# overall gerald
+r.g_table <- table(r.data_graph$reason_vas_combined[r.data_graph$vignette == "Gerald"], 
+           r.data_graph$cond[r.data_graph$vignette == "Gerald"])
+```
+
+### Model 6B
+
+Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
+
+```{r}
+r.model.6B <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+## Final Analysis Luck
+
+### Model 1 
+
+Intercept only model to help determine if the addition of random intercepts are useful.
+
+```{r}
+#scores should be 0 and 1 for this analysis 
+final_luck$luck_vas_combined <- final_luck$luck_vas_combined - 1
+
+l.model.1 <- glm(luck_vas_combined ~ 1,
+               data = final_luck,
+               family = binomial,
+               na.action = "na.omit")
+```
+
+### Model 2
+
+Vignette random intercept model:
+
+```{r}
+l.model.2 <- glmer(luck_vas_combined ~ (1|vignette),
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 3
+
+Vignette nested in participants random intercept:
+
+```{r}
+l.model.3 <- glmer(luck_vas_combined ~ (1|vignette/id),
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 4
+
+Vignette nested in participants which is then nested in labs:
+
+```{r}
+l.model.4 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code),
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+  
+### Model 5
+
+Addition of the covariates added to the vignette random intercept model. 
+
+```{r}
+l.model.5 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                   comp + age + gender2 + education,
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 6
+
+The previous model of covariates plus the variable of focus: condition.
+
+```{r}
+l.model.6 <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                   comp + age + gender2 + education + 
+                   cond,
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+### Model 6A
+
+Does the vignette interact with the condition?
+
+```{r}
+l.model.6A <- glmer(luck_vas_combined ~ (1 | vignette/id/person_code) + 
+                   comp + age + gender2 + education + 
+                   cond*vignette,
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+```{r}
+l.data_graph <- l.model.6A@frame
+l.data_graph$luck_vas_combined <- factor(l.data_graph$luck_vas_combined,
+                                          levels = c(0,1),
+                                          labels = c("Luck", "Ability"))
+
+# overall darrel
+l.d_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Darrel"], 
+           l.data_graph$cond[l.data_graph$vignette == "Darrel"])
+
+# overall emma
+l.e_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Emma"], 
+           l.data_graph$cond[l.data_graph$vignette == "Emma"])
+
+# overall gerald
+l.g_table <- table(l.data_graph$luck_vas_combined[l.data_graph$vignette == "Gerald"], 
+           l.data_graph$cond[l.data_graph$vignette == "Gerald"])
+```
+
+### Model 6B
+
+Data was collected from mechanical turk participants. Are there differences in this data and the complete data on the condition variable? 
+
+```{r}
+l.model.6B <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+```
+
+## Write Out
+
+```{r}
+k.model.1
+k.model.2
+k.model.3
+k.model.4
+k.model.5
+k.model.6
+k.model.6A
+k.model.6B
+
+k.d_table
+k.g_table
+k.e_table
+
+r.model.1
+```
+
+

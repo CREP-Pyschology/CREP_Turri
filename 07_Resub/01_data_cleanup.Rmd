@@ -1,0 +1,430 @@
+---
+title: "ACREP Updated Analyses"
+author: "erin buchanan"
+date: "Last Updated `r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(scipen = 15)
+```
+
+## Update:
+
+This file is the same for all analyses presented this folder - separated out so it could be run without repeating in each file and making mistakes on the processing. 
+
+## Information
+
+Multilab close replication of: Experiment 1 from Turri, J., Buckwalter, W., & Blouw, P. (2015). Knowledge and luck. *Psychonomic Bulletin and Review*, 22, 378-390.
+
+[Data and registered protocols:](https://osf.io/n5b3w/)
+
+[Codebook (raw data)](https://docs.google.com/spreadsheets/d/1KjXqgfVgguHeDXVtlHHhJ9zsRGVDfPVPH4tbh75P46U/edit#gid=903093128)
+
+[Preprint](https://psyarxiv.com/zeux9/)
+
+## Libraries
+
+```{r}
+library(rio)
+library(lme4)
+library(lmerTest)
+library(nlme)
+library(MuMIn)
+library(plyr)
+library(psych)
+library(tidyr)
+library(ggplot2)
+library(dplyr)
+library(ggmosaic)
+library(MOTE)
+library(flextable)
+library(RColorBrewer)
+```
+
+## Import the Data
+
+The `full_long` dataset includes all participants in long format - wherein each trial of their study is on one row of the dataset. Our uploaded data also includes `full.Rds` which is the same data in wide format - one column for each variable in the dataset and one row per participant.
+
+```{r}
+full_long <- readRDS("../04_Data/rds/d_all_long.Rds")
+#str(full_long)
+```
+
+## Open Ended Response Coding 
+
+Import the open-ended responses and prepare them for merging with the final dataset. This section:
+
+  - Imports all the files
+  - Includes a coder id
+  - Corrects all the issues with typed codings
+  - Converts each item to coder counts so you can convert from wide to long
+  - Converts from wide to long
+  - Converts into scoring:
+    - No or NA gets 0 points 
+    - Maybe gets 1 point
+    - Yes/test gets 2 points
+    - Participants are marked as "excluded" if they get 4 total points across three coders 
+  - Participants are also marked as "nonsense" if they did not write a legible answer or simply typed gibberish. These data points are not excluded but marked if you would like to repeat the analysis and exclude them. 
+
+```{r}
+file.names <- list.files(path = "../04_Data/open_responses/", 
+                         pattern = ".xlsx", full.names = T, 
+                         recursive = T)
+
+previous.files <- lapply(file.names, function(x){ import(x, sheet = 2)})
+purpose.files <- lapply(file.names, function(x){ import(x, sheet = 3)})
+
+# add coder ids 
+coder.id <- unlist(lapply(strsplit(file.names, "psa004"), function(x) x[[2]]))
+
+names(previous.files) <- coder.id
+names(purpose.files) <- coder.id
+
+previousDF <- do.call(rbind.fill, previous.files)
+purposeDF <- do.call(rbind.fill, purpose.files)
+
+previousDF$coder <- rep(names(previous.files), unlist(lapply(previous.files, nrow)))
+purposeDF$coder <- rep(names(purpose.files), unlist(lapply(purpose.files, nrow)))
+
+# ensure the text is normalized 
+previousDF$previous <- gsub("\\s+", " ", previousDF$previous)
+purposeDF$purpose <- gsub("\\s+", " ", purposeDF$purpose)
+previousDF$previous <- gsub("\\s$", "", previousDF$previous)
+purposeDF$purpose <- gsub("\\s$", "", purposeDF$purpose)
+
+# can't figure out why these two are different
+purposeDF$purpose[purposeDF$id == "s10313"] <- "I'm not sure."
+purposeDF$purpose[purposeDF$id == "s10513"] <- "Recall, recognizing"
+
+# fix the yes/no/maybe/NA
+previousDF$code <- tolower(previousDF$code)
+table(previousDF$code)
+previousDF$code <- gsub("np", "no", previousDF$code)
+previousDF$code <- gsub("n/a", "na", previousDF$code)
+previousDF$code <- gsub("y$", "yes", previousDF$code)
+table(previousDF$code)
+previousDF <- subset(previousDF, !is.na(id))
+
+purposeDF$code <- tolower(purposeDF$code)
+table(purposeDF$code)
+purposeDF$code <- gsub("mayb$|meybe", "maybe", purposeDF$code)
+purposeDF$code <- gsub("mo", "no", purposeDF$code)
+purposeDF$code <- gsub("n/a", "na", purposeDF$code)
+table(purposeDF$code)
+purposeDF <- subset(purposeDF, !is.na(id))
+
+# add coder count
+previous_count <- as.data.frame(table(previousDF$id))
+previous_count <- previous_count[order(previous_count$Var1), ]
+previousDF <- previousDF[order(previousDF$id), ]
+previousDF$coder_num <- NA
+
+for (i in 1:length(previous_count$Freq)){
+  previousDF$coder_num[previousDF$id == previous_count$Var1[i]] <- 1:previous_count$Freq[i]
+}
+
+purpose_count <- as.data.frame(table(purposeDF$id))
+purpose_count <- purpose_count[order(purpose_count$Var1), ]
+purposeDF <- purposeDF[order(purposeDF$id), ]
+purposeDF$coder_num <- NA
+
+for (i in 1:length(purpose_count$Freq)){
+  purposeDF$coder_num[purposeDF$id == purpose_count$Var1[i]] <- 1:purpose_count$Freq[i]
+}
+
+# long to wide for scoring
+previousDF_wide <- pivot_wider(data = previousDF,
+                              id_cols = c("id", "survey_lang", "previous"), 
+                              names_from = "coder_num",
+                              values_from = "code")
+
+purposeDF_wide <- pivot_wider(data = purposeDF,
+                              id_cols = c("id", "survey_lang", "purpose"), 
+                              names_from = "coder_num",
+                              values_from = "code")
+
+# score the yes/no/maybe/NA
+previousDF_wide$score_1 <- previousDF_wide$`1`
+previousDF_wide$score_2 <- previousDF_wide$`2`
+previousDF_wide$score_3 <- previousDF_wide$`3`
+
+previousDF_wide$score_1 <- gsub("maybe", "1", previousDF_wide$score_1)
+previousDF_wide$score_1 <- gsub("no|na", "0", previousDF_wide$score_1)
+previousDF_wide$score_1 <- gsub("yes|test", "2", previousDF_wide$score_1)
+previousDF_wide$score_2 <- gsub("maybe", "1", previousDF_wide$score_2)
+previousDF_wide$score_2 <- gsub("no|na", "0", previousDF_wide$score_2)
+previousDF_wide$score_2 <- gsub("yes|test", "2", previousDF_wide$score_2)
+previousDF_wide$score_3 <- gsub("maybe", "1", previousDF_wide$score_3)
+previousDF_wide$score_3 <- gsub("no|na", "0", previousDF_wide$score_3)
+previousDF_wide$score_3 <- gsub("yes|test", "2", previousDF_wide$score_3)
+
+previousDF_wide$count <- apply(
+  previousDF_wide[ , grep("score", colnames(previousDF_wide))], 1, 
+  function(x) { sum(!is.na(x)) } )
+previousDF_wide$sum <- apply(
+  previousDF_wide[ , grep("score", colnames(previousDF_wide))], 1, 
+  function (x) { sum(as.numeric(x), na.rm = T)} )
+
+previousDF_wide$exclude <- previousDF_wide$sum >= 4
+previousDF_wide$nonsense <- apply(
+  previousDF_wide[ , grep("1|2|3|4", colnames(previousDF_wide))], 1, 
+  function (x) {sum(as.numeric(x == "na"), na.rm = T)}
+) == 3
+
+purposeDF_wide$score_1 <- purposeDF_wide$`1`
+purposeDF_wide$score_2 <- purposeDF_wide$`2`
+purposeDF_wide$score_3 <- purposeDF_wide$`3`
+
+purposeDF_wide$score_1 <- gsub("maybe", "1", purposeDF_wide$score_1)
+purposeDF_wide$score_1 <- gsub("no|na", "0", purposeDF_wide$score_1)
+purposeDF_wide$score_1 <- gsub("yes|test", "2", purposeDF_wide$score_1)
+purposeDF_wide$score_2 <- gsub("maybe", "1", purposeDF_wide$score_2)
+purposeDF_wide$score_2 <- gsub("no|na", "0", purposeDF_wide$score_2)
+purposeDF_wide$score_2 <- gsub("yes|test", "2", purposeDF_wide$score_2)
+purposeDF_wide$score_3 <- gsub("maybe", "1", purposeDF_wide$score_3)
+purposeDF_wide$score_3 <- gsub("no|na", "0", purposeDF_wide$score_3)
+purposeDF_wide$score_3 <- gsub("yes|test", "2", purposeDF_wide$score_3)
+
+purposeDF_wide$count <- apply(
+  purposeDF_wide[ , grep("score", colnames(purposeDF_wide))], 1, 
+  function(x) { sum(!is.na(x)) } )
+purposeDF_wide$sum <- apply(
+  purposeDF_wide[ , grep("score", colnames(purposeDF_wide))], 1, 
+  function (x) { sum(as.numeric(x), na.rm = T)} )
+
+purposeDF_wide$exclude <- purposeDF_wide$sum >= 4
+purposeDF_wide$nonsense <- apply(
+  purposeDF_wide[ , grep("1|2|3", colnames(purposeDF_wide))], 1, 
+  function (x) {sum(as.numeric(x == "na"), na.rm = T)}
+) == 3
+
+sum(duplicated(purposeDF_wide$id))
+#ids <- purposeDF_wide$id[duplicated(purposeDF_wide$id)]
+#View(purposeDF_wide[purposeDF_wide$id %in% ids, ])
+sum(duplicated(previousDF_wide$id))
+#ids <- previousDF_wide$id[duplicated(previousDF_wide$id)]
+#View(previousDF_wide[previousDF_wide$id %in% ids, ])
+```
+
+### Finding missing coders:
+
+```{r}
+previous_missing <- subset(previousDF_wide, count < 3)
+purpose_missing <- subset(purposeDF_wide, count < 3)
+
+table(previous_missing$survey_lang)
+table(purpose_missing$survey_lang)
+
+#create reviewer names
+previous_completed <- previousDF %>% 
+  group_by(id) %>% 
+  summarize(coder = paste(coder, collapse = ", "))
+
+purpose_completed <- purposeDF %>% 
+  group_by(id) %>% 
+  summarize(coder = paste(coder, collapse = ", "))
+
+previous_missing <- merge(previous_missing, 
+                          previous_completed, 
+                          by = "id", 
+                          all.x = T)
+
+purpose_missing <- merge(purpose_missing, 
+                         purpose_completed,
+                         by = "id", 
+                         all.x = T)
+
+write.csv(previous_missing, "../04_Data/data/previous_needs.csv", row.names = F)
+write.csv(purpose_missing, "../04_Data/data/purpose_needs.csv", row.names = F)
+```
+
+```{r}
+previousDF_long_missing <- subset(previousDF, id %in% previous_missing$id)
+previousDF_wide_missing <- pivot_wider(data = previousDF_long_missing, 
+                                       id_cols = c("id", "survey_lang"), 
+                                       values_from = "code", 
+                                       names_from = "coder")
+
+purposeDF_long_missing <- subset(purposeDF, id %in% purpose_missing$id)
+purposeDF_wide_missing <- pivot_wider(data = purposeDF_long_missing, 
+                                       id_cols = c("id", "survey_lang"), 
+                                       values_from = "code", 
+                                       names_from = "coder")
+
+write.csv(previousDF_wide_missing, "../04_Data/data/previous_needs_wide.csv", row.names = F)
+write.csv(purposeDF_wide_missing, "../04_Data/data/purpose_needs_wide.csv", row.names = F)
+```
+
+## Fix Data Coding / Examine Covariates  
+
+### Deal with lab coding issues:
+
+  - Import lab sheet
+  - Delete cases that should not be used 
+
+```{r} 
+lab_sheet <- import("../04_Data/data/lab_sheet_un_region_update.csv") %>%
+  select(-un_region2)
+
+nrow(full_long)
+
+setdiff(unique(full_long$lab_id), lab_sheet$lab_code)
+setdiff(lab_sheet$lab_code, unique(full_long$lab_id))
+
+# delete test and do not use cases
+full_long <- subset(full_long, lab_id %in% lab_sheet$lab_code[lab_sheet$use == "Yes"])
+
+nrow(full_long)
+str(full_long$lab_id)
+
+full_long$lab_id <- droplevels(full_long$lab_id)
+```
+
+### Deal with compensation issues:
+
+  - Deal with compensation for labs with no information because they didn't see that question
+  
+```{r}
+# deal with compensation questions
+# give compensation type labels
+table(full_long$comp, useNA = "ifany")
+full_long$comp <- factor(full_long$comp,
+                         levels = 1:3,
+                         labels = c("No", "Yes", "Not Sure"))
+
+# examine compensation type by lab
+table(full_long$lab_id, full_long$comp, useNA = "ifany")
+
+# find labs that had majority no comp
+lab_comp_temp <- as.data.frame(table(full_long$lab_id, full_long$comp, useNA = "ifany") / rowSums(table(full_long$lab_id, full_long$comp, useNA = "ifany")) * 100)
+
+lab_comp_temp <- lab_comp_temp[order(lab_comp_temp$Freq, decreasing = T) , ]
+lab_comp_max <- lab_comp_temp[!duplicated(lab_comp_temp$Var1), ]
+lab_comp_max <- subset(lab_comp_max, is.na(Var2))
+colnames(lab_comp_max) <- c("lab_code", "comp", "Percent")
+
+# clean up lab codes compensation
+table(lab_sheet$compensation, useNA = "ifany")
+lab_sheet$comp <- lab_sheet$compensation
+lab_sheet$comp <- gsub("Course Credit for Students, Nothing for Community", "Mixed", lab_sheet$comp)
+lab_sheet$comp <- gsub("Course Credit|Lottery|Money|Sweets|Course Credit, Money", "Yes", lab_sheet$comp)
+lab_sheet$comp <- gsub("None", "No", lab_sheet$comp)
+
+table(lab_sheet$comp, useNA = "ifany")
+
+# merge these two things together
+lab_comp_max <- merge(lab_comp_max, lab_sheet, by = "lab_code")
+
+# drop all unclear or mixed
+lab_comp_max <- subset(lab_comp_max, comp.y != "Mixed" & 
+                         comp.y != "Unclear")
+
+# fix compensation for labs 
+full_long$comp[full_long$lab_id %in% 
+                 lab_comp_max$lab_code[lab_comp_max$comp.y == "Yes"]] <- "Yes"
+full_long$comp[full_long$lab_id %in% 
+                 lab_comp_max$lab_code[lab_comp_max$comp.y == "No"]] <- "No"
+
+table(full_long$lab_id, full_long$comp, useNA = "ifany") 
+
+# deal with not sures 
+table(full_long$comp, useNA = "ifany")
+
+# if they wrote not sure 
+# and didn't pick one of the compensation options
+# then they did not get compensated
+full_long$comp[full_long$comp == "Not Sure" & is.na(full_long$comp_type)] <- "No"
+
+# if they wrote note sure
+# but then picked a compensation option
+# then the answer is yes 
+full_long$comp[full_long$comp == "Not Sure" & !is.na(full_long$comp_type)] <- "Yes"
+
+#add turk variable
+full_long$turk <- full_long$lab_id == "b6c8ec"
+
+full_long$comp <- droplevels(full_long$comp)
+```
+
+### Fix Lab ID to Consistent "Data Collection Location ID"
+
+```{r}
+full_long <- merge(full_long, 
+                   lab_sheet[ , c("lab_code", "un_region", "person_code")],
+                   by.x = "lab_id", by.y = "lab_code", 
+                   all.x = T)
+
+table(full_long$person_code)
+nrow(full_long)
+```
+
+### Examine Coding for Covariates 
+
+  - Examine gender labels
+  - Recode education to number and examine ... fix issues with two labs not using the same education values.
+
+```{r}
+# better labels for graphs
+full_long$vignette <- factor(full_long$vignette,
+                             levels = c("D", "E", "G"),
+                             labels = c("Darrel", "Emma", "Gerald"))
+
+full_long$cond <- factor(full_long$cond,
+                             levels = c("G", "I", "K"),
+                             labels = c("Gettier", "Ignorance", "Knowledge"))
+
+# gender
+table(full_long$gender, useNA = "ifany")
+
+# describe education years
+full_long$education <- as.numeric(full_long$education)
+describe(full_long$education[!duplicated(full_long$id)])
+
+levels(full_long$education_level)
+
+# less high school = 10  
+# high school = 12
+# some college = 14
+# college = 16
+# masters = 18
+# graduate = 20
+
+# levels(full_long$education) <- c(levels(full_long$education), 20, 21)
+# truncate all education since that's how it was on socisurvey
+
+full_long$education[full_long$education_level == "Less than high school" & !is.na(full_long$education_level)] <- 10
+full_long$education[full_long$education_level == "High school diploma (or GED)" & !is.na(full_long$education_level)] <- 12
+full_long$education[full_long$education_level == "Some college or a 2-year college degree (A.A.)" & !is.na(full_long$education_level)] <- 14
+full_long$education[full_long$education_level == "4-year college degree (B.A., B.S.)" & !is.na(full_long$education_level)] <- 16
+full_long$education[full_long$education_level == "Master’s degree (M.A., M.S.)" & !is.na(full_long$education_level)] <- 18 #> 17 group
+full_long$education[full_long$education_level == "Graduate or professional degree (J.D., Ph.D., M.D.)" & !is.na(full_long$education_level)] <-  18 #>17 group
+
+# PRT lab bach = 15, master = 17, PHD = 21
+full_long$education[full_long$education_level == "4-year college degree (B.A., B.S.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 14
+full_long$education[full_long$education_level == "Master’s degree (M.A., M.S.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <- 17
+full_long$education[full_long$education_level == "Graduate or professional degree (J.D., Ph.D., M.D.)" & !is.na(full_long$education_level) & full_long$lab_id == "b6c8ec"] <-  18 #> 17 group 
+
+# describe age
+describe(full_long$age[!duplicated(full_long$id)])
+
+# number of rows
+nrow(full_long)
+# number of participants
+length(unique(full_long$id))
+# number of data collection locations
+length(unique(full_long$person_code))
+```
+
+## Write Out
+
+```{r}
+save(full_long, file = "clean_full_long.Rdata")
+save(previousDF_wide, file = "previousDF_wide.Rdata")
+save(purposeDF_wide, file = "purposeDF_wide.Rdata")
+```
+
