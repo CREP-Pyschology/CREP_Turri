@@ -355,7 +355,7 @@ full_long$comp <- droplevels(full_long$comp)
 
 ```{r}
 full_long <- merge(full_long, 
-                   lab_sheet[ , c("lab_code", "un_region", "person_code")],
+                   lab_sheet[ , c("lab_code", "un_region", "person_code", "completed_crep_requirements")],
                    by.x = "lab_id", by.y = "lab_code", 
                    all.x = T)
 

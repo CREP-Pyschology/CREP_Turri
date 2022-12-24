@@ -1,5 +1,5 @@
 ---
-title: "Analysis: Logistic with Updated Exclusions"
+title: "Analysis: Logistic with Original Exclusions"
 author: "erin buchanan"
 date: "Last Updated `r Sys.Date()`"
 output:
@@ -74,7 +74,7 @@ full_long$age_exclusion <- NA
 full_long$age_exclusion <- full_long$age < 18
 
 # everyone over 100 
-full_long$age_exclusion[full_long$age > 100] <- TRUE
+# full_long$age_exclusion[full_long$age > 100] <- TRUE
 
 # TWN age of majority is 20 at time of study
 full_long$age_exclusion[full_long$lab_country %in% "TWN"] <- full_long$age[full_long$lab_country %in% "TWN"] < 20
@@ -136,20 +136,6 @@ full_long$purpose_exclusion[is.na(full_long$purpose)] <- FALSE
 full_long$purpose_nonsense[is.na(full_long$purpose)] <- FALSE
 full_long$purpose_exclusion[nchar(full_long$purpose) < 2] <- FALSE
 full_long$purpose_nonsense[nchar(full_long$purpose) < 2] <- FALSE 
-
-# missing_purpose <-
-#   full_long %>%
-#        filter(is.na(purpose_exclusion)) %>%
-#        select(purpose, id, survey_lang) %>%
-#        unique()
-# write.csv(missing_purpose, "../04_Data/data/aus_update_purpose.csv", row.names = F)
-# 
-# missing_previous <-
-#     full_long %>%
-#        filter(is.na(previous_exclusion)) %>%
-#        select(previous, id, survey_lang) %>%
-#        unique()
-# write.csv(missing_previous, "../04_Data/data/aus_update_previous.csv", row.names = F)
 ```
 
 ### Language Proficiency 
@@ -160,6 +146,12 @@ We will also exclude participants who self-report their understanding of the tes
 summary(full_long$language)
 
 full_long$lang_exclusion <- full_long$language == "not very well" | full_long$language == "not well at all" 
+```
+
+### Exclude Non-Finishing Teams
+
+```{r}
+full_long$team_exclusion <- full_long$completed_crep_requirements == "Yes"
 ```
 
 ### Total Exclusions
@@ -173,6 +165,7 @@ table(full_long$lang_exclusion, useNA = "ifany") / 3
 table(full_long$studyans_exclusion, useNA = "ifany") / 3
 table(full_long$previous_exclusion, useNA = "ifany") / 3
 table(full_long$purpose_exclusion, useNA = "ifany") / 3 
+table(full_long$team_exclusion, useNA = "ifany") / 3
 
 # for these, NA means they should be excluded
 full_long$age_exclusion[is.na(full_long$age_exclusion)] <- TRUE
@@ -192,8 +185,10 @@ exclusions <- as.data.frame(table(full_long$age_exclusion,
                                   full_long$lang_exclusion, 
                                   full_long$previous_exclusion,
                                   full_long$purpose_exclusion, 
-                                  full_long$studyans_exclusion, useNA = "ifany"))
-colnames(exclusions) <- c("Age", "Language", "Previous", "Purpose", "Comprehension", "Frequency")
+                                  full_long$studyans_exclusion,
+                                  full_long$team_exclusion, 
+                                  useNA = "ifany"))
+colnames(exclusions) <- c("Age", "Language", "Previous", "Purpose", "Comprehension", "Team Exclusion", "Frequency")
 exclusions$Num_Participants <- exclusions$Frequency / 3
 
 exclusions
@@ -730,9 +725,9 @@ l.model.6B <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) +
 
 ```{r}
 output <- list(
-k.model.1, k.model.2, k.model.3, k.model.4, k.model.5, k.model.6, k.model.6A, k.model.6B, r.model.1, r.model.2, r.model.3, r.model.4, r.model.5, r.model.6, r.model.6A, r.model.6B, l.model.1, l.model.2, l.model.3, l.model.4, l.model.5, l.model.6, l.model.6A, r.model.6B)
+k.model.1, k.model.2, k.model.3, k.model.4, k.model.5, k.model.6, k.model.6A, k.model.6B, r.model.1, r.model.2, r.model.3, r.model.4, r.model.5, r.model.6, r.model.6A, r.model.6B, l.model.1, l.model.2, l.model.3, l.model.4, l.model.5, l.model.6, l.model.6A, l.model.6B)
 
-save(output, file = "log_exclude.Rdata")
+save(output, file = "log_noexclude.Rdata")
 ```
 
 

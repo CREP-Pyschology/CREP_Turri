@@ -1,0 +1,455 @@
+---
+title: "Model Comparison"
+author: "Erin M. Buchanan"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+
+```{r}
+library(dplyr)
+options(scipen = 10)
+```
+
+
+## Import Data
+
+```{r}
+load("linear_exclude.Rdata")
+linear_exclude <- output
+
+load("linear_noexclude.Rdata")
+linear_no <- output
+
+load("log_exclude.Rdata")
+log_exclude <- output
+
+load("log_noexclude.Rdata")
+log_no <- output
+
+rm(output)
+```
+
+## Comparison
+
+### What decision would we make? 
+
+```{r}
+linear_e_AIC <- unlist(lapply(linear_exclude, AIC))
+linear_n_AIC <- unlist(lapply(linear_no, AIC))
+log_e_AIC <- unlist(lapply(log_exclude, AIC))
+log_n_AIC <- unlist(lapply(log_no, AIC))
+
+log_aics <- data.frame(
+  "model" = c("know1", "know2", "know3", "know4", "know5", "know6", "know6a", "know6b", 
+            "reason1", "reason2", "reason3", "reason4", "reason5", "reason6", "reason6a", "reason6b", 
+            "luck1", "luck2", "luck3", "luck4", "luck5", "luck6", "luck6a", "luck6b"),
+  "log_e_AIC" = log_e_AIC, 
+  "log_n_AIC" = log_n_AIC
+)
+
+linear_aics <- data.frame(
+  "model" = c("know1", "know2", "know4", "know5", "know6", "know6a", "know6b", 
+            "reason1", "reason2", "reason4", "reason5", "reason6", "reason6a", "reason6b", 
+            "luck1", "luck2", "luck4", "luck5", "luck6", "luck6a", "luck6b"),
+  "linear_e_AIC" = linear_e_AIC, 
+  "linear_n_AIC" = linear_n_AIC
+)
+
+aics <- log_aics %>% 
+  full_join(linear_aics, 
+            by = "model")
+
+aics
+```
+
+### Knowledge
+
+- Covariate models are all better (model 5 < model 4)
+- Condition adds to model (model 6)
+- Interaction add to model (model 6a)
+- Turk add to model (model 6b)
+
+#### Compare Condition
+
+```{r}
+# log our exclusions
+summary(log_exclude[[6]])
+
+# log original conclusions
+summary(log_no[[6]])
+
+# linear our exclusions
+summary(linear_exclude[[5]])
+
+# linear original conclusions
+summary(linear_no[[5]])
+```
+
+- Log Exclude
+## condIgnorance -1.313222   0.050238 -26.140   <2e-16 ***
+## condKnowledge  0.611665   0.044435  13.765   <2e-16 ***
+
+- Log No Exclude
+## condIgnorance -1.383171   0.064406 -21.476   <2e-16 ***
+## condKnowledge  0.760795   0.056327  13.507   <2e-16 ***
+
+- Linear Exclude
+## condIgnorance   -22.38826     0.80320 12225.36039 -27.874   <2e-16 ***
+## condKnowledge    12.29759     0.80344 12228.00760  15.306   <2e-16 ***
+
+- Linear No Exclude
+## condIgnorance  -22.91682    0.97681 7912.12480 -23.461   <2e-16 ***
+## condKnowledge   14.12770    0.97686 7913.61103  14.462   <2e-16 ***
+
+SAME CONCLUSIONS
+
+#### Compare Interaction
+
+```{r}
+# log our exclusions
+summary(log_exclude[[7]])
+
+# log original conclusions
+summary(log_no[[7]])
+
+# linear our exclusions
+summary(linear_exclude[[6]])
+
+# linear original conclusions
+summary(linear_no[[6]])
+```
+
+- Log Exclude
+## condIgnorance:vignetteEmma    0.977499   0.132791   7.361 0.000000000000182 ***
+## condKnowledge:vignetteEmma    0.395026   0.114528   3.449          0.000562 ***
+## condIgnorance:vignetteGerald  0.223192   0.113776   1.962          0.049800 *  
+## condKnowledge:vignetteGerald  0.021780   0.106168   0.205          0.837455    
+
+- Log No Exclude
+## condIgnorance:vignetteEmma    1.048154   0.171915   6.097 0.00000000108 ***
+## condKnowledge:vignetteEmma    0.218717   0.147265   1.485      0.137494    
+## condIgnorance:vignetteGerald  0.165680   0.144717   1.145      0.252269    
+## condKnowledge:vignetteGerald -0.216100   0.134482  -1.607      0.108075    
+
+- Linear Exclude
+## condIgnorance:vignetteEmma      25.5616991268     1.9565836922 12225.4808225861
+## condKnowledge:vignetteEmma       6.3093059824     1.9483982067 12227.4572082872
+## condIgnorance:vignetteGerald     6.3550643077     1.9527921309 12219.9613719969
+## condKnowledge:vignetteGerald     1.5564721118     1.9516682843 12220.5235542453 
+## condIgnorance:vignetteEmma    13.064          < 2e-16 ***
+## condKnowledge:vignetteEmma     3.238          0.00121 ** 
+## condIgnorance:vignetteGerald   3.254          0.00114 ** 
+## condKnowledge:vignetteGerald   0.798          0.42517    
+
+- Linear No Exclude
+
+## condIgnorance:vignetteEmma     26.39881    2.37794 7912.72612  11.102
+## condKnowledge:vignetteEmma      2.99716    2.36189 7913.98767   1.269
+## condIgnorance:vignetteGerald    4.68784    2.36824 7906.36535   1.979
+## condKnowledge:vignetteGerald   -3.20824    2.36675 7906.17704  -1.356
+## condIgnorance:vignetteEmma      < 2e-16 ***
+## condKnowledge:vignetteEmma       0.2045    
+## condIgnorance:vignetteGerald     0.0478 *  
+## condKnowledge:vignetteGerald     0.1753    
+
+SAME CONCLUSIONS
+
+#### Compare Turk
+
+```{r}
+# log our exclusions
+summary(log_exclude[[8]])
+
+# log original conclusions
+summary(log_no[[8]])
+
+# linear our exclusions
+summary(linear_exclude[[7]])
+
+# linear original conclusions
+summary(linear_no[[7]])
+```
+
+- Log Exclude
+## condIgnorance:turkTRUE -0.3324922  0.1930846  -1.722  0.08507 .  
+## condKnowledge:turkTRUE  0.2986885  0.1735316   1.721  0.08521 .  
+
+- Log No Exclude
+## condIgnorance:turkTRUE -0.280348   0.198922  -1.409  0.15874    
+## condKnowledge:turkTRUE  0.160700   0.178869   0.898  0.36896    
+
+- Linear Exclude
+## condIgnorance:turkTRUE    -7.76061     2.85394 12210.81748  -2.719  0.00655 ** 
+## condKnowledge:turkTRUE     3.05294     2.85177 12205.16782   1.071  0.28440    
+
+- Linear No Exclude
+## condIgnorance:turkTRUE   -7.57655    2.86480 7901.25946  -2.645  0.00819 ** 
+## condKnowledge:turkTRUE    1.10771    2.86284 7895.37692   0.387  0.69882 
+
+DIFFERENT CONCLUSION
+
+### Reasonable
+
+- Covariate models are all better (model 5 < model 4)
+- Condition adds to model (model 6)
+- Interaction add to model (model 6a)
+- Turk add to model (model 6b)
+
+#### Compare Condition
+
+```{r}
+# log our exclusions
+summary(log_exclude[[14]])
+
+# log original conclusions
+summary(log_no[[14]])
+
+# linear our exclusions
+summary(linear_exclude[[12]])
+
+# linear original conclusions
+summary(linear_no[[12]])
+```
+
+- Log Exclude
+## condIgnorance -0.400271   0.075940  -5.271 0.000000135772713 ***
+## condKnowledge  0.425613   0.090671   4.694 0.000002678579960 ***
+
+- Log No Exclude
+## condIgnorance -0.308554   0.092775  -3.326     0.000882 ***
+## condKnowledge  0.429622   0.108894   3.945 0.0000796927 ***
+
+- Linear Exclude
+## condIgnorance    -3.36510     0.48594 12226.71495  -6.925 0.00000000000458 ***
+## condKnowledge     1.19634     0.48600 12228.01231   2.462           0.0138 *  
+
+- Linear No Exclude
+## condIgnorance   -3.26289    0.60258 7909.17481  -5.415 0.000000063118 ***
+## condKnowledge    1.53964    0.60271 7909.70465   2.555         0.0107 *
+
+SAME CONCLUSION
+
+#### Compare Interaction
+
+```{r}
+# log our exclusions
+summary(log_exclude[[15]])
+
+# log original conclusions
+summary(log_no[[15]])
+
+# linear our exclusions
+summary(linear_exclude[[13]])
+
+# linear original conclusions
+summary(linear_no[[13]])
+```
+
+- Log Exclude
+## condIgnorance:vignetteEmma    0.741195   0.196886   3.765        0.000167 ***
+## condKnowledge:vignetteEmma    0.256617   0.245839   1.044        0.296559    
+## condIgnorance:vignetteGerald  0.424379   0.210062   2.020        0.043357 *  
+## condKnowledge:vignetteGerald -0.237181   0.255828  -0.927        0.353869    
+
+- Log No Exclude
+## condIgnorance:vignetteEmma    0.456683   0.238897   1.912  0.05592 .  
+## condKnowledge:vignetteEmma   -0.215650   0.309199  -0.697  0.48552    
+## condIgnorance:vignetteGerald  0.180623   0.253647   0.712  0.47640    
+## condKnowledge:vignetteGerald -0.671010   0.319988  -2.097  0.03600 *  
+
+- Linear Exclude
+## condIgnorance:vignetteEmma       3.04640     1.19323 12225.73295   2.553
+## condKnowledge:vignetteEmma      -0.21466     1.18802 12226.32527  -0.181
+## condIgnorance:vignetteGerald     1.37575     1.19056 12222.90307   1.156
+## condKnowledge:vignetteGerald    -1.28468     1.18963 12223.18341  -1.080
+## condIgnorance:vignetteEmma         0.0107 *  
+## condKnowledge:vignetteEmma         0.8566    
+## condIgnorance:vignetteGerald       0.2479    
+## condKnowledge:vignetteGerald       0.2802    
+
+- Linear No Exclude
+## condIgnorance:vignetteEmma      1.19673534751    1.48284561261 7907.31634547197
+## condKnowledge:vignetteEmma     -0.86268044461    1.47265965270 7907.62722968159
+## condIgnorance:vignetteGerald   -0.33666307818    1.47566823976 7905.12887209355
+## condKnowledge:vignetteGerald   -2.04740546590    1.47497461086 7905.18687022792
+## condIgnorance:vignetteEmma     0.807 0.419660    
+## condKnowledge:vignetteEmma    -0.586 0.558028    
+## condIgnorance:vignetteGerald  -0.228 0.819541    
+## condKnowledge:vignetteGerald  -1.388 0.165147
+
+POTENTIALLY DIFFERENT CONCLUSION
+
+#### Compare Turk
+
+```{r}
+# log our exclusions
+summary(log_exclude[[16]])
+
+# log original conclusions
+summary(log_no[[16]])
+
+# linear our exclusions
+summary(linear_exclude[[14]])
+
+# linear original conclusions
+summary(linear_no[[14]])
+```
+
+- Log Exclude
+## condIgnorance:turkTRUE -0.655384   0.427927  -1.532   0.125638    
+## condKnowledge:turkTRUE -0.443704   0.514800  -0.862   0.388745    
+
+- Log No Exclude
+## condIgnorance:turkTRUE -0.760031   0.431834  -1.760       0.07841 .  
+## condKnowledge:turkTRUE -0.459598   0.518873  -0.886       0.37575    
+
+- Linear Exclude
+## condIgnorance:turkTRUE    -3.30979     1.72740 12217.78311  -1.916
+## condKnowledge:turkTRUE    -1.99600     1.72596 12216.04908  -1.156
+## condIgnorance:turkTRUE         0.05538 .  
+## condKnowledge:turkTRUE         0.24752    
+
+- Linear No Exclude
+## condIgnorance:turkTRUE   -3.61045    1.76800 7904.28369  -2.042        0.04117
+## condKnowledge:turkTRUE   -2.50244    1.76665 7903.69215  -1.416        0.15667
+## condIgnorance:turkTRUE *  
+## condKnowledge:turkTRUE    
+
+POTENTIALLY DIFFERENT CONCLUSION
+
+### Luck
+
+- Covariate models are all better (model 5 < model 4)
+- Condition adds to model (model 6)
+- Interaction add to model (model 6a)
+- Turk add to model (model 6b)
+
+#### Compare Condition
+
+```{r}
+# log our exclusions
+summary(log_exclude[[22]])
+
+# log original conclusions
+summary(log_no[[22]])
+
+# linear our exclusions
+summary(linear_exclude[[19]])
+
+# linear original conclusions
+summary(linear_no[[19]])
+```
+
+Note: these may not be scaled the same way, couldn't remember. 
+
+- Log Exclude
+## condIgnorance  1.027734   0.047414  21.676   < 2e-16 ***
+## condKnowledge  0.935679   0.047106  19.863   < 2e-16 ***
+
+- Log No Exclude
+## condIgnorance  1.036935   0.059455  17.441     < 2e-16 ***
+## condKnowledge  1.030595   0.059157  17.421     < 2e-16 ***
+
+- Linear Exclude
+## condIgnorance   -17.92923     0.85423 11400.80415 -20.989  < 2e-16 ***
+## condKnowledge   -18.57941     0.85105 11402.71372 -21.831  < 2e-16 ***
+
+- Linear No Exclude
+## condIgnorance  -17.51188    1.05058 7369.73656 -16.669  < 2e-16 ***
+## condKnowledge  -19.95222    1.04543 7372.04848 -19.085  < 2e-16 ***
+
+SAME CONCLUSION
+
+#### Compare Interaction
+
+```{r}
+# log our exclusions
+summary(log_exclude[[23]])
+
+# log original conclusions
+summary(log_no[[23]])
+
+# linear our exclusions
+summary(linear_exclude[[20]])
+
+# linear original conclusions
+summary(linear_no[[20]])
+```
+
+- Log Exclude
+## condIgnorance:vignetteEmma    2.527798   0.135060  18.716            < 2e-16
+## condKnowledge:vignetteEmma    1.067342   0.138234   7.721 0.0000000000000115
+## condIgnorance:vignetteGerald  0.723264   0.110503   6.545 0.0000000000594091
+## condKnowledge:vignetteGerald  0.094904   0.113794   0.834             0.4043
+## condIgnorance:vignetteEmma   ***
+## condKnowledge:vignetteEmma   ***
+## condIgnorance:vignetteGerald ***
+## condKnowledge:vignetteGerald    
+
+- Log No Exclude
+## condIgnorance:vignetteEmma    2.144465   0.161993  13.238      < 2e-16 ***
+## condKnowledge:vignetteEmma    0.506074   0.166742   3.035      0.00240 ** 
+## condIgnorance:vignetteGerald  0.592601   0.138050   4.293 0.0000176539 ***
+## condKnowledge:vignetteGerald -0.135357   0.143460  -0.944      0.34542    
+
+- Linear Exclude
+## condIgnorance:vignetteEmma     -41.980268776     2.052571593 11396.832384897
+## condKnowledge:vignetteEmma     -13.967669651     2.036353284 11399.257430198
+## condIgnorance:vignetteGerald   -15.926848071     2.056592362 11397.553664169
+## condKnowledge:vignetteGerald    -3.629120645     2.050844394 11396.015354163
+## condIgnorance:vignetteEmma   -20.453            < 2e-16 ***
+## condKnowledge:vignetteEmma    -6.859 0.0000000000072852 ***
+## condIgnorance:vignetteGerald  -7.744 0.0000000000000104 ***
+## condKnowledge:vignetteGerald  -1.770            0.07682 .  
+
+- Linear No Exclude
+## condIgnorance:vignetteEmma    -37.40795    2.53356 7367.77201 -14.765
+## condKnowledge:vignetteEmma     -6.33273    2.50021 7370.56367  -2.533
+## condIgnorance:vignetteGerald  -13.61204    2.53271 7365.17858  -5.374
+## condKnowledge:vignetteGerald   -0.41453    2.52313 7365.23805  -0.164
+## condIgnorance:vignetteEmma        < 2e-16 ***
+## condKnowledge:vignetteEmma         0.0113 *  
+## condIgnorance:vignetteGerald 0.0000000791 ***
+## condKnowledge:vignetteGerald       0.8695    
+
+SAME CONCLUSION
+
+#### Compare Turk
+
+```{r}
+# log our exclusions
+summary(log_exclude[[24]])
+
+# log original conclusions
+summary(log_no[[24]])
+
+# linear our exclusions
+summary(linear_exclude[[21]])
+
+# linear original conclusions
+summary(linear_no[[21]])
+```
+
+- Log Exclude
+## condIgnorance:turkTRUE -0.655384   0.427927  -1.532   0.125638    
+## condKnowledge:turkTRUE -0.443704   0.514800  -0.862   0.388745    
+
+- Log No Exclude
+## condIgnorance:turkTRUE -0.312009   0.190996  -1.634  0.10235    
+## condKnowledge:turkTRUE  0.081674   0.186521   0.438  0.66147    
+
+- Linear Exclude
+## condIgnorance:turkTRUE     3.60810     3.04945 11382.24992   1.183  0.23676    
+## condKnowledge:turkTRUE    -2.84703     2.99023 11378.59470  -0.952  0.34106    
+
+- Linear No Exclude
+## condIgnorance:turkTRUE    3.29727    3.09170 7361.03144   1.066  0.28624    
+## condKnowledge:turkTRUE   -1.40167    3.03440 7359.25060  -0.462  0.64415 
+
+SAME CONCLUSION
