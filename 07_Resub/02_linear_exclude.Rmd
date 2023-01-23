@@ -434,6 +434,9 @@ r.model.6B <- lmer(reason_vas ~ (1|vignette/person_code) +
 Intercept only model to help determine if the addition of random intercepts are useful.
 
 ```{r}
+# rescore luck so it matches log
+final_luck$luck_vas <- 101 - final_luck$luck_vas
+
 l.model.1 <- glm(luck_vas ~ 1,
                data = final_luck,
                   na.action = "na.omit")
