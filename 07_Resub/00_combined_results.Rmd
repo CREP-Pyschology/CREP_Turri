@@ -1,5 +1,5 @@
 ---
-title: "Model Comparison"
+title: "Reviewer Comment Discussion"
 author: "Erin M. Buchanan"
 date: "`r Sys.Date()`"
 output: 
