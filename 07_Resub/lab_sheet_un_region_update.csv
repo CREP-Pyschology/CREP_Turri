@@ -1,0 +1,86 @@
+checked,notes,lab_code,person_code,country,un_region,language,use,link_code,protocol_approved,data_collected,completed_crep_requirements,compensation,survey_platform,sampled_population,group_data,in_person,extensions,deviation_issues,deviation_documentation,program_comp,un_region2
+Y,only test rows,cabbe9,a5e2ba5c7fcf9a90c4bc1b5ed666f57b,POL,Europe,Polish,No,uvmj4,Yes,Yes,No,None,SoSciSurvey,Both,No,No,No,No,No,no_reward,Europe
+Y,NA,d47b47,a5e2ba5c7fcf9a90c4bc1b5ed666f57b,POL,Europe,Polish,Yes,uvmj4,Yes,Yes,No,None,SoSciSurvey,Both,No,No,No,No,No,no_reward,Europe
+Y,NA,c1e6b4,a5e2ba5c7fcf9a90c4bc1b5ed666f57b,POL,Europe,Polish,Yes,uvmj4,Yes,Yes,No,None,SoSciSurvey,Both,No,No,No,No,No,no_reward,Europe
+Y,NA,NA,c5669095490c58cdb8a4642421d69dba,USA,Americas,English,No,kpwr9,Yes,Yes,No,Course Credit,Qualtrics,Undergraduates,Unclear,Unclear,No,No,No,NA,Americas
+Y,NA,ee46af,3b4e9381f4aafb032e37c0d5fa732aba,SGP,Asia,English,Yes,6q75c,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,Yes,Yes,No,"Informed consent states, ""The aim of this study is to examine individual differences in perception of certainty regarding events andobjects.""",https://osf.io/g7c9q/,both_questions,NA
+Y,NA,6d2b97,de5a43985156a022e44511202ccd5449,ROU,Europe,Romanian,Yes,p6459,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,Some changes on wording,https://osf.io/ae7uv/,just_reward,NA
+Y,NA,855e89,b975583369996d9136088dbe211abfcf,USA,Americas,English,Yes,fnr7p,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,None,"Changed from using Qualtrics to SoSciSurvey according to their IRB materials. None of our data we have from them should be from Qualtrics though. So, this shouldn't matter for our purposes.",https://osf.io/k5fbe/,just_reward,Americas
+Y,NA,NA,f088976aad116aaa4bf81cc6357a4e32,AUS,Oceania,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Europe
+Y,NA,0df1c5,20e15d6f0eb0520239a9f7921b1ee905,TUR,Asia,Turkish,Yes,5vqyz,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,No,No,"Cognitive Style Indicator (CSI) - added after main study procedures
+Measurement extension",No,No,just_reward,Asia
+Y,only test rows,521d24,9b3ad5ab27aa66b9801d3276662d71c4,FRA,Europe,French,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,just_reward,NA
+Y,NA,NA,4b90c61f58907bb5d4462c69e700f70a,AUS,Oceania,English,No,NA,Yes,Yes,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Europe
+Y,NA,NA,6eb385b8fec451ed28d93d2c6266b2df,DEU,Europe,German,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,NA,f7f855,b6bab6f7c2e61741dcdc1689c30fc5fb,USA,Americas,English,Yes,6da9r,Yes,Yes,No,Unclear,SoSciSurvey,Undergraduates,Unclear,Unclear,No,No,No,both_questions,Americas
+Y,NA,d6a41e,63947e8c9e47bc0056f78f402f3898f1,USA,Americas,English,Yes,7a6wz,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,just_reward,Americas
+Y,only empty rows,d4b020,eb30b1a1164e00a96b174c57c4d10c13,USA,Americas,English,No,NA,Yes,Yes,NA,NA,NA,NA,NA,NA,NA,NA,NA,both_questions,Americas
+Y,NA,7fe877,d4c4b2302987480f7ce2084927489e4e,USA,Americas,English,Yes,rf3at,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,Unclear,Yes,No,"Informed consent stated that ""You are being asked to participate in a research study. The purpose of this research is toexamine how people attend to, perceive, interpret,and remember social stimuli (e.g., humans,faces, bodies, conversations, interactions, etc.). Specifically, we are interested in how a person’s group membership or how information you might learn about a person or group might influence how you evaluatethose people or groups."" - which deviates from how other participants were informed about the study",https://osf.io/wuxzk/,both_questions,Americas
+Y,NA,1c0a06,3e1f2a5e94450c8371562c74671ace76,NZL,Oceania,English,Yes,pz9v2,Yes,Yes,Yes,Lottery,SoSciSurvey,Unclear,No,Yes,No,"Confusing language about randomization is used in the wiki of the OSF, but they also state that they did the correct full randomization method. We should follow up with David.",https://osf.io/pz9v2/wiki/home/,lottery,NA
+Y,Note that it says a mix of compensation online but everyone got the course credit survey,aba0ac,8ee3ca908c989e3f6342994da802c3bd,RUS,Europe,Russian,Yes,tkz8b,Yes,Yes,No,Course Credit,SoSciSurvey,Both,No,No,No,No,No,credit,Europe
+Y,NA,c89c37,7898bca2938d7b6d8a82093ddffb15dc,USA,Americas,English,Yes,euc9t,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,just_reward,Americas
+Y,NA,6c0ba6,c22875ee12b4cdfb8843ead3b8e1ddf8,USA,Americas,English,Yes,9673d,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,"Informed consent stated that ""This study is on what people think another person knows. Specifically, you will read a storyabout people and what they think to be true, then you will answer a few questions about these stories, followed by a very brief questionnaire about yourself."" - which deviates from how other studies provided consent and may have tipped participants off on the true purpose of the study.",https://osf.io/hnea7/,just_reward,Americas
+Y,NA,a3e428,4f86a6d4b553a44559cde3ceba92b330,CHE,Europe,French,Yes,zmjq9,Yes,Yes,Yes,"Course Credit, Money",SoSciSurvey,Unclear,Unclear,Unclear,No,No,No,just_reward,NA
+Y,NA,NA,1be59d49e62765e6f313e5201cac24f0,CAN,Americas,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Americas
+Y,NA,NA,5900b26c43d81bba46e6e607e1361f1d,CHE,Europe,Swiss,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,Only test rows,6ce754,ccc20a00466f0c4077f924733e9a3789,NOR,Europe,Norwegian,No,n78fm,Yes,Yes,No,None,SoSciSurvey,Both,No,No,No,No,No,both_questions,Europe
+Y,NA,f6d5a9,ccc20a00466f0c4077f924733e9a3789,NOR,Europe,Norwegian,Yes,n78fm,Yes,Yes,No,Sweets,SoSciSurvey,Both,No,No,No,No,No,sweets,Europe
+Y,NA,ea9aea,bc3266a9a2dc0de236029a38f1e0d4b9,USA,Americas,English,Yes,3gaxf,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,both_questions,Americas
+Y,NA,c4198b,a0482c274aae281e849228b1e03410ff,AUS,Oceania,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,both_questions,Europe
+Y,NA,b6c8ec,adaccbbc254a881db6c19b3224887bcc,USA,Americas,English,Yes,nrdsf,Yes,Yes,No,Money,Qualtrics,Community,No,No,No,No,No,both_questions,Americas
+Y,NA,cfff8c,71289e5ce6b2abe28c0d25bdce7c14a0,USA,Americas,English,Yes,fr3jw,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,both_questions,Americas
+Y,Only test rows,06f361,5b4679a7308a31edb08fa09322027a81,USA,Americas,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,both_questions,Americas
+Y,NA,NA,bc825138cd931493007cb2f083283fca,CZE,Europe,Czech,No,wgh63,Yes,Yes,Yes,Unclear,Qualtrics,Unclear,Unclear,Unclear,No,No,No,NA,NA
+Y,NA,fg64rd,7f9c8bee305f2a759f2905cc5afecd6a,AUS,Oceania,English,Yes,4r9vd,Yes,Yes,Yes,Course Credit,Qualtrics,Undergraduates,Unclear,Unclear,No,No,No,NA,Europe
+Y,NA,NA,3f277644aa69fcb4667a4b958e0604a8,PHL,Asia,Filipino,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,NA,8e07d1,fd5a38067cf64a3e10ae8e92f015be4e,USA,Americas,English,Yes,7u328,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,just_reward,Americas
+Y,only test rows,ff4c4c,fd5a38067cf64a3e10ae8e92f015be4e,USA,Americas,English,No,7u328,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,both_questions,Americas
+Y,"unknown, only test rows",5a0c34,31087218cc44017311d2507def2c028d,USA,Americas,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,both_questions,Americas
+Y,NA,NA,69f4d019d6d15f23fd3e98ce22082ac2,USA,Americas,English,No,c6gdf,Yes,No,No,Unclear,Qualtrics,Undergraduates,Unclear,Unclear,No,No,No,NA,Americas
+Y,only test rows,6280c3,053921f004965238755a0b08414ad61f,CAN,Americas,English,No,tbywc,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,No,No,Julie/expertise extension,"Informed consent states, ""The purpose of this study is to examine participants’ assessment of what they think another person knows or believes""",https://osf.io/pz7mx/,just_reward,Americas
+Y,Note: protocol approved under a different number,07cc8d,053921f004965238755a0b08414ad61f,CAN,Americas,English,Yes,tbywc,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,No,No,Julie/expertise extension,"Informed consent states, ""The purpose of this study is to examine participants’ assessment of what they think another person knows or believes""",https://osf.io/pz7mx/,just_reward,Americas
+Y,"Answers are based on video, which shows English version of Qualtrics with no compension information",NA,03ac9bd50457c6c7768566107d25a40b,NLD,Europe,English,No,sqzfj,Yes,Yes,Yes,None,Qualtrics,Both,No,No,Unclear,No,No,NA,NA
+Y,"Wiki says in person, unclear if all in person",069afd,04aec6c128a6d0c7b156124a782a2e17,USA,Americas,English,Yes,tz37n,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,Unclear,Yes,Measurement extension,No,No,just_reward,Americas
+Y,NA,c7b55a,1300dd2a365669443e58645538040b7e,GRC,Europe,English,Yes,axpsq,Yes,Yes,No,None,SoSciSurvey,Both,No,No,No,"Informed consent states, ""The aim of this study is to investigate people’s intuitions about their beliefs.""",https://osf.io/mxg7k/,no_reward,Europe
+Y,NA,466ec1,25c0099bdeb9900e64b3f1e17ea9cf32,POL,Europe,Polish,Yes,uxcfe,Yes,Yes,Yes,None,SoSciSurvey,Unclear,Unclear,Unclear,No,No,No,just_reward,Europe
+Y,"Video shows in person, but study was conducted online",e53cc5,d5450db323eeab9cf7bd57ecc95d3454,USA,Americas,English,Yes,cd8kp,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,"Informed consent differs according to their ethics approval: ""This study is one what people think another person knows or believes""
+",https://osf.io/tjvq2/,both_questions,Americas
+Y,only empty rows,666a8e,ce12fb3de05c74c0ddc4821bcb6b195b,USA,Americas,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,both_questions,Americas
+Y,Video shows in person but unclear if that's what happened,098ad3,d547b0fe851b1f8786fce767e3d89f50,USA,Americas,English,Yes,pgync,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,Unclear,Unclear,Julie/expertise extension,No,No,just_reward,Americas
+Y,Video shows in person but unclear if that's what happened,78a818,d547b0fe851b1f8786fce767e3d89f50,USA,Americas,English,Yes,pgync,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,Unclear,Unclear,Julie/expertise extension,No,No,just_reward,Americas
+Y,only test rows,07d701,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,only test rows,1df1e0,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,only test rows,2a0af8,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,unclear who lab was,4682df,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,only test rows,55c9c4,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,only test rows,64820c,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,"probably only test rows, but some may be real data",9bdc87,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,only empty rows,aa547b,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,only test rows,b28152,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,unclear who lab was,be121a,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,only test rows,fc601a,NA,NA,NA,NA,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Y,NA,cff0fe,f19f790831cbe3722ccd98fd63d3d902,USA,Americas,English,Yes,zje64,Yes,Yes,Yes,"Course Credit for Students, Nothing for Community",SoSciSurvey,Both,No,No,No,"Consent stated that, ""The purpose of this study is to gain information on what people think another person knows or believes.""",https://osf.io/gywnu/,just_reward,Americas
+Y,NA,87d100,47cce7454402254dd1e56c7338d2ca3b,POR,Europe,Portuguese,Yes,3s9xb,Yes,Yes,No,"Course Credit for Students, Nothing for Community",Qualtrics,Both,No,No,No,No,No,both_questions,Europe
+Y,NA,NA,d20ee08c0ef12db5f8d16c2dbce751c9,USA,Americas,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Americas
+Y,NA,9c8799,c6e892a926333f0840a81af6fa74a6c6,SVK,Europe,Slovak,Yes,phme2,Yes,Yes,Yes,None,SoSciSurvey,Both,No,No,"""General Decision-Making Scale (GDMS; Bavoľár, & Orosová, 2015) was added at the end of the replication study""",No,No,no_reward,NA
+Y,NA,60ca61,2c70764140dc2267dc65e463842c75dd,HUN,Europe,Hungarian,Yes,5pnvc,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,Unclear,Both,No,No,No,just_reward,Europe
+Y,NA,NA,ae5402bca19e6e68726ac2feadfdcfe5,POL,Europe,Polish,No,pekbz,Yes,Yes,Yes,Unclear,Qualtrics,Unclear,Unclear,Unclear,No,No,No,NA,Europe
+Y,NA,7fc76a,8ceb72b59172af0d6a8d657e76ec4ce8,AUS,Oceania,English,Yes,d8rsh,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,just_reward,Europe
+Y,NA,NA,73250f9c14e37a07028c67160f2cffff,USA,Americas,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Americas
+Y,NA,20a1ff,10fe64c77bdcdd1f63c4f6f6767bd834,TWN,NA,Chinese,Yes,6trj5,Yes,Yes,No,Money,SoSciSurvey,Community,No,No,No,No,No,money,NA
+Y,NA,0eb4a7,ecb1153cd73ee30290a753fb74358c19,USA,Americas,English,Yes,g3tcw,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,"Informed consent states, ""Dr.Chartier is conducting a study on how we attribute knowledge to other people. This work will help us understand our definition of “knowing” and how we apply this definition to the beliefs that others hold""",https://osf.io/3yjpw/,just_reward,Americas
+Y,NA,NA,08cb0f91a2f3e96f0499692edcd4c53c,USA,Americas,English,No,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Americas
+Y,NA,a6aefd,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,Yes,gx5cu,Yes,Yes,No,Sweets,SoSciSurvey,Undergraduates,No,Yes,Julie extension,"They say that they deviate by using a VAS for reasonableness and luck/ability, but those were part of the main procedure and are not deviations. I think they mean that it deviates from the original study rather than from the RRR protocol",https://osf.io/5nsza/wiki/home/,just_reward,NA
+Y,N = Nacherhebung (means that further data was collected because of particpant exclusions to reach the teams desired target sample size),905904,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,Yes,85wde,Yes,Yes,No,Sweets,SoSciSurvey,Undergraduates,No,Yes,Julie extension,"""Note that the luck/ability probe has been changed compared to the RRR due to comprehension difficulties. The single question has been split into two questions: a right/wrong probe and a luck/ability probe where the selected answer from the right/wrong probe is filled in. See the Materials wiki for details."" ... They note this as a deviation; however, we ALL ended up making this change to in the SSS.",https://osf.io/473db/wiki/home/,just_reward,NA
+Y,NA,086a2b,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,Yes,g7fp6,Yes,Yes,No,Sweets,SoSciSurvey,Undergraduates,No,Yes,Julie extension,"We only changed the measure for the question ""Peter knows/only believes..."". The original measure was a binary question, we used a slide control with a scale from 1 to 100 to measure this question.",https://osf.io/be54a/wiki/home/,just_reward,NA
+Y,only test rows,82ce7b,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,No,NA,NA,NA,NA,Unclear,SoSciSurvey,NA,NA,NA,NA,NA,NA,both_questions,NA
+Y,NA,053396,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,Yes,wr695,Yes,Yes,No,Money,SoSciSurvey,Undergraduates,No,No,Julie + experience,NA,NA,both_questions,NA
+Y,NA,6898ef,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,Yes,rx4fp,Yes,Yes,No,None,SoSciSurvey,Undergraduates,No,No,Julie + experience,NA,NA,no_reward,NA
+Y,this team was separate but sent out the link for anonther team,612ed8,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,Yes,5ab6f,Yes,Yes,No,None,SoSciSurvey,Undergraduates,No,No,Julie + experience,NA,NA,lottery,NA
+Y,NA,c13d3a,bfe85dfa8a47470e2600b4bae1dfe4c1,DEU,Europe,German,Yes,htbcz,Yes,Yes,No,Lottery,SoSciSurvey,Undergraduates,No,No,Julie + experience,NA,NA,both_questions,NA
+Y,NA,cb060d,6109cf70459f0edc57ccb89cf26d66ef,AUT,Europe,German,Yes,wgk38,Yes,Yes,Yes,None,SoSciSurvey,Unclear,Unclear,Unclear,No,No,No,no_reward,NA
+Y,NA,2f579c,ec35cfeaedd64eccef16c265b2ba179f,DEU,Europe,German,Yes,y5dw7,Yes,Yes,No,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,just_reward,NA
+Y,NA,12c361,82d647ec9366dd067a092145d7d8ee7b,GBR,Europe,English,Yes,q2anz,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,None,No,No,just_reward,NA
+Y,NA,2c2ba6,82d647ec9366dd067a092145d7d8ee7b,GBR,Europe,English,Yes,q2anz,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,None,No,No,both_questions,NA
+Y,a majority of participants selected Germany as country of residence,f3a68b,64ba90ce7822b9c898df033ebb8c2c18,AUT,Europe,German,Yes,ws273,Yes,Yes,No,Unclear,SoSciSurvey,Unclear,Unclear,Unclear,None,No,No,both_questions,NA
+Y,NA,9db02f,5f4f444af13a37ac3598f3f4f613f560,USA,Americas,English,Yes,fc8ur,Yes,Yes,Yes,Course Credit,SoSciSurvey,Undergraduates,No,No,No,No,No,just_reward,Americas

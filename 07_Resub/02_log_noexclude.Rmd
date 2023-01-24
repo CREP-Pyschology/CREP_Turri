@@ -729,6 +729,7 @@ k.model.1, k.model.2, k.model.3, k.model.4, k.model.5, k.model.6, k.model.6A, k.
 
 save(output, file = "log_noexclude.Rdata")
 save(final_long, file = "final_long_log_noexclude.Rdata")
+save(final_luck, file = "final_luck_log_noexclude.Rdata")
 ```
 
 

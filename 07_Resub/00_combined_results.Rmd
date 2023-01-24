@@ -13,7 +13,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, messages = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
 # Libraries
@@ -24,6 +24,8 @@ library(ggplot2)
 library(lme4)
 library(lmerTest)
 library(flextable)
+library(rio)
+library(ggmosaic)
 options(scipen = 10)
 ```
 
@@ -43,6 +45,10 @@ load("log_noexclude.Rdata")
 log_no <- output
 
 rm(output)
+
+load("final_long_log_noexclude.Rdata")
+load("final_luck_log_noexclude.Rdata")
+lab_sheet <- import("lab_sheet_un_region_update.csv")
 ```
 
 # Modeling Comparison
@@ -174,8 +180,8 @@ ggplot(df, aes(logit, education)) +
 4) Intercept model with random intercept vignette/id/lab, for the linear model no participant id was used 
 5) Random intercepts and covariates
 6) Random intercepts, covariates, and condition
-6a) Random intercepts, covariates, and condition*vignette
-6b) Random intercepts, covariates, and condition*turk
+6a) Random intercepts, covariates, and condition by vignette
+6b) Random intercepts, covariates, and condition by turk
 
 - These results are discussed below within each dependent variable; however, the general summary is the same for each:
   - Covariate models are all better (model 5 < model 4)
@@ -239,7 +245,7 @@ summary(linear_no[[5]])
 
 </details> 
 
-### Interaction
+### Vignette
 
 - Logistic versus linear: Both show significant interactions between condition and vignette. 
 - Exclusions: Both show significant interactions between condition and vignette. 
@@ -267,6 +273,7 @@ summary(linear_no[[6]])
 
 - Logistic versus linear: In this case, logistic models do not show an interaction between the Turk sample and the condition. Linear models show an interaction. 
 - Exclusions: exclusions do not appear to change the pattern of results within each linking function. 
+- The effect for linear models is graphed below. This result occurs because there is slightly more sensitivity to show the differences between Gettier and Knowledge in Turk than the other sample. A visualization of the distributions shows that more people pick zero in the regular sample than Turk. 
 
 <details><summary>View full result</summary>
 
@@ -285,6 +292,29 @@ summary(linear_no[[7]])
 ```
 
 </details> 
+
+```{r}
+df <- linear_exclude[[7]]@frame
+
+ggplot(df, aes(turk, know_vas, fill = cond)) +
+  stat_summary(fun = mean,
+               geom = "bar",
+               position = "dodge") +
+  stat_summary(fun.data = mean_cl_normal,
+               geom = "errorbar", 
+               position = position_dodge(width = 0.90),
+               width = .2) + 
+  theme_classic() + 
+  xlab("Turk Sample") + 
+  ylab("Knowledge Rating") + 
+  scale_fill_discrete(name = "Condition")
+
+ggplot(df, aes(turk, know_vas)) + 
+  geom_violin() + 
+  theme_classic() + 
+  xlab("Turk Sample") + 
+  ylab("Knowledge Rating")
+```
 
 ## Reasonable
 
@@ -311,7 +341,7 @@ summary(linear_no[[12]])
 
 </details> 
 
-### Interaction
+### Vignette
 
 - Logistic versus linear: Generally, each version showed an interaction of condition and vignette. 
 - Exclusions: Logistic models both showed interactions for each exclusion type. However, the linear model with the pre-registered exclusions did not show an interaction between condition and vignette. This model has significantly less power than the updated exclusions, as only has 8000 data points (~2600+ participants) versus 12000 + data points (~4100+ participants). 
@@ -382,7 +412,7 @@ summary(linear_no[[19]])
 
 </details> 
 
-### Interaction
+### Vignette
 
 - Logistic versus linear: Models show the same pattern of interaction results. 
 - Exclusions: Models show the same pattern of interaction results. 
@@ -427,3 +457,74 @@ summary(linear_no[[21]])
 ```
 
 </details> 
+
+# Qualtrics versus SoSciSurvey
+
+```{r}
+table(final_long$source, useNA = "ifany")
+```
+
+## Knowledge
+
+- No interaction of source and condition results. 
+
+```{r}
+k.model.qualtrics <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*source,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(k.model.qualtrics)
+```
+
+## Reasonable
+
+- Interaction of source and condition results - in general, Qualtrics participants tend to pick reasonable more often but the pattern of choices relative to other conditions is the same. 
+
+```{r}
+r.model.qualtrics <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*source,
+                      data = final_long,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(r.model.qualtrics)
+
+df <- r.model.qualtrics@frame
+
+df$reason_vas_combined <- factor(df$reason_vas_combined,
+                                 levels = c(0,1),
+                                 labels = c("Unreasonable", "Reasonable"))
+
+ggplot(df) +
+  geom_mosaic(aes(x = product(reason_vas_combined, source, cond), 
+                  fill = reason_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Reason Choice", 
+                    direction = -1) + 
+  scale_x_productlist(breaks = c(0.13,.5,.87),
+    labels = c("Gettier", "Ignorance", "Knowledge")) +
+  theme_classic() + 
+  xlab("Condition") + 
+  ylab("Source")
+```
+
+## Luck 
+
+- No interaction with luck. 
+
+```{r}
+l.model.qualtrics <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*source,
+                      data = final_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(l.model.qualtrics)
+```
