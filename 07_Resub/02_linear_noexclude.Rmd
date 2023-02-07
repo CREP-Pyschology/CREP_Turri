@@ -435,7 +435,6 @@ r.model.6B <- lmer(reason_vas ~ (1|vignette/person_code) +
                       data = final_long,
                   na.action = "na.omit")
 ```
-
 ## Final Analysis Luck
 
 ### Model 1 

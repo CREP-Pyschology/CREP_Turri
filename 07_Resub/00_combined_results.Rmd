@@ -20,12 +20,19 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 
 ```{r}
 library(dplyr)
+library(tidyr)
 library(ggplot2)
 library(lme4)
 library(lmerTest)
 library(flextable)
 library(rio)
 library(ggmosaic)
+library(kableExtra)
+library(maps)
+library(countrycode)
+library(treemapify)
+library(MOTE)
+library(broom)
 options(scipen = 10)
 ```
 
@@ -46,9 +53,11 @@ log_no <- output
 
 rm(output)
 
-load("final_long_log_noexclude.Rdata")
-load("final_luck_log_noexclude.Rdata")
+load("final_long_log_exclude.Rdata")
+load("final_luck_log_exclude.Rdata")
 lab_sheet <- import("lab_sheet_un_region_update.csv")
+
+load("full_long_log_exclude.Rdata")
 ```
 
 # Modeling Comparison
@@ -460,6 +469,8 @@ summary(linear_no[[21]])
 
 # Qualtrics versus SoSciSurvey
 
+- This section examines if there is an interaction between data collection source (Qualtrics versus SoSciSurvey) and the results with condition. 
+
 ```{r}
 table(final_long$source, useNA = "ifany")
 ```
@@ -467,6 +478,8 @@ table(final_long$source, useNA = "ifany")
 ## Knowledge
 
 - No interaction of source and condition results. 
+
+<details><summary>View full results</summary>
 
 ```{r}
 k.model.qualtrics <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
@@ -480,9 +493,13 @@ k.model.qualtrics <- glmer(know_vas_combined ~ (1|vignette/id/person_code) +
 summary(k.model.qualtrics)
 ```
 
+</details>
+
 ## Reasonable
 
-- Interaction of source and condition results - in general, Qualtrics participants tend to pick reasonable more often but the pattern of choices relative to other conditions is the same. 
+- No interaction of source of data collection and condition. 
+
+<details><summary>View full results</summary>
 
 ```{r}
 r.model.qualtrics <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
@@ -494,28 +511,15 @@ r.model.qualtrics <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) +
                       nAGQ = 0)
 
 summary(r.model.qualtrics)
-
-df <- r.model.qualtrics@frame
-
-df$reason_vas_combined <- factor(df$reason_vas_combined,
-                                 levels = c(0,1),
-                                 labels = c("Unreasonable", "Reasonable"))
-
-ggplot(df) +
-  geom_mosaic(aes(x = product(reason_vas_combined, source, cond), 
-                  fill = reason_vas_combined), color = "black", size = .5) + 
-  scale_fill_brewer(palette = "Greys", name = "Reason Choice", 
-                    direction = -1) + 
-  scale_x_productlist(breaks = c(0.13,.5,.87),
-    labels = c("Gettier", "Ignorance", "Knowledge")) +
-  theme_classic() + 
-  xlab("Condition") + 
-  ylab("Source")
 ```
+
+</details>
 
 ## Luck 
 
-- No interaction with luck. 
+- No interaction of the survey programming with luck as the dependent variable. 
+
+<details><summary>View full results</summary>
 
 ```{r}
 l.model.qualtrics <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
@@ -527,4 +531,857 @@ l.model.qualtrics <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) +
                       nAGQ = 0)
 
 summary(l.model.qualtrics)
+```
+
+</details>
+
+# Table of Exclusions by Vignette and Condition
+
+- Exclusions if one considered each comprehension check separately. 
+
+```{r}
+# 1 is right 2 is wrong for GK 
+# 1 is wrong 2 is right for I
+full_long$correct <- NA
+full_long$correct[full_long$cond == "Ignorance" & full_long$compr == "2"] <- TRUE
+full_long$correct[full_long$cond == "Ignorance" & full_long$compr == "1"] <- FALSE
+full_long$correct[full_long$cond != "Ignorance" & full_long$compr == "1"] <- TRUE
+full_long$correct[full_long$cond != "Ignorance" & full_long$compr == "2"] <- FALSE
+
+flextable(full_long %>% 
+            group_by(vignette, cond, correct) %>% 
+            select(vignette, cond, correct) %>% 
+            drop_na() %>% 
+            count())
+```
+
+# Only Exclude For Condition Incorrect
+
+- The first results presented in each section are analyses wherein each section excludes only the vignettes that were answered correctly, and the second summary is the original information presented in the manuscript. 
+
+```{r}
+# data prep
+exclude_DF <- full_long %>% 
+  filter(correct == TRUE) %>% 
+  filter(age_exclusion == FALSE) %>% 
+  filter(previous_exclusion == FALSE) %>% 
+  filter(purpose_exclusion == FALSE) %>% 
+  filter(lang_exclusion == FALSE)
+
+nrow(exclude_DF)
+length(unique(exclude_DF$id))
+length(unique(exclude_DF$person_code))
+table(exclude_DF$vignette, exclude_DF$cond)
+
+# knowledge recode
+exclude_DF$know_vas_binned <- exclude_DF$know_vas
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned <= 40] <- 2
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned > 40 & 
+                             exclude_DF$know_vas_binned < 60] <- NA
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned >= 60] <- 1
+exclude_DF$know_vas_combined <- ifelse(is.na(exclude_DF$know_vas_binned), 
+                                     exclude_DF$know_bin, 
+                                     exclude_DF$know_vas_binned)
+
+exclude_DF$know_vas_combined <- 3 - exclude_DF$know_vas_combined
+
+# reason recode
+exclude_DF$reason_vas_binned <- exclude_DF$reason_vas
+exclude_DF$reason_vas_binned[exclude_DF$reason_vas_binned <= 40] <- 2
+exclude_DF$reason_vas_binned[exclude_DF$reason_vas_binned > 40 & 
+                             exclude_DF$reason_vas_binned < 60] <- NA
+exclude_DF$reason_vas_binned[exclude_DF$reason_vas_binned >= 60] <- 1
+exclude_DF$reason_vas_combined <- ifelse(is.na(exclude_DF$reason_vas_binned), 
+                                     exclude_DF$reason_bin, 
+                                     exclude_DF$reason_vas_binned)
+
+exclude_DF$reason_vas_combined <- 3 - exclude_DF$reason_vas_combined
+
+# luck recode
+exclude_DF$luck_vas_binned <- exclude_DF$luck_vas
+exclude_DF$luck_vas_binned[exclude_DF$luck_vas_binned <= 40] <- 2
+exclude_DF$luck_vas_binned[exclude_DF$luck_vas_binned > 40 & 
+                             exclude_DF$luck_vas_binned < 60] <- NA
+exclude_DF$luck_vas_binned[exclude_DF$luck_vas_binned >= 60] <- 1
+exclude_DF$luck_vas_combined <- ifelse(is.na(exclude_DF$luck_vas_binned), 
+                                     exclude_DF$luck_bin, 
+                                     exclude_DF$luck_vas_binned)
+
+exclude_DF$luck_vas_combined <- 3 - exclude_DF$luck_vas_combined
+
+# for luck analyses people should be excluded if they get the answer wrong 
+exclude_DF$luck_correct <- FALSE
+
+exclude_DF$ri_wr <- factor(exclude_DF$ri_wr, 
+                           levels = c(1,2),
+                           labels = c("Right", "Wrong"))
+exclude_DF$luck_correct[exclude_DF$cond == "Ignorance" & exclude_DF$ri_wr == "Wrong"] <- TRUE
+exclude_DF$luck_correct[exclude_DF$cond != "Ignorance" & exclude_DF$ri_wr == "Right"] <- TRUE
+
+table(exclude_DF$luck_correct)
+
+# fix other variables
+exclude_DF$gender2 <- factor(exclude_DF$gender,
+                             levels = c("female", "male"))
+
+# subset the wrong answers 
+exclude_luck <- subset(exclude_DF, luck_correct)
+```
+
+## Knowledge
+
+### Condition
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+exclude_DF$know_vas_combined <- exclude_DF$know_vas_combined - 1
+k.cond.exclude <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(k.cond.exclude)
+
+summary(log_exclude[[6]])
+```
+
+</details>
+
+### Vignette
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+k.vignette.exclude <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*vignette,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(k.vignette.exclude)
+
+summary(log_exclude[[7]])
+```
+
+</details>
+
+### Turk
+
+- Results from coefficients are within a confidence interval of each other. The significance level changes for the Turk analysis, however, this is likely due to power, as there are more participants in this analysis. 
+- The pattern of data suggests the same results, with more selection of believes in the ignorance condition. 
+
+<details><summary>View full results</summary>
+
+```{r}
+k.turk.exclude <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(k.turk.exclude)
+
+summary(log_exclude[[8]])
+
+data_graph <- k.turk.exclude@frame
+data_graph$know_vas_combined <- factor(data_graph$know_vas_combined,
+                                          levels = c(0,1),
+                                          labels = c("Believes", "Knows"))
+
+#graph the three way binary 
+ggplot(data_graph) +
+  geom_mosaic(aes(x = product(know_vas_combined, cond, turk), 
+                  fill = know_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Knowledge Choice", 
+                    direction = -1) + 
+  theme(text = element_text(size = 15)) + 
+  scale_x_productlist(breaks = c(.5,.95),
+   labels = c("College", "MTurk")) + 
+  theme_classic() + 
+  xlab("Turk") + 
+  ylab("Condition")
+```
+
+</details>
+
+## Reasonable
+
+### Condition
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+exclude_DF$reason_vas_combined <- exclude_DF$reason_vas_combined - 1
+r.cond.exclude <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(r.cond.exclude)
+
+summary(log_exclude[[14]])
+```
+
+</details>
+
+### Vignette
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+r.vignette.exclude <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*vignette,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(r.vignette.exclude)
+
+summary(log_exclude[[15]])
+```
+
+</details>
+
+### Turk
+
+- Results from coefficients are within a confidence interval of each other. The significance level changes for the Turk analysis, however, this is likely due to power, as there are more participants in this analysis. 
+- This pattern of results indicates the same results as other samples - very few people pick unreasonable overall with slightly more in the ignorance category. 
+
+<details><summary>View full results</summary>
+
+```{r}
+r.turk.exclude <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(r.turk.exclude)
+
+summary(log_exclude[[16]])
+
+data_graph <- r.turk.exclude@frame
+data_graph$reason_vas_combined <- factor(data_graph$reason_vas_combined,
+                                          levels = c(0,1),
+                                          labels = c("Unreasonable", "Reasonable"))
+
+#graph the three way binary 
+ggplot(data_graph) +
+  geom_mosaic(aes(x = product(reason_vas_combined, cond, turk), 
+                  fill = reason_vas_combined), color = "black", size = .5) + 
+  scale_fill_brewer(palette = "Greys", name = "Reason Choice", 
+                    direction = -1) + 
+  theme(text = element_text(size = 15)) + 
+  scale_x_productlist(breaks = c(.5,.95),
+   labels = c("College", "MTurk")) + 
+  theme_classic() + 
+  xlab("Turk") + 
+  ylab("Condition")
+```
+
+</details>
+
+## Luck 
+
+### Condition 
+
+- Results from coefficients are within a confidence interval of each other.
+
+<details><summary>View full results</summary>
+
+```{r}
+exclude_luck$luck_vas_combined <- exclude_luck$luck_vas_combined - 1
+l.cond.exclude <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond,
+                      data = exclude_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(l.cond.exclude)
+
+summary(log_exclude[[22]])
+```
+
+</details>
+
+### Vignette
+
+- Results from coefficients are within a confidence interval of each other.
+
+<details><summary>View full results</summary>
+
+```{r}
+l.vignette.exclude <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*vignette,
+                      data = exclude_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(l.vignette.exclude)
+
+summary(log_exclude[[23]])
+```
+
+</details>
+
+### Turk
+
+- Results from coefficients are within a confidence interval of each other.
+
+<details><summary>View full results</summary>
+
+```{r}
+l.turk.exclude <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = exclude_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(l.turk.exclude)
+
+summary(log_exclude[[24]])
+```
+
+</details>
+
+
+
+
+
+
+# Just Emma or Gerald
+
+- This second covers the "Direct" replication analysis on just Emma and just Gerald, given they correctly answered the question for that vignette correctly (the scoring for correct is presented earlier in this document). 
+
+```{r}
+# data prep
+exclude_DF <- full_long %>% 
+  filter(correct == TRUE) 
+
+# knowledge recode
+exclude_DF$know_vas_binned <- exclude_DF$know_vas
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned <= 40] <- 2
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned > 40 & 
+                             exclude_DF$know_vas_binned < 60] <- NA
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned >= 60] <- 1
+exclude_DF$know_vas_combined <- ifelse(is.na(exclude_DF$know_vas_binned), 
+                                     exclude_DF$know_bin, 
+                                     exclude_DF$know_vas_binned)
+
+exclude_DF$know_vas_combined <- 3 - exclude_DF$know_vas_combined
+
+# fix other variables
+exclude_DF$gender2 <- factor(exclude_DF$gender,
+                             levels = c("female", "male"))
+
+# gerald
+gerald_DF <- exclude_DF %>% 
+  filter(vignette_order == "GED" | vignette_order == "GDE") %>% 
+  filter(vignette == "Gerald")
+nrow(gerald_DF)
+
+# emma
+emma_DF <- exclude_DF %>% 
+  filter(vignette_order == "EDG" | vignette_order == "EGD") %>% 
+  filter(vignette == "Emma")
+nrow(emma_DF)
+```
+
+## Gerald 
+
+- Overall chi-square is significant with a similar effect size to Darrel only. 
+- Gettier versus Ignorance shows the same effect size and pattern of effects. 
+- Gettier versus Knowledge shows the same effect size and pattern of effects. 
+<details><summary>View full results</summary>
+
+```{r}
+gerald_only <- chisq.test(gerald_DF$cond, gerald_DF$know_vas_combined)
+MOTE_gerald <- v.chi.sq(
+  x2 = gerald_only$statistic,
+  n = sum(gerald_only$observed),
+  r = 2,
+  c = 3,
+  a = .05
+)
+
+gerald_only
+MOTE_gerald
+
+k.g_table_rep <- table(gerald_DF$know_vas_combined, gerald_DF$cond)
+k.g_table_rep
+
+k.gcond_GI_rep <- prop.test(t(k.g_table_rep[2:1, 1:2])) %>% 
+  tidy()
+k.gcond_GI_rep
+
+k.gcond_GI_v_rep <- v.chi.sq(x2 = prop.test(t(k.g_table_rep[2:1, 1:2]))$statistic, 
+         n = sum(t(k.g_table_rep[2:1, 1:2])),
+         r = 2, c = 2) 
+k.gcond_GI_v_rep
+
+k.gcond_GK_rep <- prop.test(t(k.g_table_rep[2:1, c(1,3)])) %>% 
+  tidy()
+k.gcond_GK_rep
+
+k.gcond_GK_v_rep <- v.chi.sq(x2 = prop.test(t(k.g_table_rep[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k.g_table_rep[2:1, c(1,3)])),
+         r = 2, c = 2) 
+k.gcond_GK_v_rep
+
+k.gcond_GI_rep$estimate1
+k.gcond_GI_rep$estimate2
+k.gcond_GK_rep$estimate1
+k.gcond_GK_rep$estimate2
+```
+
+</details>
+
+## Emma
+
+- Overall chi-square is significant with a smaller effect size than Darrel or Gerald. 
+- Gettier versus Ignorance shows the same pattern of effects with approximately half of the effect size. 
+- Gettier versus Knowledge shows the same pattern of effects with approximately half of the effect size. 
+
+
+<details><summary>View full results</summary>
+
+```{r}
+emma_only <- chisq.test(emma_DF$cond, emma_DF$know_vas_combined)
+MOTE_emma <- v.chi.sq(
+  x2 = emma_only$statistic,
+  n = sum(emma_only$observed),
+  r = 2,
+  c = 3,
+  a = .05
+)
+
+emma_only
+MOTE_emma
+
+k.e_table_rep <- table(emma_DF$know_vas_combined, emma_DF$cond)
+k.e_table_rep
+
+k.econd_GI_rep <- prop.test(t(k.e_table_rep[2:1, 1:2])) %>% 
+  tidy()
+k.econd_GI_rep
+
+k.econd_GI_v_rep <- v.chi.sq(x2 = prop.test(t(k.e_table_rep[2:1, 1:2]))$statistic, 
+         n = sum(t(k.e_table_rep[2:1, 1:2])),
+         r = 2, c = 2) 
+k.econd_GI_v_rep
+
+k.econd_GK_rep <- prop.test(t(k.e_table_rep[2:1, c(1,3)])) %>% 
+  tidy()
+k.econd_GK_rep
+
+k.econd_GK_v_rep <- v.chi.sq(x2 = prop.test(t(k.e_table_rep[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k.e_table_rep[2:1, c(1,3)])),
+         r = 2, c = 2) 
+k.econd_GK_v_rep
+
+k.econd_GI_rep$estimate1
+k.econd_GI_rep$estimate2
+k.econd_GK_rep$estimate1
+k.econd_GK_rep$estimate2
+```
+
+</details>
+
+# Update Table 6/Figure 3
+
+```{r}
+log_exclude[[7]]@frame %>% 
+  mutate(know_vas_combined = factor(know_vas_combined, 
+                                    levels = c(0,1), 
+                                    labels = c("Believes", "Knows"))) %>% 
+  group_by(know_vas_combined, cond, vignette) %>% 
+  summarize(frequency = n()) %>% 
+  arrange(desc(cond)) %>% 
+  pivot_wider(id_cols = c(know_vas_combined, vignette), names_from = cond, values_from = frequency) %>% 
+  ungroup() 
+```
+
+# Just a Midpoint Split
+
+- The first results presented in each section represent the midpoint split, while the second results indicate the information presented in the manuscript. 
+
+```{r}
+# data prep
+exclude_DF <- full_long %>% 
+  filter(total_exclusion < 1)
+
+# knowledge recode
+exclude_DF$know_vas_binned <- exclude_DF$know_vas
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned <= 50] <- 2
+exclude_DF$know_vas_binned[exclude_DF$know_vas_binned >= 50] <- 1
+exclude_DF$know_vas_combined <- ifelse(is.na(exclude_DF$know_vas_binned), 
+                                     exclude_DF$know_bin, 
+                                     exclude_DF$know_vas_binned)
+
+exclude_DF$know_vas_combined <- 3 - exclude_DF$know_vas_combined
+
+# reason recode
+exclude_DF$reason_vas_binned <- exclude_DF$reason_vas
+exclude_DF$reason_vas_binned[exclude_DF$reason_vas_binned <= 50] <- 2
+exclude_DF$reason_vas_binned[exclude_DF$reason_vas_binned >= 50] <- 1
+exclude_DF$reason_vas_combined <- ifelse(is.na(exclude_DF$reason_vas_binned), 
+                                     exclude_DF$reason_bin, 
+                                     exclude_DF$reason_vas_binned)
+
+exclude_DF$reason_vas_combined <- 3 - exclude_DF$reason_vas_combined
+
+# luck recode
+exclude_DF$luck_vas_binned <- exclude_DF$luck_vas
+exclude_DF$luck_vas_binned[exclude_DF$luck_vas_binned <= 50] <- 2
+exclude_DF$luck_vas_binned[exclude_DF$luck_vas_binned >= 50] <- 1
+exclude_DF$luck_vas_combined <- ifelse(is.na(exclude_DF$luck_vas_binned), 
+                                     exclude_DF$luck_bin, 
+                                     exclude_DF$luck_vas_binned)
+
+exclude_DF$luck_vas_combined <- 3 - exclude_DF$luck_vas_combined
+
+# for luck analyses people should be excluded if they get the answer wrong 
+exclude_DF$luck_correct <- FALSE
+
+exclude_DF$ri_wr <- factor(exclude_DF$ri_wr, 
+                           levels = c(1,2),
+                           labels = c("Right", "Wrong"))
+exclude_DF$luck_correct[exclude_DF$cond == "Ignorance" & exclude_DF$ri_wr == "Wrong"] <- TRUE
+exclude_DF$luck_correct[exclude_DF$cond != "Ignorance" & exclude_DF$ri_wr == "Right"] <- TRUE
+
+table(exclude_DF$luck_correct)
+
+# fix other variables
+exclude_DF$gender2 <- factor(exclude_DF$gender,
+                             levels = c("female", "male"))
+
+# subset the wrong answers 
+exclude_luck <- subset(exclude_DF, luck_correct)
+```
+
+## Knowledge
+
+### Condition
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+exclude_DF$know_vas_combined <- exclude_DF$know_vas_combined - 1
+k.cond.exclude <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(k.cond.exclude)
+
+summary(log_exclude[[6]])
+```
+
+</details>
+
+### Vignette
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+k.vignette.exclude <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*vignette,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(k.vignette.exclude)
+
+summary(log_exclude[[7]])
+```
+
+</details>
+
+### Turk
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+k.turk.exclude <- glmer(know_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(k.turk.exclude)
+
+summary(log_exclude[[8]])
+```
+
+</details>
+
+## Reasonable
+
+### Condition
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+exclude_DF$reason_vas_combined <- exclude_DF$reason_vas_combined - 1
+r.cond.exclude <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(r.cond.exclude)
+
+summary(log_exclude[[14]])
+```
+
+</details>
+
+### Vignette
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+r.vignette.exclude <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*vignette,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(r.vignette.exclude)
+
+summary(log_exclude[[15]])
+```
+
+</details>
+
+### Turk
+
+- Results from coefficients are within a confidence interval of each other. 
+
+<details><summary>View full results</summary>
+
+```{r}
+r.turk.exclude <- glmer(reason_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = exclude_DF,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(r.turk.exclude)
+
+summary(log_exclude[[16]])
+```
+
+</details>
+
+## Luck 
+
+### Condition 
+
+- Results from coefficients are within a confidence interval of each other.
+
+<details><summary>View full results</summary>
+
+```{r}
+exclude_luck$luck_vas_combined <- exclude_luck$luck_vas_combined - 1
+l.cond.exclude <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond,
+                      data = exclude_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(l.cond.exclude)
+
+summary(log_exclude[[22]])
+```
+
+</details>
+
+### Vignette
+
+- Results from coefficients are within a confidence interval of each other.
+
+<details><summary>View full results</summary>
+
+```{r}
+l.vignette.exclude <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*vignette,
+                      data = exclude_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(l.vignette.exclude)
+
+summary(log_exclude[[23]])
+```
+
+</details>
+
+### Turk
+
+- Results from coefficients are within a confidence interval of each other.
+
+<details><summary>View full results</summary>
+
+```{r}
+l.turk.exclude <- glmer(luck_vas_combined ~ (1|vignette/id/person_code) + 
+                    comp + age + gender2 + education + 
+                    cond*turk,
+                      data = exclude_luck,
+                      family = binomial,
+                      control = glmerControl(optimizer = "bobyqa"),
+                      nAGQ = 0)
+
+summary(l.turk.exclude)
+
+summary(log_exclude[[24]])
+```
+
+</details>
+
+# Graph of Area Representation
+
+```{r}
+# convert country code to region code
+# this will warn you about the ones that have multiple countries 
+# create a world map 
+world_map <- map_data(map = "world")
+world_map$orig_region <- world_map$region
+world_map$region <- iso.alpha(world_map$region, n = 3)
+world_map <- subset(world_map, region != "ATA")
+
+# summarize the same samples
+country_summary <- full_long %>% 
+      filter(!duplicated(full_long %>% select(id))) %>% 
+      group_by(lab_country) %>% 
+      summarize(n = n()) %>% 
+      filter(!is.na(lab_country))
+
+# make a map on a continuous scale
+ggplot(country_summary) +
+  geom_map(aes(map_id = lab_country, fill = n), map = world_map) +
+  geom_polygon(data = world_map, 
+               aes(x = long, y = lat, group = group), 
+               colour = 'black', fill = NA) + 
+  theme_void() + 
+  scale_fill_distiller(name = "Sample Size",
+                       palette = "Greys",
+                       direction = 1,
+                       na.value = "white") 
+
+ggsave("figure/continuous_country.png")
+  
+# maybe try binning
+country_summary$n_binned <- if_else(
+  country_summary$n > 1000, "1000+", 
+  if_else(
+    country_summary$n < 1000 & country_summary$n >= 400, "400-999", 
+    if_else(
+      country_summary$n < 400 & country_summary$n >= 100, "100-399", 
+      "< 100"
+    )
+  )
+)
+
+# map of binned data 
+bin_country <- ggplot(country_summary) +
+  geom_map(aes(map_id = lab_country, fill = n_binned), map = world_map) +
+  geom_polygon(data = world_map, 
+               aes(x = long, y = lat, group = group), 
+               colour = 'black', fill = NA) + 
+  theme_void() + 
+  scale_fill_manual(name = "Sample Size",
+                    values = c("#c8c8c8", "#969696", "#646464", "#323232")) 
+
+ggsave("figure/binned_country.png", bin_country)
+
+# tree map
+country_summary$un_region_sub <- countrycode(
+  sourcevar = country_summary$lab_country,
+  origin = 'iso3c', 
+  destination = 'un.regionsub.name'
+)
+
+country_summary$un_region <- countrycode(
+  sourcevar = country_summary$lab_country,
+  origin = 'iso3c', 
+  destination = 'un.region.name'
+)
+
+country_summary$un_region[is.na(country_summary$un_region)] <- "Asia"
+country_summary$un_region_sub[is.na(country_summary$un_region_sub)] <- "Eastern Asia"
+
+tree <- ggplot(country_summary, aes(area = n, fill = n_binned,
+               label = lab_country, subgroup = un_region_sub)) +
+  geom_treemap() +
+  geom_treemap_subgroup_border(colour = "white", size = 5) +
+  # geom_treemap_subgroup_text(place = "top", grow = TRUE,
+  #                            alpha = 0.25, colour = "black",
+  #                            fontface = "italic") +
+  geom_treemap_text(colour = "white", place = "centre",
+                    size = 15, grow = FALSE) +  
+  scale_fill_manual(name = "Sample Size",
+                    values = c("#c8c8c8", "#969696", "#646464", "#323232")) 
+  # scale_fill_gradient(name = "Sample Size",
+  #                     low = "#c8c8c8", 
+  #                     high = "#323232") 
+
+ggsave("figure/treemap.png",
+       tree)
 ```

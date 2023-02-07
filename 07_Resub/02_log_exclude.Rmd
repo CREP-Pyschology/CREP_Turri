@@ -733,6 +733,9 @@ output <- list(
 k.model.1, k.model.2, k.model.3, k.model.4, k.model.5, k.model.6, k.model.6A, k.model.6B, r.model.1, r.model.2, r.model.3, r.model.4, r.model.5, r.model.6, r.model.6A, r.model.6B, l.model.1, l.model.2, l.model.3, l.model.4, l.model.5, l.model.6, l.model.6A, r.model.6B)
 
 save(output, file = "log_exclude.Rdata")
+save(full_long, file = "full_long_log_exclude.Rdata")
+save(final_long, file = "final_long_log_exclude.Rdata")
+save(final_luck, file = "final_luck_log_exclude.Rdata")
 ```
 
 
