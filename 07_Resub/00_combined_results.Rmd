@@ -571,7 +571,11 @@ exclude_DF <- full_long %>%
 nrow(exclude_DF)
 length(unique(exclude_DF$id))
 length(unique(exclude_DF$person_code))
-table(exclude_DF$vignette, exclude_DF$cond)
+
+# full data
+table(full_long$vignette, full_long$cond, useNA = "ifany")
+# exclude based on incorrect answers 
+table(exclude_DF$vignette, exclude_DF$cond, useNA = "ifany")
 
 # knowledge recode
 exclude_DF$know_vas_binned <- exclude_DF$know_vas
@@ -1349,6 +1353,8 @@ bin_country <- ggplot(country_summary) +
   scale_fill_manual(name = "Sample Size",
                     values = c("#c8c8c8", "#969696", "#646464", "#323232")) 
 
+bin_country
+
 ggsave("figure/binned_country.png", bin_country)
 
 # tree map
@@ -1382,6 +1388,81 @@ tree <- ggplot(country_summary, aes(area = n, fill = n_binned,
   #                     low = "#c8c8c8", 
   #                     high = "#323232") 
 
+tree 
+
 ggsave("figure/treemap.png",
        tree)
 ```
+
+# Forest Plot of Effects
+
+## Knowledge
+
+```{r}
+table(final_long$lab_country, useNA = "ifany")
+unique_country <- unique(final_long$lab_country)
+
+country_results <- list()
+for (i in unique_country){
+  
+  temp_data <- final_long %>% 
+    filter(lab_country == i)
+  
+  k_table <- table(temp_data$know_vas_combined, temp_data$cond)
+  
+  tryCatch(k_GI <- v.chi.sq(x2 = prop.test(t(k_table[2:1, 1:2]))$statistic, 
+         n = sum(t(k_table[2:1, 1:2])),
+         r = 2, c = 2), 
+         warning = function(w) { 
+      k_GI <<- v.chi.sq(x2 = prop.test(t(k_table[2:1, 1:2]))$statistic, 
+         n = sum(t(k_table[2:1, 1:2])),
+         r = 2, c = 2)
+      k_GI$vlow <<- 0
+    }
+  )
+  
+  tryCatch(  k_GK <- v.chi.sq(x2 = prop.test(t(k_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k_table[2:1, c(1,3)])),
+         r = 2, c = 2), 
+         warning = function(w) { 
+      k_GK <<- v.chi.sq(x2 = prop.test(t(k_table[2:1, c(1,3)]))$statistic, 
+         n = sum(t(k_table[2:1, c(1,3)])),
+         r = 2, c = 2)
+      k_GK$vlow <<- 0
+    }
+  )
+  
+  country_results[[i]]$country <- i
+  country_results[[i]]$GI <- k_GI$v
+  country_results[[i]]$GI_low <- k_GI$vlow
+  country_results[[i]]$GI_high <- k_GI$vhigh
+  country_results[[i]]$GK <- k_GK$v
+  country_results[[i]]$GK_low <- k_GK$vlow
+  country_results[[i]]$GK_high <- k_GK$vhigh
+  country_results[[i]]$sample <- nrow(temp_data)
+  
+}
+
+country_DF <- bind_rows(country_results)
+
+ggplot(country_DF, aes(country, GI)) + 
+  theme_classic() + 
+  geom_point(aes(size = sample)) + 
+  geom_errorbar(aes(ymin = GI_low, ymax = GI_high)) + 
+  ylab("Knowledge Cramer's V for Gettier-Ignorance") + 
+  xlab("Geopolitical Region") + 
+  coord_flip() + 
+  theme(legend.position = "none")
+
+
+ggplot(country_DF, aes(country, GK)) + 
+  theme_classic() + 
+  geom_point(aes(size = sample)) + 
+  geom_errorbar(aes(ymin = GK_low, ymax = GK_high)) + 
+  ylab("Knowledge Cramer's V for Gettier-Knowledge") + 
+  xlab("Geopolitical Region") + 
+  coord_flip() + 
+  theme(legend.position = "none")
+
+```
+
