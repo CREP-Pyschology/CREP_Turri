@@ -1343,6 +1343,10 @@ country_summary$n_binned <- if_else(
   )
 )
 
+country_summary$n_binned <- factor(country_summary$n_binned, 
+                                   levels = c("< 100", "100-399", 
+                                              "400-999", "1000+"))
+
 # map of binned data 
 bin_country <- ggplot(country_summary) +
   geom_map(aes(map_id = lab_country, fill = n_binned), map = world_map) +
