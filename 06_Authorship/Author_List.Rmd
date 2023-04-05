@@ -23,13 +23,13 @@ set.seed(89088934)
 lab_gsheet <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1A_GoD3y6t0FTdrVCUPHlXorZxLxeEC-o2B3Ieg5wqcc/edit?usp=sharing")
 
 colnames(lab_gsheet) <- c("tier", "first", "middle", "last", "full_name", 
-                          "b_check", "s_check", "j_check", "p_admin", 
-                          "conceptualization", "writing_original", 
-                          "writing_review", "data_curation", "analysis", 
-                          "funding", "supervision", "investigation", "methodology", 
-                          "resources", "translation", "software", "validation", 
-                          "visualization", "email", "email_nouse", "email_check",
-                          "affiliation", "PSA_ID", 
+                          "b_check", "s_check", "j_check", 
+                          "conceptualization", "data_curation", "analysis", 
+                          "funding", "investigation", "methodology", "p_admin", 
+                          "resources", "translation", "software", "supervision",
+                           "validation",  "visualization", "writing_original", 
+                          "writing_review", "email", "email_nouse", "email_check",
+                          "affiliation", "second_aff", "PSA_ID", 
                           "ammps_account", "author_stage1", "author_stage2", 
                           "data_check", "community_check", "funding_check", "orcid", 
                           "corresponding")
@@ -128,26 +128,25 @@ flextable(
 ## Order
 
 ```{r}
-alldata$credit_total <- apply(alldata %>% select(p_admin, conceptualization, 
-                                               writing_original, writing_review,
-                                               data_curation, analysis, 
-                                               funding, supervision, 
-                                               investigation, methodology, 
-                                               resources, translation, 
-                                               software, validation, 
-                                               visualization), 1, sum, na.omit = T)
+alldata$credit_total <- apply(alldata %>% 
+                                select(conceptualization, data_curation,
+                                       analysis, funding, investigation,
+                                       methodology, p_admin, resources, 
+                                       software, supervision, 
+                                       validation, visualization, 
+                                       writing_original, writing_review), 1, sum)
 
 author_order <- c(
   #first Hall, Schmidt, Wagge, Lewis, Weissgerber, Kiunke
   "1729", "139", "47", "22", "1817", "1751", 
   # 3+ credit and community
-  alldata %>% filter(credit_total > 2) %>% filter(community == "Yes") %>% arrange(desc(credit_total)) %>% pull(PSA_ID), 
+  alldata %>% filter(credit_total > 2) %>% filter(community == "Yes") %>% arrange(desc(credit_total), last) %>% pull(PSA_ID), 
   # 3+ credit
-  alldata %>% filter(credit_total > 2) %>% arrange(desc(credit_total)) %>%  pull(PSA_ID), 
+  alldata %>% filter(credit_total > 2) %>% arrange(desc(credit_total), last) %>%  pull(PSA_ID), 
   # 2 credit and community
-  alldata %>% filter(credit_total > 1) %>% filter(community == "Yes") %>% pull(PSA_ID), 
+  alldata %>% filter(credit_total == 2) %>% filter(community == "Yes")  %>% arrange(last) %>% pull(PSA_ID), 
   # 2 credit 
-  alldata %>% filter(credit_total > 1) %>% pull(PSA_ID)
+  alldata %>% filter(credit_total == 2) %>% arrange(last) %>% pull(PSA_ID)
 )
 
 # remove duplicates and NAs
@@ -169,13 +168,13 @@ alldata$department[alldata$PSA_ID %in% admin_id] <-
 
 alldata$institution[alldata$PSA_ID %in% admin_id] <- 
   c("Harrisburg University of Science and Technology", 
-    "Southern Illinois University Carbondale", 
-    "Universität Kassel", 
+    "Ashland University", 
+    "University of Kassel", 
     "Ashland University", 
     "University of Wisconsin-Madison", 
     "Southern Illinois University Carbondale", 
     "Avila University", 
-    "Universität Kassel")
+    "University of Kassel")
 
 alldata$country[alldata$PSA_ID %in% admin_id] <- 
   c("USA", "USA", "Germany", "USA", "USA", "USA", "USA", "Germany")
@@ -192,6 +191,9 @@ ordered_author <-
 
 # just check this to make sure you shouldn't exclude
 ordered_author %>% filter(total_score < 10)
+
+ordered_author <- ordered_author %>% 
+  filter(!is.na(attempt))
 ```
 
 ### Final People Who Did the Survey
@@ -203,40 +205,40 @@ ordered_author %>% filter(total_score < 10)
 ## Credit
 
 ```{r}
-alldata <- 
-  alldata %>% mutate(credit_name = paste(substr(full_name.x, 1, 1), ". ", 
+ordered_author <- 
+  ordered_author %>% mutate(credit_name = paste(substr(full_name.x, 1, 1), ". ", 
                                          middle, " ", last, sep = "")) %>% 
   mutate(credit_name = gsub("NA", "", credit_name)) %>% 
-  mutate(credit_name = gsub("  ", " ", credit_name))
+  mutate(credit_name = gsub("  ", " ", credit_name)) 
 ```
   
-`r paste(alldata %>% filter(conceptualization) %>% pull(credit_name), collapse = ", ")` contributed to the conceptualization of the project. 
+`r paste(ordered_author %>% filter(conceptualization) %>% pull(credit_name), collapse = ", ")` contributed to the conceptualization of the project. 
 
-`r paste(alldata %>% filter(writing_original) %>% pull(credit_name), collapse = ", ")` wrote the original draft of this report.
+`r paste(ordered_author %>% filter(writing_original) %>% pull(credit_name), collapse = ", ")` wrote the original draft of this report.
 
-`r paste(alldata %>% filter(writing_review) %>% pull(credit_name), collapse = ", ")` edited, reviewed, and revised the draft of this report.
+`r paste(ordered_author %>% filter(writing_review) %>% pull(credit_name), collapse = ", ")` edited, reviewed, and revised the draft of this report.
 
-`r paste(alldata %>% filter(data_curation) %>% pull(credit_name), collapse = ", ")` contributed to the data curation.
+`r paste(ordered_author %>% filter(data_curation) %>% pull(credit_name), collapse = ", ")` contributed to the data curation.
 
-`r paste(alldata %>% filter(analysis) %>% pull(credit_name), collapse = ", ")` contributed to the analysis of the data.
+`r paste(ordered_author %>% filter(analysis) %>% pull(credit_name), collapse = ", ")` contributed to the analysis of the data.
 
-`r paste(alldata %>% filter(funding) %>% pull(credit_name), collapse = ", ")` secured funding for this project. 
+`r paste(ordered_author %>% filter(funding) %>% pull(credit_name), collapse = ", ")` secured funding for this project. 
 
-`r paste(alldata %>% filter(supervision) %>% pull(credit_name), collapse = ", ")` was invovled in supervision for this project including supervision of student led teams.
+`r paste(ordered_author %>% filter(supervision) %>% pull(credit_name), collapse = ", ")` was invovled in supervision for this project including supervision of student led teams.
 
-`r paste(alldata %>% filter(investigation) %>% pull(credit_name), collapse = ", ")` contributed to the data collection and investigation. 
+`r paste(ordered_author %>% filter(investigation) %>% pull(credit_name), collapse = ", ")` contributed to the data collection and investigation. 
 
-`r paste(alldata %>% filter(methodology) %>% pull(credit_name), collapse = ", ")` contributed to methodology for the project.
+`r paste(ordered_author %>% filter(methodology) %>% pull(credit_name), collapse = ", ")` contributed to methodology for the project.
 
-`r paste(alldata %>% filter(resources) %>% pull(credit_name), collapse = ", ")` contributed to resources for this project.
+`r paste(ordered_author %>% filter(resources) %>% pull(credit_name), collapse = ", ")` contributed to resources for this project.
 
-`r paste(alldata %>% filter(translation) %>% pull(credit_name), collapse = ", ")` contributed to the translation for materials for this project. 
+`r paste(ordered_author %>% filter(translation) %>% pull(credit_name), collapse = ", ")` contributed to the translation for materials for this project. 
 
-`r paste(alldata %>% filter(software) %>% pull(credit_name), collapse = ", ")` contributed survey software and coding for this project.
+`r paste(ordered_author %>% filter(software) %>% pull(credit_name), collapse = ", ")` contributed survey software and coding for this project.
 
-`r paste(alldata %>% filter(validation) %>% pull(credit_name), collapse = ", ")` contributed validation of the analyses. 
+`r paste(ordered_author %>% filter(validation) %>% pull(credit_name), collapse = ", ")` contributed validation of the analyses. 
 
-`r paste(alldata %>% filter(visualization) %>% pull(credit_name), collapse = ", ")` contributed to the visualization of data and analyses. 
+`r paste(ordered_author %>% filter(visualization) %>% pull(credit_name), collapse = ", ")` contributed to the visualization of data and analyses. 
 
 ## COIs
 
@@ -247,13 +249,47 @@ flextable(ordered_author %>% select(PSA_ID, full_name.x, cois)) %>% autofit() %>
 ## Funding 
 
 ```{r}
-#table(alldata$funding_report)
-alldata$funding_report2 <- gsub("-|I do not have.*|N.A.*|n\\/a.*|N\\/A.*|^NA|^na|^NO|^No|^no", NA, alldata$funding_report)
-alldata$funding_report2[alldata$funding_report2 == ""] <- NA
+#table(ordered_author$funding_report)
+ordered_author$funding_report2 <- gsub("-|I do not have.*|N.A.*|n\\/a.*|N\\/A.*|^NA|^na|^NO|^No|^no", NA, ordered_author$funding_report)
+ordered_author$funding_report2[ordered_author$funding_report2 == ""] <- NA
 
-alldata$funding_report2[!is.na(alldata$funding_report2)] <- paste(alldata$full_name.x[!is.na(alldata$funding_report2)], ": ", alldata$funding_report2[!is.na(alldata$funding_report2)], sep = "")
+ordered_author$funding_report2[!is.na(ordered_author$funding_report2)] <- paste(ordered_author$full_name.x[!is.na(ordered_author$funding_report2)], ": ", ordered_author$funding_report2[!is.na(ordered_author$funding_report2)], sep = "")
+
+# # move simona
+simona <- as.numeric(rownames(ordered_author)[ordered_author$last == "Ďurbisová"])
+ordered_author <- ordered_author[c(1:35,  simona, 36:(simona-1), (simona+1):length(ordered_author$first)) , ]
 ```
 
-`r paste(na.omit(alldata$funding_report2), collapse = "  \n\n")`
+`r paste(na.omit(ordered_author$funding_report2), collapse = "  \n\n")`
 
 ## Acknowledgement List 
+
+```{r}
+#View(ordered_author %>% select(first, last, affiliation, second_aff))
+
+library(tenzing)
+
+# validate_contributors_table(contributors_table = ordered_author)
+
+ordered_tenzing <- ordered_author %>% 
+  mutate(`Order in publication` = 1:nrow(ordered_author)) %>% 
+  select(`Order in publication`, first, middle, last, conceptualization:writing_review, email.x, 
+         affiliation, second_aff, funding_report, orcid, corresponding) %>% 
+  select(-translation)
+
+colnames(ordered_tenzing) <- 
+  c("Order in publication", "Firstname", "Middle name", "Surname",
+    "Conceptualization", "Data curation", "Formal analysis", 
+    "Funding acquisition", "Investigation", "Methodology",
+    "Project administration", "Resources", "Software",  
+    "Supervision",   "Validation", "Visualization",
+    "Writing - original draft", "Writing - review & editing", 
+    "Email address", "Primary affiliation", "Secondary affiliation", "Funding", "ORCID iD",  "Corresponding author?")
+
+#validate_contributors_table(contributors_table = ordered_tenzing)
+
+cat(print_yaml(contributors_table = ordered_tenzing))
+
+cat(print_funding(contributors_table = ordered_tenzing))
+```
+
