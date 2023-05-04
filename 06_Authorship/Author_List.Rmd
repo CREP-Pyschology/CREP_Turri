@@ -28,7 +28,8 @@ colnames(lab_gsheet) <- c("tier", "first", "middle", "last", "full_name",
                           "funding", "investigation", "methodology", "p_admin", 
                           "resources", "translation", "software", "supervision",
                            "validation",  "visualization", "writing_original", 
-                          "writing_review", "credit_count", "email", "email_nouse", "email_check",
+                          "writing_review", "credit_count", 
+                          "email", "email_nouse", "email_check",
                           "affiliation", "second_aff", "PSA_ID", 
                           "ammps_account", "author_stage1", "author_stage2", 
                           "data_check", "community_check", "funding_check", "orcid", 
@@ -99,7 +100,8 @@ alldata %>% filter(is.na(first)) %>% select(PSA_ID, full_name.y)
 alldata <- 
   alldata %>% 
   filter(PSA_ID != "272") %>%  #asked to be removed
-  filter(PSA_ID != "513")  #asked to be removed 
+  filter(PSA_ID != "513") %>%  #asked to be removed 
+  filter(PSA_ID != "1733") # said they didn't participate 
 ```
 
 ## Fix Names
@@ -200,7 +202,20 @@ ordered_author <- ordered_author %>%
 
 `r paste(ordered_author$full_survey[!is.na(ordered_author$attempt)], collapse = "  \n\n")`
 
-### Create Upload CSV 
+### Credit Check
+
+```{r}
+credit_total <- apply(ordered_author[ , c("conceptualization", 
+                                          "data_curation", "analysis", 
+                          "funding", "investigation", "methodology", "p_admin", 
+                          "resources", "software", "supervision",
+                           "validation",  "visualization", "writing_original", 
+                          "writing_review")], 1, sum)
+
+ordered_author %>% 
+  filter(credit_total < 2)
+```
+
 
 ## Credit
 
@@ -231,8 +246,6 @@ ordered_author <-
 `r paste(ordered_author %>% filter(methodology) %>% pull(credit_name), collapse = ", ")` contributed to methodology for the project.
 
 `r paste(ordered_author %>% filter(resources) %>% pull(credit_name), collapse = ", ")` contributed to resources for this project.
-
-`r paste(ordered_author %>% filter(translation) %>% pull(credit_name), collapse = ", ")` contributed to the translation for materials for this project. 
 
 `r paste(ordered_author %>% filter(software) %>% pull(credit_name), collapse = ", ")` contributed survey software and coding for this project.
 

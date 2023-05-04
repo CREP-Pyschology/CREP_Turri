@@ -36,11 +36,12 @@ author:
       - Project administration
       - Resources
       - Supervision
+      - Visualization
       - Writing - original draft
       - Writing - review & editing
     email: jwagge@gmail.com
   - name: Savannah C. Lewis
-    affiliation: '2,70'
+    affiliation: '2,75'
     role:
       - Data curation
       - Investigation
@@ -81,21 +82,22 @@ author:
       - Visualization
       - Writing - review & editing
     email: Gerit.pfuhl@uit.no
-  - name: Ulrich S. Tran
+  - name: Stefan M. Stieger
     affiliation: '6'
+    role:
+      - Investigation
+      - Methodology
+      - Supervision
+      - Writing - review & editing
+    email: stefan.stieger@kl.ac.at
+  - name: Ulrich S. Tran
+    affiliation: '7'
     role:
       - Formal analysis
       - Investigation
       - Methodology
       - Writing - review & editing
     email: ulrich.tran@univie.ac.at
-  - name: Patrícia Arriaga
-    affiliation: '7'
-    role:
-      - Investigation
-      - Supervision
-      - Writing - review & editing
-    email: patricia.arriaga@iscte-iul.pt
   - name: Krystian Barzykowski
     affiliation: '8'
     role:
@@ -103,22 +105,29 @@ author:
       - Supervision
       - Writing - review & editing
     email: krystian.barzykowski@uj.edu.pl
-  - name: Marta Kowal
+  - name: Natalia Bogatyreva
     affiliation: '9'
+    role:
+      - Investigation
+      - Resources
+      - Writing - review & editing
+    email: bogatireva.natacha@yandex.ru
+  - name: Marta Kowal
+    affiliation: '10'
     role:
       - Investigation
       - Resources
       - Writing - review & editing
     email: marta7kowal@gmail.com
   - name: Karlijin Massar
-    affiliation: '10'
+    affiliation: '11'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: karlijn.massar@maastrichtuniversity.nl
   - name: Felizitas Pernerstofer
-    affiliation: '11'
+    affiliation: '6'
     role:
       - Investigation
       - Resources
@@ -132,7 +141,7 @@ author:
       - Writing - review & editing
     email: sorokowskipiotr@yahoo.co.uk
   - name: Martin Voracek
-    affiliation: '6'
+    affiliation: '7'
     role:
       - Formal analysis
       - Investigation
@@ -208,7 +217,7 @@ author:
       - Writing - review & editing
     email: Caro.Hautekiet@unige.ch
   - name: Hans IJzerman
-    affiliation: '20,71'
+    affiliation: '20,76'
     role:
       - Conceptualization
       - Methodology
@@ -239,14 +248,6 @@ author:
       - Supervision
       - Writing - review & editing
     email: emusser@fiu.edu
-  - name: Stefan Stieger
-    affiliation: '11'
-    role:
-      - Investigation
-      - Methodology
-      - Supervision
-      - Writing - review & editing
-    email: stefan.stieger@kl.ac.at
   - name: Evie Vergauwe
     affiliation: '19'
     role:
@@ -270,15 +271,22 @@ author:
       - Supervision
       - Writing - review & editing
     email: balazs.aczel@gmail.com
-  - name: Carlota Batres
+  - name: Patrícia Arriaga
     affiliation: '26'
+    role:
+      - Investigation
+      - Supervision
+      - Writing - review & editing
+    email: patricia.arriaga@iscte-iul.pt
+  - name: Carlota Batres
+    affiliation: '27'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: cbatres@fandm.edu
   - name: Jennifer L. Beaudry
-    affiliation: '27,72'
+    affiliation: '28,77'
     role:
       - Investigation
       - Supervision
@@ -291,13 +299,6 @@ author:
       - Resources
       - Writing - review & editing
     email: florian.cova@gmail.com
-  - name: Leslie D. Cramblet Alvarez
-    affiliation: '28'
-    role:
-      - Investigation
-      - Supervision
-      - Writing - review & editing
-    email: leslie.alvarez@du.edu
   - name: Simona Ďurbisová
     affiliation: '21'
     role:
@@ -305,57 +306,71 @@ author:
       - Resources
       - Writing - review & editing
     email: simona.durbisova@student.upjs.sk
-  - name: Gilad Feldman
+  - name: Leslie D. Cramblet Alvarez
     affiliation: '29'
+    role:
+      - Investigation
+      - Supervision
+      - Writing - review & editing
+    email: leslie.alvarez@du.edu
+  - name: Gilad Feldman
+    affiliation: '30'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: giladfel@gmail.com
   - name: Hendrik Godbersen
-    affiliation: '30'
+    affiliation: '31'
     role:
       - Investigation
       - Resources
       - Writing - review & editing
     email: hendrik.godbersen@fom.de
   - name: Jaroslav Gottfried
-    affiliation: '31'
+    affiliation: '32'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: jaroslav.gottfried@mail.muni.cz
   - name: Gerald J. Haeffel
-    affiliation: '32'
+    affiliation: '33'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: ghaeffel@nd.edu
   - name: Andree Hartanto
-    affiliation: '33'
+    affiliation: '34'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: andreeh@smu.edu.sg
   - name: Chris Isloi
-    affiliation: '34'
+    affiliation: '35'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: barbu.chris@gmail.com
+  - name: Joseph P. McFall
+    affiliation: '36'
+    role:
+      - Investigation
+      - Supervision
+      - Writing - review & editing
+    email: jmcfall@ur.rochester.edu
   - name: Marine Milyavskaya
-    affiliation: '35'
+    affiliation: '37'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: marina.milyavskaya@carleton.ca
   - name: David Moreau
-    affiliation: '36'
+    affiliation: '38'
     role:
       - Investigation
       - Supervision
@@ -369,14 +384,14 @@ author:
       - Writing - review & editing
     email: ester.nosalova@student.upjs.sk
   - name: Kostas Papaioannou
-    affiliation: '37'
+    affiliation: '39'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: papakoon@polsci.auth.gr
   - name: Susana Ruiz-Fernandez
-    affiliation: '30'
+    affiliation: '31'
     role:
       - Investigation
       - Supervision
@@ -390,28 +405,35 @@ author:
       - Writing - review & editing
     email: jana.schrotter@upjs.sk
   - name: Daniel Storage
-    affiliation: '28'
+    affiliation: '29'
     role:
       - Investigation
       - Supervision
       - Writing - review & editing
     email: Daniel.Storage@du.edu
   - name: Kevin Vezirian
-    affiliation: '38'
+    affiliation: '40'
     role:
       - Resources
       - Supervision
       - Writing - review & editing
     email: kevin.vezirian@gmail.com
+  - name: Leonhard Volz
+    affiliation: '41'
+    role:
+      - Investigation
+      - Supervision
+      - Writing - review & editing
+    email: l.volz@uva.nl
   - name: Yanna J. Weisberg
-    affiliation: '39'
+    affiliation: '42'
     role:
       - Resources
       - Supervision
       - Writing - review & editing
     email: yweisber@linfield.edu
-  - name: Qinyu Xiao Xiao
-    affiliation: '29'
+  - name: Qinyu Xiao
+    affiliation: '30'
     role:
       - Resources
       - Visualization
@@ -423,8 +445,14 @@ author:
       - Investigation
       - Writing - review & editing
     email: dana.awlia@gmail.com
+  - name: Hannah W. Branit
+    affiliation: '29'
+    role:
+      - Investigation
+      - Writing - review & editing
+    email: hannahbranit@gmail.com
   - name: Megan R. Dunn
-    affiliation: '40'
+    affiliation: '43'
     role:
       - Investigation
       - Writing - review & editing
@@ -442,43 +470,55 @@ author:
       - Writing - review & editing
     email: rickyhaneda@gmail.com
   - name: Gabriela Kalistová
-    affiliation: '31'
+    affiliation: '32'
     role:
       - Investigation
       - Writing - review & editing
     email: 467945@mail.muni.cz
-  - name: Carloline Kolle
+  - name: Julita Kielinska
+    affiliation: '8'
+    role:
+      - Resources
+      - Writing - review & editing
+    email: julitak.95@gmail.com
+  - name: Caroline Kolle
     affiliation: '4'
     role:
       - Investigation
       - Writing - review & editing
     email: Caroline.Kolle@gmx.de
+  - name: Paweł Lubomski
+    affiliation: '8'
+    role:
+      - Resources
+      - Writing - review & editing
+    email: p.lubomski@gmail.com
   - name: Alexys M. Miller
-    affiliation: '41'
+    affiliation: '44'
     role:
       - Investigation
       - Writing - review & editing
     email: lexym0317@yahoo.com
-  - name: Martin Mækelæ
+  - name: Martin J. Mækelæ
     affiliation: '5'
     role:
       - Resources
       - Writing - review & editing
     email: martin.j.makela@uit.no
   - name: Mytro Pantazi
-    affiliation: '42'
+    affiliation: '45'
     role:
       - Resources
       - Writing - review & editing
     email: myrto.pantazi@ulb.be
   - name: Rafael R. Ribeiro
-    affiliation: '7'
+    affiliation: '26'
     role:
       - Investigation
       - Writing - review & editing
     email: rafael_ribeiro@iscte-iul.pt
   - name: Rob M. Ross
-    affiliation: '43'
+    affiliation: '46'
     role:
       - Investigation
       - Writing - review & editing
@@ -490,31 +530,43 @@ author:
       - Writing - review & editing
     email: sorokowska@gmail.com
   - name: Christopher L. Aberson
-    affiliation: '44'
+    affiliation: '47'
     role:
       - Supervision
       - Writing - review & editing
     email: cla18@humboldt.edu
   - name: Xanthippi Alexi Vassiliou
-    affiliation: '45'
+    affiliation: '41'
     role:
       - Resources
       - Writing - review & editing
     email: x.alexi@protonmail.com
   - name: Bradley J. Baker
-    affiliation: '46'
+    affiliation: '48'
     role:
       - Supervision
       - Writing - review & editing
     email: bradley.baker@temple.edu
-  - name: Wen Cong
-    affiliation: '47'
+  - name: Miklos Bognar
+    affiliation: '25'
+    role:
+      - Resources
+      - Writing - review & editing
+    email: bognar.miklos@ppk.elte.hu
+  - name: Chin Wen Cong
+    affiliation: '49'
     role:
       - Resources
       - Writing - review & editing
     email: chinwencong@outlook.com
+  - name: Alex F. Danvers
+    affiliation: '50'
+    role:
+      - Software
+      - Writing - review & editing
+    email: adanvers@arizona.edu
   - name: William E. Davis
-    affiliation: '48'
+    affiliation: '51'
     role:
       - Investigation
       - Writing - review & editing
@@ -526,7 +578,7 @@ author:
       - Writing - review & editing
     email: vilius.dranseika@fsf.vu.lt
   - name: Andrei Dumbravă
-    affiliation: '49'
+    affiliation: '52,78'
     role:
       - Investigation
       - Writing - review & editing
@@ -538,19 +590,19 @@ author:
       - Writing - review & editing
     email: h.farmer@gre.ac.uk
   - name: Andy P. Field
-    affiliation: '50'
+    affiliation: '53'
     role:
       - Methodology
       - Writing - review & editing
     email: andy.field@sussex.ac.uk
   - name: Patrick S. Forscher
-    affiliation: '51'
+    affiliation: '54'
     role:
       - Formal analysis
       - Writing - review & editing
     email: schnarrd@gmail.com
   - name: Aurélien Graton
-    affiliation: '52'
+    affiliation: '55'
     role:
       - Resources
       - Writing - review & editing
@@ -561,62 +613,62 @@ author:
       - Investigation
       - Writing - review & editing
     email: hajdu.nandor93@gmail.com
-  - name: Peter Howlett
-    affiliation: '53'
+  - name: Peter A. Howlett
+    affiliation: '56'
     role:
       - Investigation
       - Writing - review & editing
     email: peter.a.howlett@gmail.com
+  - name: Radosław Kabut
+    affiliation: '8'
+    role:
+      - Resources
+      - Writing - review & editing
+    email: r.kabut@doctoral.uj.edu.pl
   - name: Emmett M. Larsen
-    affiliation: '54'
+    affiliation: '57'
     role:
       - Resources
       - Writing - review & editing
     email: emmett.larsen@stonybrook.edu
   - name: Sean T. H. Lee
-    affiliation: '55'
+    affiliation: '58'
     role:
       - Investigation
       - Writing - review & editing
     email: sean.lee@jcu.edu.au
   - name: Nicole Legate
-    affiliation: '40'
+    affiliation: '43'
     role:
       - Investigation
       - Writing - review & editing
     email: nlegate@iit.edu
   - name: Carmel A. Levitan
-    affiliation: '56'
+    affiliation: '59'
     role:
       - Supervision
       - Writing - review & editing
     email: levitan@oxy.edu
   - name: Neil Levy
-    affiliation: '43,73'
+    affiliation: '9,46'
     role:
       - Investigation
       - Writing - review & editing
     email: neil.levy@mq.edu.au
   - name: Jackson G. Lu
-    affiliation: '57'
+    affiliation: '60'
     role:
       - Resources
       - Writing - review & editing
     email: lu18@mit.edu
-  - name: Jared J. Metz
-    affiliation: '2'
-    role:
-      - Investigation
-      - Writing - review & editing
-    email: jjmetz18@gmail.com
   - name: Michael Misiak
-    affiliation: '12,73'
+    affiliation: '9,12'
     role:
       - Investigation
       - Writing - review & editing
     email: michal.misiak@uwr.edu.pl
   - name: Roxana E. Morariu
-    affiliation: '58'
+    affiliation: '61'
     role:
       - Resources
       - Writing - review & editing
@@ -628,49 +680,55 @@ author:
       - Writing - review & editing
     email: novakjennifer@gmx.de
   - name: Ekaterina Pronizius
-    affiliation: '6'
+    affiliation: '7'
     role:
       - Resources
       - Writing - review & editing
     email: ekaterina.pronizius@univie.ac.at
+  - name: Irina Prusova
+    affiliation: '62'
+    role:
+      - Investigation
+      - Writing - review & editing
+    email: iprusova@hse.ru
   - name: Athulya S. Rathnayake
-    affiliation: '36'
+    affiliation: '38'
     role:
       - Investigation
       - Writing - review & editing
     email: arat570@aucklanduni.ac.nz
+  - name: Marina O. Romanova
+    affiliation: '63'
+    role:
+      - Investigation
+      - Writing - review & editing
+    email: marina.romanova.msk@gmail.com
   - name: Jan P. Röer
-    affiliation: '59'
+    affiliation: '64'
     role:
       - Resources
       - Writing - review & editing
     email: jan.roeer@uni-wh.de
   - name: Waldir M. Sampaio
-    affiliation: '60'
+    affiliation: '65'
     role:
       - Resources
       - Writing - review & editing
     email: Waldirsampaio1994@gmail.com
   - name: Christoph Schild
-    affiliation: '61'
+    affiliation: '66'
     role:
       - Conceptualization
       - Writing - review & editing
     email: christoph.schild@uni-siegen.de
   - name: Michael Schulte-Mecklenbeck
-    affiliation: '62'
+    affiliation: '67'
     role:
       - Resources
       - Writing - review & editing
     email: research@schulte-mecklenbeck.com
-  - name: Sara Á. Solas
-    affiliation: '63'
-    role:
-      - Investigation
-      - Writing - review & editing
-    email: sara.alvarez.solas@gmail.com
   - name: Ian D. Stephen
-    affiliation: '64'
+    affiliation: '68'
     role:
       - Investigation
       - Writing - review & editing
@@ -688,13 +746,13 @@ author:
       - Writing - review & editing
     email: liztakacs2@gmail.com
   - name: Julia N. Teeter
-    affiliation: '32'
+    affiliation: '33'
     role:
       - Investigation
       - Writing - review & editing
     email: Julia.Teeter.10@alumni.nd.edu
   - name: Elian H. Thiele-Evans
-    affiliation: '27'
+    affiliation: '28'
     role:
       - Investigation
       - Writing - review & editing
@@ -705,8 +763,8 @@ author:
       - Resources
       - Writing - review & editing
     email: jupaterlini@gmail.com
-  - name: Iris D. Vilares
-    affiliation: '65'
+  - name: Iris Vilares
+    affiliation: '69'
     role:
       - Investigation
       - Writing - review & editing
@@ -718,19 +776,25 @@ author:
       - Writing - review & editing
     email: louisevillafana@yahoo.com
   - name: Ke Wang
-    affiliation: '66'
+    affiliation: '70'
     role:
       - Resources
       - Writing - review & editing
     email: Ke_Wang@hks.harvard.edu
   - name: Raymond Wu
-    affiliation: '67'
+    affiliation: '71'
     role:
       - Investigation
       - Writing - review & editing
     email: rwu@psych.ubc.ca
+  - name: Sara Álvarez-Solas
+    affiliation: '72'
+    role:
+      - Investigation
+      - Writing - review & editing
+    email: sara.alvarez.solas@gmail.com
   - name: Hannah Moshontz
-    affiliation: '68'
+    affiliation: '73'
     role:
       - Data curation
       - Formal analysis
@@ -742,7 +806,7 @@ author:
       - Writing - review & editing
     email: hmoshontz@gmail.com
   - name: Erin M. Buchanan
-    affiliation: '69'
+    affiliation: '74'
     role:
       - Data curation
       - Formal analysis
@@ -769,17 +833,17 @@ affiliation:
   - id: '5'
     institution: UiT The Arctic University of Norway
   - id: '6'
-    institution: University of Vienna
+    institution: Karl Landsteiner University of Health Sciences
   - id: '7'
-    institution: ISCTE - University Institute of Lisbon
+    institution: University of Vienna
   - id: '8'
     institution: Jagiellonian University
   - id: '9'
-    institution: University of Warsaw
+    institution: University of Oxford
   - id: '10'
-    institution: Maastricht University
+    institution: University of Wrocław
   - id: '11'
-    institution: Karl Landsteiner University of Health Sciences
+    institution: Maastricht University
   - id: '12'
     institution: University of Wrocław
   - id: '13'
@@ -787,7 +851,7 @@ affiliation:
   - id: '14'
     institution: Pacific Lutheran University
   - id: '15'
-    institution: T C Üsküdar Üniversitesi
+    institution: Üsküdar Univeristy
   - id: '16'
     institution: Fairfield University
   - id: '17'
@@ -809,101 +873,111 @@ affiliation:
   - id: '25'
     institution: Eötvös Loránd University
   - id: '26'
-    institution: Franklin and Marshall College
+    institution: ISCTE - University Institute of Lisbon
   - id: '27'
-    institution: Swinburne University of Technology
+    institution: Franklin and Marshall College
   - id: '28'
-    institution: University of Denver
+    institution: Swinburne University of Technology
   - id: '29'
-    institution: University of Hong Kong
+    institution: University of Denver
   - id: '30'
-    institution: FOM University of Economics and Management
+    institution: University of Hong Kong
   - id: '31'
-    institution: Masaryk University
+    institution: FOM University of Economics and Management
   - id: '32'
-    institution: University of Notre Dame
+    institution: Masaryk University
   - id: '33'
-    institution: Singapore Management University
+    institution: University of Notre Dame
   - id: '34'
-    institution: Independent researcher
+    institution: Singapore Management University
   - id: '35'
-    institution: Carleton University
+    institution: Unaffiliated Researcher, London, UK
   - id: '36'
-    institution: University of Auckland
+    institution: University of Rochester
   - id: '37'
-    institution: Aristotle University of Thessaloniki
+    institution: Carleton University
   - id: '38'
-    institution: Université Grenoble Alpes
+    institution: University of Auckland
   - id: '39'
-    institution: Linfield University
+    institution: Aristotle University of Thessaloniki
   - id: '40'
-    institution: Illinois Institute of Technology
+    institution: Université Grenoble Alpes
   - id: '41'
-    institution: Adams State University
-  - id: '42'
-    institution: Université Libre de Bruxelles
-  - id: '43'
-    institution: Macquarie University
-  - id: '44'
-    institution: Cal Poly Humboldt
-  - id: '45'
     institution: University of Amsterdam
+  - id: '42'
+    institution: Linfield University
+  - id: '43'
+    institution: Illinois Institute of Technology
+  - id: '44'
+    institution: Adams State University
+  - id: '45'
+    institution: Université Libre de Bruxelles
   - id: '46'
-    institution: Temple University
+    institution: Macquarie University
   - id: '47'
-    institution: Universiti Tunku Abdul Rahman
+    institution: Cal Poly Humboldt
   - id: '48'
-    institution: Wittenberg University
+    institution: Temple University
   - id: '49'
-    institution: Alexandru Ioan Cuza University
+    institution: Tunku Abdul Rahman University of Management and Technology
   - id: '50'
-    institution: University of Sussex
+    institution: University of Arizona
   - id: '51'
-    institution: Busara Center for Behavioral Economics
+    institution: Wittenberg University
   - id: '52'
-    institution: Université Savoie Mont-Blanc
+    institution: George I.M. Georgescu Institute of Cardiovascular Diseases
   - id: '53'
-    institution: State University of New York at Fredonia
+    institution: University of Sussex
   - id: '54'
-    institution: Stony Brook University
+    institution: Busara Center for Behavioral Economics
   - id: '55'
-    institution: James Cook University
+    institution: Université Savoie Mont-Blanc
   - id: '56'
-    institution: Occidental College
+    institution: State University of New York at Fredonia
   - id: '57'
-    institution: Massachusetts Institute of Technology
+    institution: Stony Brook University
   - id: '58'
-    institution: Babes-Bolyai University
+    institution: James Cook University
   - id: '59'
-    institution: University of Witten/Herdecke
+    institution: Occidental College
   - id: '60'
-    institution: Universidade Federal de São Carlos
+    institution: Massachusetts Institute of Technology
   - id: '61'
-    institution: University of Siegen
+    institution: Babeș-Bolyai University
   - id: '62'
-    institution: University of Bern
+    institution: HSE University
   - id: '63'
-    institution: Universidad Regional Amazónica Ikiam
+    institution: National Research University Higher School of Economics
   - id: '64'
-    institution: Nottingham Trent University
+    institution: University of Witten/Herdecke
   - id: '65'
-    institution: University of Minnesota
+    institution: Universidade Federal de São Carlos
   - id: '66'
-    institution: Harvard University
+    institution: University of Siegen
   - id: '67'
-    institution: University of British Columbia
+    institution: University of Bern
   - id: '68'
-    institution: University of Wisconsin-Madison
+    institution: Nottingham Trent University
   - id: '69'
-    institution: Harrisburg University of Science and Technology
+    institution: University of Minnesota
   - id: '70'
-    institution: The University of Alabama System
+    institution: Harvard University
   - id: '71'
-    institution: Institut Universitaire de France
+    institution: University of British Columbia
   - id: '72'
-    institution: Flinders University
+    institution: Universidad Regional Amazónica Ikiam
   - id: '73'
-    institution: University of Oxford
+    institution: University of Wisconsin-Madison
+  - id: '74'
+    institution: Harrisburg University of Science and Technology
+  - id: '75'
+    institution: The University of Alabama System
+  - id: '76'
+    institution: Institut Universitaire de France
+  - id: '77'
+    institution: Flinders University
+  - id: '78'
+    institution: Alexandru Ioan Cuza University
 authornote: |
   Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
 
