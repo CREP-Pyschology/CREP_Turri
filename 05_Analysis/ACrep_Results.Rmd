@@ -2,12 +2,12 @@
 title: "ACrep_Results.Rmd"
 author: "Hannah Moshontz, running Erin Buchanan's Analysis Script ... final updates by Erin Buchanan"
 date: "Last Updated `r Sys.Date()`"
-output: word_document
+# output: word_document
 always_allow_html: true
-# output:
-#   html_document:
-#     toc: true
-#     toc_float: true
+output:
+ html_document:
+   toc: true
+   toc_float: true
 ---
 
 # Run the analysis script
@@ -1049,7 +1049,7 @@ In our exploratory analyses of the alternative knowledge probe (i.e., following 
 
 ```{r}
 table(k.model.6F@frame$cond, k.model.6F@frame$know_alt) %>% 
-  kable(caption = "Alternative Knowledge Probe", col.names = c("Knows", "Feels they know, but doesn't know")) %>% 
+  kable(caption = "Alternative Knowledge Probe", col.names = c("Feels they know, but doesn't know", "Knows")) %>% 
   kable_styling()
 ```
 
