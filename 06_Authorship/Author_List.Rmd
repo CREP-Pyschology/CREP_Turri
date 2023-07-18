@@ -3,6 +3,8 @@ title: "Author_List"
 author: "erin buchanan"
 date: "Last Knitted: `r Sys.Date()`"
 output: word_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
