@@ -142,12 +142,17 @@ ggplot(df, aes(logit, age)) +
   geom_smooth(method = "lm") + 
   facet_wrap(~vignette*cond)
 
+ggsave("../09_Figures/logit_age_pre_reg.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 
 ggplot(df, aes(logit, education)) + 
   geom_point() + 
   theme_classic() + 
   geom_smooth(method = "lm") + 
   facet_wrap(~vignette*cond)
+
+ggsave("../09_Figures/logit_edu_pre_reg.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 </details>
@@ -171,12 +176,17 @@ ggplot(df, aes(logit, age)) +
   geom_smooth(method = "lm") + 
   facet_wrap(~vignette*cond)
 
+ggsave("../09_Figures/logit_age_new_exclude.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 
 ggplot(df, aes(logit, education)) + 
   geom_point() + 
   theme_classic() + 
   geom_smooth(method = "lm") + 
   facet_wrap(~vignette*cond)
+
+ggsave("../09_Figures/logit_edu_new_exclude.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 </details> 
@@ -318,11 +328,17 @@ ggplot(df, aes(turk, know_vas, fill = cond)) +
   ylab("Knowledge Rating") + 
   scale_fill_discrete(name = "Condition")
 
+ggsave("../09_Figures/turk_know_cond.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
+
 ggplot(df, aes(turk, know_vas)) + 
   geom_violin() + 
   theme_classic() + 
   xlab("Turk Sample") + 
   ylab("Knowledge Rating")
+
+ggsave("../09_Figures/turk_know.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 ## Reasonable
@@ -716,6 +732,9 @@ ggplot(data_graph) +
   theme_classic() + 
   xlab("Turk") + 
   ylab("Condition")
+
+ggsave("../09_Figures/turk_know_vas.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 </details>
@@ -804,6 +823,9 @@ ggplot(data_graph) +
   theme_classic() + 
   xlab("Turk") + 
   ylab("Condition")
+
+ggsave("../09_Figures/turk_reason_vas.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 </details>
@@ -1329,7 +1351,7 @@ ggplot(country_summary) +
                        direction = 1,
                        na.value = "white") 
 
-ggsave("figure/continuous_country.png")
+ggsave("../09_Figures/continuous_country.png", dpi = 300)
   
 # maybe try binning
 country_summary$n_binned <- if_else(
@@ -1359,7 +1381,7 @@ bin_country <- ggplot(country_summary) +
 
 bin_country
 
-ggsave("figure/binned_country.png", bin_country)
+ggsave("../09_Figures/binned_country.png", bin_country, dpi = 300)
 
 # tree map
 country_summary$un_region_sub <- countrycode(
@@ -1394,8 +1416,8 @@ tree <- ggplot(country_summary, aes(area = n, fill = n_binned,
 
 tree 
 
-ggsave("figure/treemap.png",
-       tree)
+ggsave("../09_Figures/treemap.png",
+       tree, dpi = 300)
 ```
 
 # Forest Plot of Effects
@@ -1458,6 +1480,8 @@ ggplot(country_DF, aes(country, GI)) +
   coord_flip() + 
   theme(legend.position = "none")
 
+ggsave("../09_Figures/forest_country_gi.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 
 ggplot(country_DF, aes(country, GK)) + 
   theme_classic() + 
@@ -1467,6 +1491,9 @@ ggplot(country_DF, aes(country, GK)) +
   xlab("Geopolitical Region") + 
   coord_flip() + 
   theme(legend.position = "none")
+
+ggsave("../09_Figures/forest_country_GK.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 
 ```
 

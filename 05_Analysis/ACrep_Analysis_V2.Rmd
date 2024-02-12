@@ -604,6 +604,9 @@ ggplot(final_long, aes(know_vas)) +
   theme_classic() + 
   ylab("Frequency") + 
   xlab("Knowledge Attribution Visual Analogue Score")
+
+ggsave("../09_Figures/know_vas_problem.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 ## Descriptives and Demographics
@@ -675,6 +678,9 @@ ggplot(final_long, aes(know_vas)) +
   ylab("Frequency") + 
   xlab("Knowledge Attribution Visual Analogue Score")
 
+ggsave("../09_Figures/know_vas_problem2.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
+
 ## knowledge 
 ds.model <- lme(know_vas ~ cond + comp + age + gender + education,
                 random = list(~1|vignette, ~1|id, ~1|person_code),
@@ -711,6 +717,9 @@ ggplot(final_long, aes(reason_vas)) +
   theme_classic() + 
   ylab("Frequency") + 
   xlab("Reasonableness Attribution Visual Analogue Score")
+
+ggsave("../09_Figures/reason_vas_problem.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 
 ## reasonable 
 ds.model <- lme(reason_vas ~ cond + comp_type + age + 
@@ -761,6 +770,9 @@ ggplot(final_luck, aes(luck_vas)) +
   theme_classic() + 
   ylab("Frequency") + 
   xlab("Luck Attribution Visual Analogue Score")
+
+ggsave("../09_Figures/luck_vas_problem.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 
 ds.model <- lme(luck_vas ~ cond + comp_type + age + 
                   gender + education ,
@@ -941,6 +953,9 @@ ggplot(final_long, aes(know_vas)) +
   ylab("Frequency") + 
   xlab("Knowledge Attribution Visual Analogue Score")
 
+ggsave("../09_Figures/know_vas_reverse.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
+
 # visualize the problem 
 ggplot(final_long, aes(know_bin)) + 
   geom_histogram() + 
@@ -948,6 +963,9 @@ ggplot(final_long, aes(know_bin)) +
   theme_classic() + 
   ylab("Frequency") + 
   xlab("Knowledge Attribution Bin Score")
+
+ggsave("../09_Figures/know_bin_reverse.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 ## Final Analysis Knowledge
@@ -1124,6 +1142,9 @@ ggplot(data_graph) +
   theme_classic() + 
   xlab("Vignette") + 
   ylab("Condition")
+
+ggsave("../09_Figures/know_cond_vig.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
   - Model 6 AIC: `r AIC(k.model.6)`
@@ -1431,6 +1452,9 @@ ggplot(r.data_graph) +
   theme_classic() + 
   xlab("Vignette") + 
   ylab("Condition")
+
+ggsave("../09_Figures/reason_cond_vig.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
   - Model 6 AIC: `r AIC(r.model.6)`
@@ -1740,6 +1764,9 @@ ggplot(l.data_graph) +
   theme_classic() + 
   xlab("Vignette") + 
   ylab("Condition")
+
+ggsave("../09_Figures/luck_cond_vig.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
   - Model 6 AIC: `r AIC(l.model.6)`
@@ -1885,6 +1912,9 @@ ggplot(l.data_graph) +
   theme_classic() + 
   xlab("Source") + 
   ylab("Condition")
+
+ggsave("../09_Figures/luck_vas_source.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
   - Model 6 AIC: `r AIC(l.model.6)`
@@ -2006,6 +2036,9 @@ ggplot(l2.data_graph) +
   theme_classic() + 
   xlab("Source") + 
   ylab("Condition")
+
+ggsave("../09_Figures/know_luck_vas.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
   - Model 6 AIC: `r AIC(k.model.6)`
@@ -2133,6 +2166,9 @@ ggplot(data_graph) +
   xlab("Vignette Order") + 
   ylab("Knowledge Choice")
 
+ggsave("../09_Figures/know_vas_vig_mos.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
+
 table(data_graph$know_vas_combined, data_graph$cond_order)
 
 ggplot(data_graph) +
@@ -2140,6 +2176,9 @@ ggplot(data_graph) +
   theme_classic() + 
   xlab("Condition Order") + 
   ylab("Condition")
+
+ggsave("../09_Figures/know_vas_cond_mos.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 - However, these plots indicate that there's likely not a lot of effect for order - only slightly differences in knows versus believes selection. 

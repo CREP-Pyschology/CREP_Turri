@@ -22,3 +22,7 @@ ggplot(DF, aes(threat, number, fill = choice)) +
                     direction = -1) + 
   theme(text = element_text(size = 15)) + 
   coord_flip()
+
+getwd()
+ggsave("09_Figures/geitter_graph.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")

@@ -304,6 +304,9 @@ ggplot(final_long, aes(know_vas)) +
   theme_classic() + 
   ylab("Frequency") + 
   xlab("Knowledge Attribution Visual Analogue Score")
+
+ggsave("../09_Figures/manu_fig_2.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 Distributions of knowledge attribution by vignette and experimental condition were also dramatically bimodal. A linear model that predicted continuously measured knowledge attribution as a function of condition, with covariates of compensation, age, gender, and education, produced a bimodal residual distribution, indicating a violation of the residual normality assumption. Further, a plot of residuals by fitted values suggests that residuals vary as a function of predicted values, suggesting a violation of the homoscedasticity assumption. Similar patterns of results suggested that the assumptions of linear regression were also not met for continuously measured reasonableness (bimodal) or luck/ability variables (heavily skewed).
@@ -500,6 +503,9 @@ k.interact <-
 
 k.interact
 
+ggsave("../09_Figures/manu_fig_3.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
+
 #alternative graph - from Gerit
 
 tknow <- as.data.frame(table(data_graph$know_vas_combined, data_graph$cond, data_graph$vignette))
@@ -515,6 +521,9 @@ tknow %>%
   scale_fill_grey(start = .9, end=0, labels = c("Believes", "Knows")) +
   theme_bw()+theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1)) + 
   facet_wrap(~Vignette)
+
+ggsave("../09_Figures/manu_fig_3b.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 
 ```
 
@@ -603,6 +612,9 @@ r.interact <- ggplot(r.data_graph) +
 
 r.interact
 
+ggsave("../09_Figures/manu_fig_4.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
+
 #alternative graph - from Gerit
 
 rgraph <- as.data.frame(table(r.data_graph$reason_vas_combined, r.data_graph$cond, r.data_graph$vignette))
@@ -618,6 +630,9 @@ rgraph %>%
   scale_fill_grey(start = .9, end=0, labels = c("Reasonable", "Unreasonable")) +
   theme_bw()+theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1)) + 
   facet_wrap(~Vignette)
+
+ggsave("../09_Figures/manu_fig_4b.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 ```{r Darrel reason effect}
@@ -813,6 +828,9 @@ l.interact <- ggplot(l.data_graph) +
 
 l.interact
 
+ggsave("../09_Figures/manu_fig_5.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
+
 #alternative graph - from Gerit
 lgraph <- as.data.frame(table(l.data_graph$luck_vas_combined, l.data_graph$cond, l.data_graph$vignette))
 
@@ -827,6 +845,9 @@ lgraph %>%
   scale_fill_grey(start = .9, end=0, labels = c("Luck", "Ability")) +
   theme_bw()+theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=1)) + 
   facet_wrap(~Vignette)
+
+ggsave("../09_Figures/manu_fig_5b.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 ```{r Darrel luck effect}
@@ -983,6 +1004,8 @@ cowplot::plot_grid(k.interact + theme(legend.position="none") +
                              get_legend(l.interact),
                              nrow = 1),
                    nrow = 4)
+
+ggsave("../09_Figures/manu_grid_1.png", dpi = 300, width = 8, height = 6, units = "in")
 ```
 
   **Luck as a Moderator.** Next, we explored whether attributions of outcomes to luck versus ability influence knowledge attributions as suggested by prior research (Turri, 2016, 2017). Turri (2016; Experiment 7) found a strong positive correlation between knowledge attributions and attributions to ability rather than luck (r = .622) and a moderating effect of luck attributions on Gettier intuitions; the participants attributed knowledge less to protagonists that were perceived as having arrived at a truth because of a lucky guess rather than because of their ability (ηp2 = .353; Turri, 2016; Experiment 7).
@@ -1074,6 +1097,9 @@ ggplot(l.data_graph) +
   xlab("Source") + 
   ylab("Condition") +
   ggtitle("Figure X. Interaction Between Measurement Type and Condition on Luck")
+
+ggsave("../09_Figures/manu_fig_6.png",  dpi = 300, 
+       width = 8, height = 6, units = "in")
 ```
 
 # Disclosures
